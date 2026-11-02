@@ -1,7 +1,0 @@
-gwc2027
-
-title "Principled and oppurtunistic expansion of the Open Multi-lingual Wordnet"
-
-Abstract
-
-In this talk, I give a summary of some recent work on expanding the OMW.  The first approach is to convert more wordnets into the correct format.  This crucially involves, finding, and where possible fixing errors such as reversed relations, lack of links to the interlingual index and more.   This is opportunistic, we Find whatever people have built and make it Accesible, Interoperable and Reusable.  
