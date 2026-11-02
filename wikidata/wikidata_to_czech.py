@@ -3,36 +3,13 @@
 # requires-python = ">=3.10"
 # dependencies = ["wn>=1.1", "requests"]
 # ///
-"""Project 5 starter: Wikidata --> ILI --> Czech.
+"""Wikidata -> ILI -> Czech (project 5).
 
-Pull Wikidata items that carry a wordnet/ILI link *and* a Czech label, resolve
-them to an ILI, and check whether the Czech wordnet already covers it. Each
-item is classified:
-
-    present         Czech synset exists and already has this label as a lemma
-    missing-lemma   Czech synset exists but lacks this label  -> candidate lemma
-    missing-synset  ILI not in the Czech wordnet at all       -> candidate synset
-    no-ili          could not resolve to an ILI (rare)
-
-Two ways in, and we use both:
-  * P5063 "Interlingual Index ID" -- the ILI directly (values look like iNNNN).
-    Fewer items carry it (~20k), but no mapping is needed.
-  * P8814 "WordNet 3.1 Synset ID" -- more items (~35k), but it is a WordNet
-    **3.1** offset, so we map it to an ILI through the Collaborative
-    Interlingual Index table `ili-map-pwn31.tab`. (Mapping through omw-en:2.0
-    instead fails: it is WordNet 3.0, whose offsets differ.)
-We prefer P5063 when present and fall back to P8814 -> CILI, which covers the
-most items.
-
-Run:  uv run wikidata_to_czech.py            # small demo (LIMIT 500)
-      uv run wikidata_to_czech.py 5000 out.tsv
-
-WDQS etiquette: send a real User-Agent, and for the *whole* set (~tens of
-thousands of rows) page with LIMIT/OFFSET or use a Query Service dump rather
-than one huge query.
+Tangled from wikidata.lit.md -- edit the prose there, not this file.
 """
 import sys
 from pathlib import Path
+
 import requests
 import wn
 

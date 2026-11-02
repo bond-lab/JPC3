@@ -20,6 +20,21 @@ through `omw-en:2.0` — that is WordNet 3.0 and the offsets don't line up (ever
 lookup misses). The Czech NTU-MC synsets expose ILIs
 (`cs.synsets(ili="i46360")`), so ILI is the common key.
 
+## Literate version
+
+This project doubles as the worked example for *literate programming*
+(the explainers idea from the validation lecture). The real source is
+[`wikidata.lit.md`](wikidata.lit.md) — prose and a diagram first, code in named
+chunks — and [`tangle.py`](tangle.py) extracts the runnable script from it:
+
+```bash
+uv run tangle.py wikidata.lit.md       # writes wikidata_to_czech.py
+```
+
+So `wikidata_to_czech.py` is **generated**; edit the `.lit.md` and re-tangle. The
+tangler is ~40 lines of noweb-style chunk expansion (indentation-preserving), so
+you can read it too. GitHub renders the `.lit.md` with the diagram inline.
+
 ## Run
 
 ```bash

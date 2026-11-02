@@ -55,6 +55,44 @@ GET https://globalsymbols.com/api/v1/labels/search?query=dog&language=eng&symbol
 The Bulgarian/Croatian sets are particular `symbolset` ids — list the sets
 first and note each one's licence before you import its images.
 
+## Generate what you can't find: colour swatches
+
+Some synsets will never have a drawn pictograph — and don't need one. **Colour
+terms** are the clear case: ARASAAC has a handful, but the wordnet has far more
+(*chestnut*, *burnt orange*, *dark teal*, …). The xkcd colour survey names 949
+colours with hex values, so for a colour synset you can just *generate* a swatch:
+
+```python
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["matplotlib"]
+# ///
+from matplotlib.colors import XKCD_COLORS   # 949 named colours, offline
+import matplotlib.pyplot as plt
+
+def swatch(name: str, path: str) -> str | None:
+    """Write a labelled colour swatch for an xkcd colour name; return its hex."""
+    hexv = XKCD_COLORS.get(f"xkcd:{name.lower()}")
+    if not hexv:
+        return None
+    fig, ax = plt.subplots(figsize=(2, 2)); ax.set_axis_off()
+    ax.add_patch(plt.Rectangle((0, 0), 1, 1, color=hexv))
+    ax.text(0.5, 0.08, name, ha="center", va="center", fontsize=11, color="white")
+    fig.savefig(path, dpi=150, bbox_inches="tight", pad_inches=0)
+    plt.close(fig)
+    return hexv
+
+swatch("chestnut", "chestnut.png")          # -> #742802
+```
+
+Match an xkcd name to the English colour lemma, bridge to the Czech synset by the
+same ILI route as the other projects, and attach the generated image. This also
+answers the project's *colour variants* brief directly.
+
+Caveats for the report: say the image is **generated**, not drawn (a data
+statement); xkcd names are crowd-sourced English, so the Czech match needs
+checking; and a flat swatch suits a colour but not, say, a *shade of a feeling*.
+
 ## Angles for the four-part spine
 
 - **Match more synsets.** ARASAAC's own synset tags are a starting alignment;
