@@ -21,6 +21,22 @@ import requests
 
 KROKI = "https://kroki.io/mermaid"
 
+# Injected into the HTML <head>. The key line is `pre { overflow-x: auto }`,
+# so long code lines scroll inside their block instead of being clipped.
+HTML_CSS = """<style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;line-height:1.5;
+     font-family:"TeX Gyre Pagella",Palatino,Georgia,serif;color:#1a1a1a}
+code,pre{font-family:Inconsolata,"DejaVu Sans Mono",monospace}
+pre{overflow-x:auto;background:#f6f6f6;padding:.8em 1em;border-radius:6px;font-size:.9em}
+pre>code{white-space:pre}
+h1,h2{line-height:1.2}
+h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:.2em}
+a{color:#8b0000}
+:not(pre)>code{background:#f0f0f0;padding:.1em .3em;border-radius:3px}
+img{max-width:100%}
+</style>
+"""
+
 
 def render(code: str, path: Path, fmt: str) -> None:
     """Render mermaid source to an image via Kroki (fmt: 'svg' or 'png')."""
@@ -67,10 +83,13 @@ def main() -> None:
     md = doc.read_text(encoding="utf-8")
 
     # HTML: SVG diagrams, embedded as data URIs -> one self-contained file.
+    # A stylesheet in the head makes long code lines scroll, not clip.
     html_md, figs = preprocess(md, outdir, stem, "svg")
     tmp_html = outdir / f"{stem}.weave.md"
     tmp_html.write_text(html_md, encoding="utf-8")
-    pandoc([tmp_html.name, "-s", "--embed-resources",
+    css = outdir / f"{stem}.weave-css.html"
+    css.write_text(HTML_CSS, encoding="utf-8")
+    pandoc([tmp_html.name, "-s", "--embed-resources", "--include-in-header", css.name,
             "--metadata", f"title={stem} (literate)", "-o", f"{stem}.html"], outdir)
 
     # PDF: PNG diagrams (xelatex cannot embed SVG directly).
@@ -80,7 +99,7 @@ def main() -> None:
     pandoc([tmp_pdf.name, "--pdf-engine=xelatex", "-V", "geometry:margin=2.5cm",
             "-V", "mainfont=TeX Gyre Pagella", "-o", f"{stem}.pdf"], outdir)
 
-    for f in (tmp_html, tmp_pdf, *figs, *figs_png):
+    for f in (tmp_html, tmp_pdf, css, *figs, *figs_png):
         f.unlink(missing_ok=True)
     print(f"wove {stem}.html and {stem}.pdf")
 

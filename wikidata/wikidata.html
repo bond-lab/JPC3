@@ -231,6 +231,18 @@ code span.va { color: #19177c; }
 code span.vs { color: #4070a0; } 
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
+  <style>
+body{max-width:52rem;margin:2rem auto;padding:0 1rem;line-height:1.5;
+font-family:"TeX Gyre Pagella",Palatino,Georgia,serif;color:#1a1a1a}
+code,pre{font-family:Inconsolata,"DejaVu Sans Mono",monospace}
+pre{overflow-x:auto;background:#f6f6f6;padding:.8em 1em;border-radius:6px;font-size:.9em}
+pre>code{white-space:pre}
+h1,h2{line-height:1.2}
+h2{margin-top:2em;border-bottom:1px solid #ddd;padding-bottom:.2em}
+a{color:#8b0000}
+:not(pre)>code{background:#f0f0f0;padding:.1em .3em;border-radius:3px}
+img{max-width:100%}
+</style>
 </head>
 <body>
 <header id="title-block-header">
@@ -241,8 +253,9 @@ Czech, as a literate program</h1>
 <p>This is the <strong>source</strong> for
 <code>wikidata_to_czech.py</code>. Edit the prose and code here, then
 regenerate the script:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run tangle.py wikidata.lit.md     <span class="co"># writes wikidata_to_czech.py</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run wikidata_to_czech.py 500      <span class="co"># run it</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run ../litprog/tangle.py wikidata.lit.md   <span class="co"># writes wikidata_to_czech.py</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run ../litprog/weave.py  wikidata.lit.md   <span class="co"># writes wikidata.html + wikidata.pdf</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run wikidata_to_czech.py 500               <span class="co"># run it</span></span></code></pre></div>
 <p>The goal (project 5): find concepts that Wikidata links to a wordnet
 synset and labels in Czech, then ask whether the Czech wordnet already
 has them. The ones it lacks are ranked candidates to add.</p>

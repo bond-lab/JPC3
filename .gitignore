@@ -10,6 +10,7 @@
 # literate-programming weave intermediates (figures are embedded in the output)
 *.weave.md
 *.weave-pdf.md
+*.weave-css.html
 *-fig[0-9]*.svg
 *-fig[0-9]*.png
 
