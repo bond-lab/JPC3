@@ -5,6 +5,9 @@ semester: roughly **2–3 months at 5–6 hours a week** (≈ 50–70 hours a te
 
 We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml>
 
+New here? See [`docs/setup.md`](docs/setup.md) to install `uv` and prime the
+wordnet database once.
+
 ## What every project delivers
 
 Whatever the topic, the report has the same four-part spine. It is baked into
@@ -145,7 +148,9 @@ well with project 5.
 ## Layout
 
 ```
+docs/setup.md      one-time setup (uv, priming the wn database)
 docs/template/     report.tex, report.bib — the shared report skeleton
+docs/slides/       validation.tex — the validation lecture
 patterns/          project 1 — Czech-specific patterns / přechylování
 derivations/       project 2 — derivational relations
 sensebank/         project 3 — PDT sense-tag remapping

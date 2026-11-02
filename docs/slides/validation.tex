@@ -1,0 +1,275 @@
+\documentclass[xetex,aspectratio=169]{beamer}
+
+%%% JPC3 --- Validation lecture
+%%% Preamble follows the canonical bond-lab Beamer template.
+
+\title[Validation]{Validating Data for a Linguistic Resource}
+\subtitle{Error analysis, agreement, and giving back}
+\author[Bond]{Francis \textbf{Bond}}
+\institute[Palack\'y]{\href{https://bond-lab.github.io/}{Computational Linguistics Lab}
+\\[1ex] Palack\'y University, Olomouc, Czechia
+\\[1ex] JPC3 --- Improving the Czech Wordnet}
+\date{\today}
+
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Inconsolata}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[triangle]
+\setbeamertemplate{footline}[frame number]
+
+\AtBeginSection[]{%
+  \begin{frame}
+    \frametitle{Roadmap}
+    \small
+    \tableofcontents[currentsection, hideothersubsections]
+  \end{frame}}
+
+\IfFileExists{img/UP_logo_FF_horizont_en.png}{%
+  \logo{\includegraphics[width=13mm]{img/UP_logo_FF_horizont_en.png}}}{}
+
+\usepackage{booktabs}
+\usepackage{langsci-gb4e}
+\let\eachwordone=\itshape
+\providecommand{\noautomath}{}\noautomath
+\newcommand{\gm}[1]{\textsc{\MakeLowercase{#1}}}
+
+\newcommand{\txx}[1]{\textbf{\textcolor{blue}{#1}}}
+\newcommand{\into}{\ensuremath{\rightarrow}\xspace}
+\usepackage{xspace}
+
+\begin{document}
+
+\maketitle
+
+%%% ------------------------------------------------------------------
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item Why be sure about the data
+  \item Error analysis: beyond one number
+  \item Why two annotators
+  \item Cohen's \txx{$\kappa$}, worked through
+  \item Giving fixes back to ARASAAC, Wikidata, \ldots
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{Why be sure?}
+
+\begin{frame}{Why be sure?}
+  \begin{itemize}
+  \item A wordnet is a \txx{trusted source}
+  \item Many tools read it; few check it
+  \item An error you add, everyone inherits
+  \item Once released, it is copied --- hard to recall
+  \item The Czech wordnet feeds OMW, sense tagging, AAC, \ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The cost of one wrong link}
+  \begin{itemize}
+  \item Project 4 links pictographs for \txx{AAC} users
+  \item A wrong synset tag \into\ the wrong picture
+  \item A child who cannot speak is handed the wrong word
+  \item Here a lexical slip is not cosmetic --- it misleads
+  \end{itemize}
+  \bigskip
+  \centering\small Precision is not pedantry when someone relies on the data
+\end{frame}
+
+%%% ==================================================================
+\section{Error analysis}
+
+\begin{frame}{Error Analysis}
+  \begin{itemize}
+  \item Take a \txx{random} sample (aim for 200)
+  \item Judge each by hand: right or wrong?
+  \item Precision = correct / judged
+  \item But the single number is the least of it
+  \item Group the mistakes into \txx{types} --- that is the payoff
+  \item One real example per type, with a count
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Running example: p\v{r}echylov\'an\'i}
+  Candidate: add a feminine form to a role-noun synset.
+  \begin{exe}
+    \ex Czech [ces] \\
+        \gll u\v{c}itel \quad\into\quad u\v{c}itel-ka \\
+             teacher.\gm{m} \qquad teacher-\gm{f} \\
+    \trans ``(male) teacher \into\ (female) teacher''
+  \end{exe}
+  \begin{itemize}
+  \item 1{,}919 role-noun synsets to work from (\texttt{noun.person})
+  \item Easy to generate; the question is which are \txx{right}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{An Error Taxonomy}
+  A sample of 200 generated feminine candidates:
+  \begin{center}
+  \begin{tabular}{lrl}
+    \toprule
+    Error type & Count & Example \\
+    \midrule
+    Correct                 & 171 & \textit{l\'eka\v{r} \into\ l\'eka\v{r}ka} \\
+    Coincidental suffix     &  12 & \textit{past} (not a base $+$ \textit{-ka}) \\
+    Wrong sense             &   9 & feminine of a non-personal reading \\
+    Already present         &   8 & lemma was in the synset \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \bigskip
+  \txx{Precision 0.86} --- but the four rows tell the next team where to look
+\end{frame}
+
+%%% ==================================================================
+\section{Agreement}
+
+\begin{frame}{Why Two Annotators?}
+  \begin{itemize}
+  \item One judge can be \txx{consistently} wrong
+  \item A second judge tests whether the scheme is learnable
+  \item Agreement $\approx$ reliability of the guidelines
+  \item You work in pairs --- so measure it
+  \item Report how you resolved the disagreements
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Raw Agreement Is Not Enough}
+  \begin{itemize}
+  \item ``We agreed 85\% of the time'' sounds good
+  \item But some agreement happens by \txx{chance}
+  \item Two coin-flippers agree half the time
+  \item If almost everything is ``correct'', agreeing is easy
+  \item Correct for chance \into\ Cohen's $\kappa$
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{Cohen's kappa}
+
+\begin{frame}{Cohen's Kappa}
+  Agreement above what chance would give:
+  \begin{block}{}
+    \centering\large
+    $\kappa = \dfrac{p_o - p_e}{1 - p_e}$
+  \end{block}
+  \begin{itemize}
+  \item $p_o$: observed agreement (the proportion you both called the same)
+  \item $p_e$: expected agreement \txx{by chance}, from each annotator's rates
+  \item $\kappa = 1$ perfect; $\kappa = 0$ no better than chance
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{A Worked Example}
+  200 candidates, two annotators, good vs.\ bad:
+  \begin{center}
+  \begin{tabular}{lrrr}
+    \toprule
+    & B: good & B: bad & total \\
+    \midrule
+    A: good & 130 & 20 & 150 \\
+    A: bad  &  10 & 40 &  50 \\
+    \midrule
+    total   & 140 & 60 & 200 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+  \item $p_o = (130+40)/200 = 0.85$
+  \item $p_e = 0.75\!\times\!0.70 + 0.25\!\times\!0.30 = 0.60$
+  \end{itemize}
+  \begin{block}{}
+    \centering $\kappa = \dfrac{0.85 - 0.60}{1 - 0.60} = \txx{0.63}$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Reading Kappa}
+  \begin{itemize}
+  \item Rough scale (Landis \& Koch, 1977): $>0.8$ very good, $0.6$--$0.8$ substantial
+  \item Our 0.63 is \txx{substantial} --- the guidelines mostly work
+  \item Low $\kappa$? Fix the guidelines, then re-annotate
+  \item Beware: few categories or a skewed split inflate it
+  \item Report $\kappa$ \textit{and} the raw table, never $\kappa$ alone
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{Giving back}
+
+\begin{frame}{Feedback Upstream}
+  Every error you find is a \txx{gift} to the source.
+  \begin{itemize}
+  \item ARASAAC: report wrong synset tags; send Czech keywords back
+  \item Wikidata: add or fix the ILI (P5063) and WordNet id (P8814)
+  \item Global Symbols / ARAWN: contribute the matches you validated
+  \item CILI: report synsets with no ILI; DeriNet: report gaps
+  \item PDT: the unmapped residue is data for the maintainers
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Virtuous Cycle}
+  \begin{itemize}
+  \item Open data gets better only when fixes \txx{flow back}
+  \item A pull request or an issue beats a private fix
+  \item Cite what you used; credit who made it
+  \item Release under an open licence, loadable with \texttt{wn}
+  \item Next year's class starts from your cleaner data
+  \end{itemize}
+  \bigskip
+  \centering\small Every new wordnet makes the network richer
+\end{frame}
+
+%%% ==================================================================
+\section*{}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+  \item Extraction is scaffolded --- \txx{validation} is the work
+  \item Sample, judge, and report precision
+  \item Categorise the errors; the taxonomy guides the next step
+  \item Two annotators, and $\kappa$ with the table
+  \item Push every fix back upstream
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Thanks}
+  \begin{itemize}
+  \item Validate carefully --- others will trust your data
+  \item Actually look at your data!
+  \item Code and template: the JPC3 repository
+  \end{itemize}
+  \bigskip
+  \centering Questions welcome --- and so are pull requests
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+  \footnotesize
+  \begin{thebibliography}{}
+  \bibitem[Cohen, 1960]{cohen1960} Cohen, J. (1960).
+    A coefficient of agreement for nominal scales.
+    \textit{Educational and Psychological Measurement} 20(1), 37--46.
+  \bibitem[Landis \& Koch, 1977]{landis-koch1977} Landis, J.~R. \& Koch, G.~G. (1977).
+    The measurement of observer agreement for categorical data.
+    \textit{Biometrics} 33(1), 159--174.
+  \bibitem[Artstein \& Poesio, 2008]{artstein-poesio2008} Artstein, R. \& Poesio, M. (2008).
+    Inter-coder agreement for computational linguistics.
+    \textit{Computational Linguistics} 34(4), 555--596.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-engine: xetex
+%%% TeX-master: t
+%%% End:
