@@ -92,7 +92,10 @@ def main() -> None:
     pandoc([tmp_html.name, "-s", "--embed-resources", "--include-in-header", css.name,
             "--metadata", f"title={stem} (literate)", "-o", f"{stem}.html"], outdir)
 
-    # PDF: PNG diagrams (xelatex cannot embed SVG directly).
+    # PDF: PNG diagrams. The HTML above uses vector SVG; for the PDF we embed a
+    # raster PNG on purpose. A faithful *vector* PDF of a Mermaid diagram needs a
+    # real renderer (inkscape / mermaid-cli / graphviz) -- the pure-Python
+    # SVG->PDF converters drop or mis-space Mermaid's labels. PNG stays faithful.
     pdf_md, figs_png = preprocess(md, outdir, stem, "png")
     tmp_pdf = outdir / f"{stem}.weave-pdf.md"
     tmp_pdf.write_text(pdf_md, encoding="utf-8")

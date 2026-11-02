@@ -21,6 +21,11 @@ Both are short, dependency-light, and run with `uv` — no node, no chromium.
 `weave.py` renders Mermaid diagrams through the [Kroki](https://kroki.io) web
 service (needs network); the PDF also needs `pandoc` and `xelatex`.
 
+Diagrams are **vector SVG in the HTML** and **raster PNG in the PDF**. A faithful
+vector PDF of a Mermaid diagram needs a real renderer (inkscape, mermaid-cli, or
+graphviz); the pure-Python SVG→PDF converters mis-render Mermaid's labels, so the
+PDF keeps PNG, which is always faithful.
+
 ## The `.lit.md` format
 
 Plain Markdown, plus two conventions in fenced code blocks:
