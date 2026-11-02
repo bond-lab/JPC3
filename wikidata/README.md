@@ -22,18 +22,20 @@ lookup misses). The Czech NTU-MC synsets expose ILIs
 
 ## Literate version
 
-This project doubles as the worked example for *literate programming*
-(the explainers idea from the validation lecture). The real source is
-[`wikidata.lit.md`](wikidata.lit.md) — prose and a diagram first, code in named
-chunks — and [`tangle.py`](tangle.py) extracts the runnable script from it:
+This project doubles as the worked example for *literate programming* (the
+explainers idea from the validation lecture; see [`../litprog/`](../litprog/)).
+The real source is [`wikidata.lit.md`](wikidata.lit.md) — prose and a diagram
+first, code in named chunks. The tooling lives in `../litprog/`:
 
 ```bash
-uv run tangle.py wikidata.lit.md       # writes wikidata_to_czech.py
+uv run ../litprog/tangle.py wikidata.lit.md   # -> wikidata_to_czech.py (code)
+uv run ../litprog/weave.py  wikidata.lit.md   # -> wikidata.html + wikidata.pdf (doc)
 ```
 
-So `wikidata_to_czech.py` is **generated**; edit the `.lit.md` and re-tangle. The
-tangler is ~40 lines of noweb-style chunk expansion (indentation-preserving), so
-you can read it too. GitHub renders the `.lit.md` with the diagram inline.
+So `wikidata_to_czech.py` is **generated**; edit the `.lit.md` and re-tangle.
+`weave.py` renders the Mermaid diagram via [Kroki](https://kroki.io) and builds a
+self-contained HTML and a PDF. GitHub also renders the `.lit.md` with the diagram
+inline.
 
 ## Run
 

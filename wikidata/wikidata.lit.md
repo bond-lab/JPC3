@@ -4,8 +4,9 @@ This is the **source** for `wikidata_to_czech.py`. Edit the prose and code here,
 then regenerate the script:
 
 ```bash
-uv run tangle.py wikidata.lit.md     # writes wikidata_to_czech.py
-uv run wikidata_to_czech.py 500      # run it
+uv run ../litprog/tangle.py wikidata.lit.md   # writes wikidata_to_czech.py
+uv run ../litprog/weave.py  wikidata.lit.md   # writes wikidata.html + wikidata.pdf
+uv run wikidata_to_czech.py 500               # run it
 ```
 
 The goal (project 5): find concepts that Wikidata links to a wordnet synset and

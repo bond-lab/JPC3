@@ -7,6 +7,12 @@
 *.tab
 *.tsv
 
+# literate-programming weave intermediates (figures are embedded in the output)
+*.weave.md
+*.weave-pdf.md
+*-fig[0-9]*.svg
+*-fig[0-9]*.png
+
 # editor lock / autosave artifacts
 \#*\#
 .\#*
