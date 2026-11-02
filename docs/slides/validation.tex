@@ -84,6 +84,45 @@
 \end{frame}
 
 %%% ==================================================================
+\section{The new bottleneck}
+
+\begin{frame}{Understanding Is the Bottleneck}
+  \begin{itemize}
+  \item The starter code generates candidates in seconds
+  \item Machines already verify themselves well
+  \item The slow part is \txx{understanding} what came out
+  \item ``Cognitive debt'': skip it and you lose the plot
+  \item Generation got cheap; understanding did not (Litt, 2026)
+  \end{itemize}
+  \vfill
+  \scriptsize \url{https://www.geoffreylitt.com/2026/07/02/understanding-is-the-new-bottleneck.html}
+\end{frame}
+
+\begin{frame}{Staying in the Loop}
+  Three ways to keep understanding ahead of the machine:
+  \begin{itemize}
+  \item Explain before you trust: write what the data \textit{says}
+  \item Visualise it --- a figure you can poke, not just read
+  \item Quiz each other on a sample --- a \txx{speed regulator}
+  \end{itemize}
+  \bigskip
+  \centering\small Augmentation, not automation --- get deeper in the loop
+\end{frame}
+
+\begin{frame}{Explainers as Literate Programming}
+  \begin{itemize}
+  \item Knuth (1984): write code for \txx{humans} to read
+  \item Prose and code woven together, explanation first
+  \item Litt's explainer is the same idea --- authorship flipped
+  \item The agent writes the code; you write the understanding
+  \item Your report is the literate layer over the scripts
+  \end{itemize}
+  \vfill
+  \scriptsize Revived for LLMs: ``Natural Language Outlines'' (2024),
+  ``Verifiable Literate Programming'' for validating generated code (2026)
+\end{frame}
+
+%%% ==================================================================
 \section{Error analysis}
 
 \begin{frame}{Error Analysis}
@@ -215,6 +254,46 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Give Back: ARASAAC}
+  Project 4 --- pictographs for AAC.
+  \begin{itemize}
+  \item Found a \txx{wrong} synset tag? Report it to ARASAAC
+  \item Missing Czech keyword? Submit the translation
+  \item Note colour and gender variants you matched
+  \item Their pictograms carry synsets --- a fix helps every language
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Give Back: Wikidata}
+  Project 5 --- Wikidata \into\ ILI \into\ Czech.
+  \begin{itemize}
+  \item Only a WordNet id (P8814)? Add the \txx{ILI} (P5063)
+  \item Linked to the wrong sense? Correct the statement
+  \item Confirmed a Czech label? Add it, with a reference
+  \item Cite the wordnet as the source --- statements need one
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Give Back: PDT and CILI}
+  Project 3 --- the sense-tag residue.
+  \begin{itemize}
+  \item The \txx{unmapped} tags are a bug list for the maintainers
+  \item Split or merged senses? Propose the current synset
+  \item Share your 1.5 \into\ current mapping table
+  \item New concept with no ILI? Ask CILI to mint one
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Give Back: DeriNet}
+  Project 2 --- derivational relations.
+  \begin{itemize}
+  \item Validated feminine-motion pairs? Offer them back
+  \item A family the wordnet \txx{lacks}? Flag the gap
+  \item A DeriNet error you caught? Report it
+  \item Both resources improve from the same checking
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{The Virtuous Cycle}
   \begin{itemize}
   \item Open data gets better only when fixes \txx{flow back}
@@ -262,6 +341,17 @@
   \bibitem[Artstein \& Poesio, 2008]{artstein-poesio2008} Artstein, R. \& Poesio, M. (2008).
     Inter-coder agreement for computational linguistics.
     \textit{Computational Linguistics} 34(4), 555--596.
+  \bibitem[Litt, 2026]{litt2026} Litt, G. (2026).
+    Understanding is the new bottleneck.
+    \url{https://www.geoffreylitt.com/2026/07/02/understanding-is-the-new-bottleneck.html}
+  \bibitem[Knuth, 1984]{knuth1984} Knuth, D.~E. (1984).
+    Literate programming. \textit{The Computer Journal} 27(2), 97--111.
+  \bibitem[Shi et al., 2024]{nloutlines2024} Shi, K.\ et al.\ (2024).
+    Natural Language Outlines for Code: Literate Programming in the LLM Era.
+    FSE'25 Industry Track. \url{https://arxiv.org/abs/2408.04820}
+  \bibitem[Yuan et al., 2026]{vlp2026} Yuan, Z.\ et al.\ (2026).
+    Guiding Human Validation of LLM-Generated Code via Verifiable Literate Programming.
+    \url{https://arxiv.org/abs/2607.02333}
   \end{thebibliography}
 \end{frame}
 
