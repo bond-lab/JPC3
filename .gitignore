@@ -1,3 +1,17 @@
+# wn library data (downloaded wordnets + sqlite db) and large source XML
+.wn_data/
+*.xml
+*.xml.xz
+
+# downloaded mapping tables and generated candidate dumps
+*.tab
+*.tsv
+
+# editor lock / autosave artifacts
+\#*\#
+.\#*
+*~
+
 # LaTeX build artifacts
 *.aux
 *.bbl

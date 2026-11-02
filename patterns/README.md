@@ -1,0 +1,45 @@
+# Project 1 — Czech-specific patterns (přechylování)
+
+Add feminine / motion variants (*učitel → učitelka*, *lev → lvice*) and other
+productive Czech patterns the English-derived wordnet doesn't encode. The pair
+shares a sense; you are adding the feminine lemma (and/or a gender/derivation
+link) to a synset that currently holds only the masculine form.
+
+## Scale of the task
+
+[`count_role_nouns.py`](count_role_nouns.py) counts *role nouns* (nouns denoting
+a person by their role) in the starting wordnet, two ways:
+
+```bash
+uv run count_role_nouns.py
+```
+
+| Measure | Czech synsets | Distinct Czech lemmas |
+|---|---|---|
+| `noun.person` lexfile | 1919 | 2585 |
+| person-hyponym closure of *person* `00007846-n` | 1849 | 2489 |
+
+~1900 role-noun synsets / ~2500 lemmas, against 11 087 `noun.person` synsets on
+the English side (≈ 17 % coverage). The script shares the `wn` database in
+`patterns/.wn_data`; the other projects reuse it.
+
+## Where the count comes from
+
+The Czech wordnet is an *expand* wordnet — its synsets are keyed to Princeton
+offsets and it `Requires omw-en:2.0` — so "is this a person synset?" is read
+off the English side (`ss.lexfile() == "noun.person"`, or hyponymy of *person*),
+matched back to Czech by synset offset.
+
+## Caveats worth putting in the report
+
+- `noun.person` is an **upper bound**: it also holds nationalities (*Čech*),
+  kinship terms (*matka*), and named individuals. The motion-eligible subset is
+  smaller — narrowing it (e.g. synsets whose only lemma looks masculine and has
+  no feminine counterpart yet) is part of the work.
+- The ≥ 500-noun goal is ~20–25 % of this pool, so it's comfortable; consider
+  raising it once you've scoped the generator's precision.
+
+## Readings
+
+McCrae et al. (2025) *Remedying Gender Bias in Open English Wordnet*; Pala &
+Smrž (2004) *Building Czech WordNet*. Keys in the top-level `README.md`.

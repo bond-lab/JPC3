@@ -1,0 +1,50 @@
+# Project 6 — LLM-assisted quality estimation, grounded in Wikidata
+
+Have an LLM flag suspicious synset members / glosses **with a rationale**, using
+the Wikidata label and description (from project 5) as evidence rather than free
+generation. Then measure how good the flags are. The measurement is the project.
+
+## Shape of it
+
+1. For each Czech synset (or a sample), gather evidence: its lemmas, the English
+   gloss, and — via the ILI bridge from [`../wikidata/`](../wikidata/) — the
+   Wikidata Czech label and description for the same concept.
+2. Ask the model a **closed** question with a fixed output shape, so the answers
+   are scorable:
+
+   ```json
+   {
+     "synset": "ntumc-cs-02086723-n",
+     "verdict": "ok | suspect",
+     "problem": "wrong-sense | missing-lemma | spurious-lemma | bad-gloss | none",
+     "rationale": "one sentence, citing the evidence",
+     "confidence": 0.0
+   }
+   ```
+
+   Force the shape with a tool/JSON schema rather than parsing prose. Before
+   writing any API code, load the **`claude-api`** skill for current model ids
+   and the structured-output pattern.
+
+3. Keep the rationale — it is the explainability payload, and it also makes the
+   human validation faster (you check the reason, not just the label).
+
+## The validation is the deliverable
+
+An LLM will happily flag things; the question is whether it is *right*.
+
+- Take a random sample (≥ 200), have a human give the gold `verdict`/`problem`
+  **blind** to the model, and report the model's **precision and recall for
+  `suspect`**, plus a confusion matrix over `problem` types.
+- Two annotators on the gold → Cohen's κ, so the ceiling is known.
+- Calibration: does `confidence` track correctness? A reliability plot is a
+  strong figure.
+- Ablation worth running: with vs without the Wikidata evidence in the prompt —
+  does grounding actually reduce false flags? That comparison is the headline.
+- Error taxonomy of the model's *mistakes* (hallucinated problem, missed real
+  problem, right flag/wrong type), with counts and examples.
+
+## Readings
+
+As for project 5 (`vrandecic-krotzsch2014`, `bond-etal2016cili`), plus a paper
+you find on LLMs for lexical-resource curation.
