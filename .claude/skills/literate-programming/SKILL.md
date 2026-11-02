@@ -47,6 +47,13 @@ uv run litprog/weave.py  <doc>.lit.md    # write <doc>.html and <doc>.pdf
 - Keep the tangled code passing `ruff` — the tangler preserves whatever spacing
   the chunks and root layout give, so put blank lines between top-level chunks.
 - `weave.py` needs `pandoc`, `xelatex`, and network (Kroki for diagrams).
+- **Show, don't just tell.** End the document with a "What it produces" section
+  holding a *real* run — console output and a few output rows — as a plain
+  ```` ```text ```` block (no chunk label, so it is woven but not tangled).
+  Seeing the output matters as much as reading the code.
+- **Prefer viewable output formats.** When a script writes results, use a format
+  a human can open and read — TOML, CSV, JSON — not an opaque pickle or binary
+  dump. The point of the output is to be looked at.
 
 ## Worked example
 

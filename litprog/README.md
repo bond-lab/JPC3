@@ -48,6 +48,12 @@ Plain Markdown, plus two conventions in fenced code blocks:
 Keep the `.lit.md` as the single source of truth: edit it, then re-tangle so the
 `.py` stays in step. The generated script carries a one-line note saying so.
 
+**Show the output, don't just describe it.** End the document with a "What it
+produces" section holding a *real* run — console output and a few output rows —
+as a plain ```` ```text ```` block (no chunk label, so it is woven but not
+tangled). Seeing the result is part of understanding it. Prefer formats a human
+can open — TOML, CSV, JSON — over opaque dumps; the output is there to be read.
+
 ## Worked example
 
 [`../wikidata/wikidata.lit.md`](../wikidata/wikidata.lit.md) → tangles to

@@ -201,3 +201,50 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
+
+## What it produces
+
+A small run prints a summary and the first candidates (live numbers vary a
+little as Wikidata changes):
+
+```text
+$ uv run wikidata_to_czech.py 500
+500 Wikidata items with P5063/P8814 + a Czech label
+  present        : 96
+  missing-lemma  : 87
+  missing-synset : 317
+  no-ili         : 0
+
+candidate additions (missing-lemma / missing-synset), first 15:
+  missing-synset 'Lesotho'                ili=i83782    cs=[]
+  missing-lemma  'Nizozemsko'             ili=i83737    cs=[Holandsko]
+  missing-lemma  'pes domácí'             ili=i46360    cs=[psovitá šelma|pes]
+  missing-lemma  'zirkonium'              ili=i114035   cs=[zirkon]
+  missing-synset 'Boston'                 ili=i84426    cs=[]
+```
+
+The two `missing-*` classes are the candidates. Note the mix: genuine lexical
+gaps (*Nizozemsko* beside the synset's *Holandsko*; *pes domácí* beside *pes*)
+alongside named entities (*Lesotho*, *Boston*) a general wordnet may not want —
+which is exactly what the validation step has to sort out.
+
+With a second argument the full table is written as TSV, one row per item:
+
+```text
+kind            qid       wn31        ili       wikidata_cs   czech_lemmas
+missing-lemma   Q55       08968866-n  i83737    Nizozemsko    Holandsko
+missing-synset  Q1013     09065527-n  i84173    Uganda
+present         Q42369    14686460-n  i114035   zirkonium     zirkonium
+```
+
+Pick a format you can actually open and read. A few candidates are even clearer
+as TOML, where the lists stay lists:
+
+```toml
+[[candidate]]
+kind         = "missing-lemma"
+wikidata_cs  = "Nizozemsko"
+ili          = "i83737"
+czech_lemmas = ["Holandsko"]     # add Nizozemsko here?
+```
+

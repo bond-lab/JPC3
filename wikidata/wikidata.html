@@ -417,5 +417,40 @@ the two <code>missing-*</code> classes.</p>
 <h2 id="entry-point">Entry point</h2>
 <div class="sourceCode" id="entry-point"><pre class="sourceCode python"><code class="sourceCode python"><span id="entry-point-1"><a href="#entry-point-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
 <span id="entry-point-2"><a href="#entry-point-2" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+<h2 id="what-it-produces">What it produces</h2>
+<p>A small run prints a summary and the first candidates (live numbers
+vary a little as Wikidata changes):</p>
+<pre class="text"><code>$ uv run wikidata_to_czech.py 500
+500 Wikidata items with P5063/P8814 + a Czech label
+  present        : 96
+  missing-lemma  : 87
+  missing-synset : 317
+  no-ili         : 0
+
+candidate additions (missing-lemma / missing-synset), first 15:
+  missing-synset &#39;Lesotho&#39;                ili=i83782    cs=[]
+  missing-lemma  &#39;Nizozemsko&#39;             ili=i83737    cs=[Holandsko]
+  missing-lemma  &#39;pes domácí&#39;             ili=i46360    cs=[psovitá šelma|pes]
+  missing-lemma  &#39;zirkonium&#39;              ili=i114035   cs=[zirkon]
+  missing-synset &#39;Boston&#39;                 ili=i84426    cs=[]</code></pre>
+<p>The two <code>missing-*</code> classes are the candidates. Note the
+mix: genuine lexical gaps (<em>Nizozemsko</em> beside the synset’s
+<em>Holandsko</em>; <em>pes domácí</em> beside <em>pes</em>) alongside
+named entities (<em>Lesotho</em>, <em>Boston</em>) a general wordnet may
+not want — which is exactly what the validation step has to sort
+out.</p>
+<p>With a second argument the full table is written as TSV, one row per
+item:</p>
+<pre class="text"><code>kind            qid       wn31        ili       wikidata_cs   czech_lemmas
+missing-lemma   Q55       08968866-n  i83737    Nizozemsko    Holandsko
+missing-synset  Q1013     09065527-n  i84173    Uganda
+present         Q42369    14686460-n  i114035   zirkonium     zirkonium</code></pre>
+<p>Pick a format you can actually open and read. A few candidates are
+even clearer as TOML, where the lists stay lists:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[[candidate]]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">kind</span>         <span class="op">=</span> <span class="st">&quot;missing-lemma&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">wikidata_cs</span>  <span class="op">=</span> <span class="st">&quot;Nizozemsko&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">ili</span>          <span class="op">=</span> <span class="st">&quot;i83737&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="dt">czech_lemmas</span> <span class="op">=</span> <span class="op">[</span><span class="st">&quot;Holandsko&quot;</span><span class="op">]</span>     <span class="co"># add Nizozemsko here?</span></span></code></pre></div>
 </body>
 </html>
