@@ -54,11 +54,32 @@ Keep the `.lit.md` as the single source of truth: edit it, then re-tangle so the
 `wikidata_to_czech.py`, weaves to `wikidata.html` / `wikidata.pdf`. Read it to
 see the format in use.
 
-## Using it as a skill
+## Using it as a Claude Code skill
 
-The Claude Code skill in `.claude/skills/literate-programming/` tells the agent
-when and how to use these tools, so you can ask it to "make this snippet
-literate" or "re-tangle and weave" and it will follow the same conventions.
+A [Claude Code](https://docs.claude.com/en/docs/claude-code) *skill* teaches the
+agent when and how to use these tools, so you can ask it to "make this snippet
+literate" or "re-tangle and weave" and it follows the same conventions. The
+skill is [`SKILL.md`](SKILL.md) in this directory (a readable copy); the repo
+also ships it, already active for this project, at
+`.claude/skills/literate-programming/SKILL.md`.
+
+**To make it available elsewhere**, copy `SKILL.md` into a `literate-programming/`
+folder under a skills directory — Claude Code auto-discovers it:
+
+```bash
+# for one project (everyone who clones that repo gets it):
+mkdir -p <project>/.claude/skills/literate-programming
+cp litprog/SKILL.md <project>/.claude/skills/literate-programming/SKILL.md
+
+# or for yourself, in every project on your machine:
+mkdir -p ~/.claude/skills/literate-programming
+cp litprog/SKILL.md ~/.claude/skills/literate-programming/SKILL.md
+```
+
+Restart Claude Code (or `/doctor` to check) and it will list
+`literate-programming` among its skills. The skill assumes `litprog/tangle.py`
+and `litprog/weave.py` are reachable, so keep this folder alongside it or adjust
+the paths in `SKILL.md`.
 
 ## Requirements
 

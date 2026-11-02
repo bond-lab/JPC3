@@ -150,7 +150,7 @@ well with project 5.
 ```
 docs/setup.md      one-time setup (uv, priming the wn database)
 docs/template/     report.tex, report.bib — the shared report skeleton
-docs/slides/       validation.tex — the validation lecture
+docs/slides/       validation.tex, literate.tex — the two lectures
 patterns/          project 1 — Czech-specific patterns / přechylování
 derivations/       project 2 — derivational relations
 sensebank/         project 3 — PDT sense-tag remapping

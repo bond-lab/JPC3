@@ -1,0 +1,190 @@
+\documentclass[xetex,aspectratio=169]{beamer}
+
+%%% JPC3 --- Literate programming (hands-on companion to the validation lecture)
+
+\title[Literate Programming]{Literate Programming}
+\subtitle{Write it for a human}
+\author[Bond]{Francis \textbf{Bond}}
+\institute[Palack\'y]{\href{https://bond-lab.github.io/}{Computational Linguistics Lab}
+\\[1ex] Palack\'y University, Olomouc, Czechia
+\\[1ex] JPC3 --- Improving the Czech Wordnet}
+\date{\today}
+
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont{Inconsolata}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{itemize subitem}[triangle]
+\setbeamertemplate{footline}[frame number]
+
+\AtBeginSection[]{%
+  \begin{frame}
+    \frametitle{Roadmap}
+    \small
+    \tableofcontents[currentsection, hideothersubsections]
+  \end{frame}}
+
+\IfFileExists{img/UP_logo_FF_horizont_en.png}{%
+  \logo{\includegraphics[width=13mm]{img/UP_logo_FF_horizont_en.png}}}{}
+
+\usepackage{xspace}
+\newcommand{\txx}[1]{\textbf{\textcolor{blue}{#1}}}
+\newcommand{\into}{\ensuremath{\rightarrow}\xspace}
+
+\begin{document}
+
+\maketitle
+
+%%% ------------------------------------------------------------------
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item The idea: write code for a human to read
+  \item The \texttt{.lit.md} format: prose, chunks, diagrams
+  \item \txx{Tangle} the code out; \txx{weave} the document
+  \item A worked example: the Wikidata script
+  \item Your turn
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{The idea}
+
+\begin{frame}{Write It for a Human}
+  \begin{itemize}
+  \item Knuth (1984): a program is a \txx{document} people read
+  \item Explanation first, code as its consequence
+  \item The starter code is cheap; understanding is the bottleneck
+  \item So make the reasoning the main text
+  \item Your report is already a literate layer over your scripts
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{The format}
+
+\begin{frame}[fragile]{A \texttt{.lit.md} Is Markdown Plus Two Rules}
+  A \txx{named chunk} is defined once; prose explains it first:
+\begin{verbatim}
+## Load the CILI map
+
+```python {#load-the-cili-map}
+def load_cili() -> dict[str, str]:
+    ...
+```
+\end{verbatim}
+  A \txx{file chunk} is written to disk, and lists the pieces in order:
+\begin{verbatim}
+```python {file=wikidata_to_czech.py}
+<<script-header>>
+<<load-the-cili-map>>
+<<query-wikidata>>
+```
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Chunks and Diagrams}
+  \begin{itemize}
+  \item \verb|<<name>>| on its own line expands that chunk
+  \item Indentation is preserved, so Python stays aligned
+  \item A name used twice is joined --- prose can interleave a function
+  \item A \verb|```mermaid| block is a diagram
+  \end{itemize}
+\begin{verbatim}
+```mermaid
+flowchart LR
+  WD[Wikidata] -->|P5063| ILI --> CS[Czech synset]
+```
+\end{verbatim}
+\end{frame}
+
+%%% ==================================================================
+\section{Tangle and weave}
+
+\begin{frame}[fragile]{Tangle: Code Out}
+  Pull the runnable script out of the document:
+\begin{verbatim}
+uv run ../litprog/tangle.py wikidata.lit.md
+# -> wikidata_to_czech.py
+uv run wikidata_to_czech.py 500
+\end{verbatim}
+  \begin{itemize}
+  \item The \texttt{.py} is \txx{generated} --- edit the \texttt{.lit.md}, not it
+  \item Re-tangle after every edit, then run to check
+  \item The tangler is $\sim$40 lines --- read it too
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Weave: Document Out}
+  Render the document a human reads:
+\begin{verbatim}
+uv run ../litprog/weave.py wikidata.lit.md
+# -> wikidata.html  and  wikidata.pdf
+\end{verbatim}
+  \begin{itemize}
+  \item Mermaid is rendered by \txx{Kroki} over HTTP --- no node, no browser
+  \item Pure Python $+$ \texttt{pandoc} $+$ \texttt{xelatex}
+  \item GitHub renders the \texttt{.lit.md} with the diagram inline anyway
+  \end{itemize}
+\end{frame}
+
+%%% ==================================================================
+\section{The example}
+
+\begin{frame}[fragile]{The Wikidata Example}
+  \texttt{wikidata/wikidata.lit.md} reads as one story:
+  \begin{itemize}
+  \item The problem, then a diagram of the pipeline
+  \item An assembly chunk listing the pieces
+  \item One named chunk per piece, prose above each
+  \end{itemize}
+  \bigskip
+  It \txx{tangles} to \texttt{wikidata\_to\_czech.py} (passes \texttt{ruff}, runs
+  live) and \txx{weaves} to \texttt{wikidata.html} / \texttt{.pdf}.
+\end{frame}
+
+%%% ==================================================================
+\section{Your turn}
+
+\begin{frame}{Try It}
+  \begin{itemize}
+  \item Open \texttt{wikidata/wikidata.lit.md} and read it top to bottom
+  \item Change a chunk; re-tangle; run --- see the \texttt{.py} update
+  \item Weave it; open the PDF
+  \item For your own project: one diagram, a few named chunks
+  \item Keep the \texttt{.lit.md} the \txx{single source of truth}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Skill}
+  \begin{itemize}
+  \item \texttt{litprog/SKILL.md} teaches Claude Code the conventions
+  \item Copy it to \texttt{.claude/skills/literate-programming/}
+  \item Then: ``make this snippet literate'', ``re-tangle and weave''
+  \item Same rules, so the whole class writes the same way
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Thanks}
+  \begin{itemize}
+  \item Write for a human --- the machine will cope
+  \item Explanation first, code as its consequence
+  \item Tools and the example: \texttt{litprog/} in the JPC3 repo
+  \end{itemize}
+  \bigskip
+  \centering Now go and make your pipeline readable
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-engine: xetex
+%%% TeX-master: t
+%%% End:
