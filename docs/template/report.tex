@@ -1,0 +1,236 @@
+%%% ------------------------------------------------------------------
+%%% JPC3 --- Improving the Czech Wordnet / Open Multilingual Wordnet
+%%% Project report skeleton.
+%%%
+%%% This is a skeleton.  Replace everything marked TODO, delete the
+%%% parts you do not need, and keep the parts you do.  Every project
+%%% has the same four-part spine, whatever its topic:
+%%%     Extend  ->  Error analysis  ->  Visualise  ->  Release
+%%% so keep those four sections even if the rest changes.
+%%%
+%%% To compile on your own machine:
+%%%     pdflatex report
+%%%     bibtex   report
+%%%     pdflatex report
+%%%     pdflatex report
+%%% (twice at the end, so the citations and cross-references settle)
+%%%
+%%% On Overleaf just press Recompile; it does all of that for you.
+%%% ------------------------------------------------------------------
+
+\documentclass[a4paper,12pt]{article}
+
+%%% uniform margins
+\usepackage[margin=25mm]{geometry}
+
+\usepackage[utf8]{inputenc}       % delete this line if you compile with XeLaTeX
+\usepackage[T1]{fontenc}          % proper accented letters: ě š č ř ž ý á í é
+\usepackage[english]{babel}
+
+%%% citations: \citep{...} and \citet{...}
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+
+%%% tables and figures
+\usepackage{booktabs}             % \toprule \midrule \bottomrule
+\usepackage{graphicx}
+
+%%% hyperlinks
+\usepackage[svgnames]{xcolor}
+\usepackage{hyperref,url}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=DarkBlue,
+    urlcolor=DarkRed,
+}
+
+%%% numbered examples and glosses (you will need these for Czech data)
+\usepackage{langsci-gb4e}
+\let\eachwordone=\itshape         % italicises the source line of a gloss
+
+%%% Some versions of gb4e need \noautomath so that _ and ^ behave
+%%% outside maths; older ones do not have it at all, so provide a
+%%% harmless fallback rather than let the file fail to compile.
+\providecommand{\noautomath}{}
+\noautomath
+
+%%% A shorthand for glossing labels, so they come out as small capitals:
+%%% type \gm{acc} and you get ACC.
+\newcommand{\gm}[1]{\textsc{\MakeLowercase{#1}}}
+
+\title{TODO: a title that names what you did\\
+  \large JPC3 --- Improving the Czech Wordnet}
+\author{TODO: First Author's Name \and TODO: Second Author's Name}
+\date{2027-01-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  TODO: four or five sentences.  What part of the wordnet did you set
+  out to improve, how did you do it (semi-automatically?), how much did
+  you add, and how good was it?  Give the headline number here.  Write
+  this last.
+\end{abstract}
+
+%%% ------------------------------------------------------------------
+\section{Introduction}
+%%% ------------------------------------------------------------------
+
+TODO: Say which gap in the Czech wordnet you are filling and why it
+matters.  Lead with a concrete example of something that is missing or
+wrong, not with the literature.  State your \emph{numerical goal} up
+front --- the target you agreed at the start --- so the reader knows
+what ``done'' means.
+
+Here is how you give a numbered example and refer back to it
+as~(\ref{ex:gap}):
+
+\begin{exe}
+  \ex \label{ex:gap} TODO: a synset, lemma, or relation that your
+  project adds or fixes.
+\end{exe}
+
+%%% ------------------------------------------------------------------
+\section{Data and resources}
+%%% ------------------------------------------------------------------
+
+TODO: Name every resource you used --- the version of the Czech
+wordnet, any corpus, lexicon, image set, or model --- and give its
+licence.  A reader must be able to get the same inputs you had.
+
+If you quote Czech examples they must be glossed, so that a reader who
+does not speak Czech can follow.  The source line and the gloss line
+must have the \emph{same number of words}, and matching hyphens, or the
+columns will not line up:
+
+\begin{exe}
+  \ex Czech [ces] \\
+      \gll učitel \quad\textrightarrow\quad učitel-ka \\
+           teacher.\gm{m} \qquad teacher-\gm{f} \\
+  \trans ``(male) teacher $\rightarrow$ (female) teacher''
+\end{exe}
+
+Name the language on the first line with its ISO 639-3 code in square
+brackets: Czech \texttt{[ces]}, English \texttt{[eng]}.  Cite the
+source of any example you did not make up yourself.
+
+%%% ------------------------------------------------------------------
+\section{Previous work}
+%%% ------------------------------------------------------------------
+
+TODO: What have other people done?  You need at least three references.
+Read them --- do not cite a paper you have not opened.  The two starter
+readings for your task are in \texttt{report.bib}; find the third
+yourself.
+
+Use \verb|\citet| when the author is part of your sentence, and
+\verb|\citep| when the citation sits in brackets:
+\citet{palasmrz2004} built the original Czech wordnet; it is one of
+many in the Open Multilingual Wordnet \citep{bond-foster2013}.
+
+%%% ------------------------------------------------------------------
+\section{Method and results}
+%%% ------------------------------------------------------------------
+
+TODO: This is the ``Extend'' part.  Describe how you generated the new
+data --- the automatic step and the human step.  Be explicit about
+where the human was in the loop, because that is what makes it
+\emph{semi}-automatic.  Report how much you produced against your goal:
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lrr}
+    \toprule
+    & Goal & Produced \\
+    \midrule
+    TODO: items added          & 0 & 0 \\
+    TODO: relations added      & 0 & 0 \\
+    TODO: synsets touched      & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{What you set out to do, and what you did.}
+  \label{tab:results}
+\end{table}
+
+%%% ------------------------------------------------------------------
+\section{Error analysis}
+%%% ------------------------------------------------------------------
+
+TODO: Take a \emph{random} sample (at least 100 items) of what you
+produced and check it by hand.  Report precision.  If two of you
+annotated, report agreement (e.g.\ Cohen's $\kappa$) and say how you
+resolved disagreements.
+
+The point is not the single number --- it is the \emph{categories} of
+error.  Group your mistakes into types, count them, and give one real
+example of each.  The categories are the most interesting thing you
+will produce; they tell the next team where the method breaks.
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{lrl}
+    \toprule
+    Error type & Count & Example \\
+    \midrule
+    TODO & 0 & TODO \\
+    TODO & 0 & TODO \\
+    \bottomrule
+  \end{tabular}
+  \caption{Error types in a sample of TODO items.}
+  \label{tab:errors}
+\end{table}
+
+%%% ------------------------------------------------------------------
+\section{Visualisation and explanation}
+%%% ------------------------------------------------------------------
+
+TODO: One figure that makes your change --- and its errors --- legible
+to someone who was not in the room.  A before/after, a coverage map, a
+distribution, a sub-graph of the wordnet.  Explain what it shows and,
+if your method made decisions, \emph{why} it decided as it did.
+
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=.8\linewidth]{TODO-figure}
+  \fbox{\parbox[c][5cm][c]{.8\linewidth}{\centering TODO: your figure}}
+  \caption{TODO: what the reader should take away from this.}
+  \label{fig:main}
+\end{figure}
+
+%%% ------------------------------------------------------------------
+\section{Release}
+%%% ------------------------------------------------------------------
+
+TODO: How is your contribution packaged?  It should be valid LMF that
+loads with the \texttt{wn} library, with a one-line data statement and
+the licence.  Say where it lives and how someone would install it.
+
+%%% ------------------------------------------------------------------
+\section{Conclusion}
+%%% ------------------------------------------------------------------
+
+TODO: What did you find?  Did you hit your number?  What did the error
+analysis reveal, and what should the next team do?
+
+%%% ------------------------------------------------------------------
+\subsection*{Contribution statement}
+%%% ------------------------------------------------------------------
+
+TODO: Say who did what.  A couple of sentences is enough, for example:
+``A.\ built the extraction pipeline and wrote Sections 4 and 5;
+B.\ did the error analysis and the figure and wrote Sections 1--3;
+both authors revised the whole paper.''
+
+%%% ------------------------------------------------------------------
+\subsection*{Use of AI tools}
+%%% ------------------------------------------------------------------
+
+TODO: If you used an LLM or other AI tool --- as part of the method or
+to help write --- say which, for what, and how you checked its output.
+
+%%% ------------------------------------------------------------------
+
+\bibliography{report}
+
+\end{document}
