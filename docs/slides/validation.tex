@@ -67,7 +67,10 @@
   \item A wordnet is a \txx{trusted source}
   \item Many tools read it; few check it
   \item An error you add, everyone inherits
-  \item Once released, it is copied --- hard to recall
+    \begin{itemize}
+    \item e.g.\ a wrong hypernym copied into every OMW language
+    \end{itemize}
+  \item Once released, it is copied, and hard to recall
   \item The Czech wordnet feeds OMW, sense tagging, AAC, \ldots
   \end{itemize}
 \end{frame}
@@ -77,10 +80,7 @@
   \item Project 4 links pictographs for \txx{AAC} users
   \item A wrong synset tag \into\ the wrong picture
   \item A child who cannot speak is handed the wrong word
-  \item Here a lexical slip is not cosmetic --- it misleads
   \end{itemize}
-  \bigskip
-  \centering\small Precision is not pedantry when someone relies on the data
 \end{frame}
 
 %%% ==================================================================
@@ -89,6 +89,9 @@
 \begin{frame}{Understanding Is the Bottleneck}
   \begin{itemize}
   \item The starter code generates candidates in seconds
+    \begin{itemize}
+    \item feminine candidates for all 1{,}919 role-noun synsets at once
+    \end{itemize}
   \item Machines already verify themselves well
   \item The slow part is \txx{understanding} what came out
   \item ``Cognitive debt'': skip it and you lose the plot
@@ -102,18 +105,18 @@
   Three ways to keep understanding ahead of the machine:
   \begin{itemize}
   \item Explain before you trust: write what the data \textit{says}
-  \item Visualise it --- a figure you can poke, not just read
-  \item Quiz each other on a sample --- a \txx{speed regulator}
+  \item Plot it: a chart shows the outliers a table hides
+  \item \txx{Spot-check} a sample before trusting the whole
+    \begin{itemize}
+    \item judge 20 by hand before you generate 2{,}000
+    \end{itemize}
   \end{itemize}
-  \bigskip
-  \centering\small Augmentation, not automation --- get deeper in the loop
 \end{frame}
 
 \begin{frame}{Look at Your Data as You Go}
   \begin{itemize}
-  \item The final review is not the only check
-  \item Look at the output at every step, not just the end
-  \item Dump it in a \txx{viewable format} --- TOML, CSV, a plot
+  \item Check the output at every step of the work
+  \item Dump it in a \txx{viewable format}: TOML, CSV, a plot
   \item A wrong turn caught early is cheap to undo
   \item A literate program shows its output inline, by habit
   \end{itemize}
@@ -125,7 +128,7 @@
   \begin{itemize}
   \item Knuth (1984): write code for \txx{humans} to read
   \item Prose and code woven together, explanation first
-  \item Litt's explainer is the same idea --- authorship flipped
+  \item Litt's explainer is the same idea, authorship flipped
   \item The agent writes the code; you write the understanding
   \item Your report is the literate layer over the scripts
   \end{itemize}
@@ -143,7 +146,7 @@
   \item Judge each by hand: right or wrong?
   \item Precision = correct / judged
   \item But the single number is the least of it
-  \item Group the mistakes into \txx{types} --- that is the payoff
+  \item Group the mistakes into \txx{types}: that is the payoff
   \item One real example per type, with a count
   \end{itemize}
 \end{frame}
@@ -186,9 +189,12 @@
 \begin{frame}{Why Two Annotators?}
   \begin{itemize}
   \item One judge can be \txx{consistently} wrong
+    \begin{itemize}
+    \item e.g.\ always accepting a coincidental \textit{-ka} (\textit{past}\into\textit{pastka})
+    \end{itemize}
   \item A second judge tests whether the scheme is learnable
   \item Agreement $\approx$ reliability of the guidelines
-  \item You work in pairs --- so measure it
+  \item You work in pairs, so measure it
   \item Report how you resolved the disagreements
   \end{itemize}
 \end{frame}
@@ -245,10 +251,10 @@
 \begin{frame}{Reading Kappa}
   \begin{itemize}
   \item Rough scale (Landis \& Koch, 1977): $>0.8$ very good, $0.6$--$0.8$ substantial
-  \item Our 0.63 is \txx{substantial} --- the guidelines mostly work
+  \item Our 0.63 is \txx{substantial}: the guidelines mostly work
   \item Low $\kappa$? Fix the guidelines, then re-annotate
   \item Beware: few categories or a skewed split inflate it
-  \item Report $\kappa$ \textit{and} the raw table, never $\kappa$ alone
+  \item Report $\kappa$ together with the raw table
   \end{itemize}
 \end{frame}
 
@@ -257,10 +263,9 @@
 
 \begin{frame}{Why Open? --- Not Just the Warm Inner Glow}
   \begin{itemize}
-  \item Our goal: a better Czech wordnet --- \emph{and} a \txx{contribution}
-  \item Open data others can build on, not a private copy
-  \item The warm inner glow is nice, but not the point
-  \item The point: your fixes reach every downstream user
+  \item Our goal: a better Czech wordnet, \emph{and} a \txx{contribution}
+  \item Open data others can build on
+  \item Your fixes reach every downstream user
   \item A result that outlives the course
   \end{itemize}
 \end{frame}
@@ -282,7 +287,7 @@
   \item Found a \txx{wrong} synset tag? Report it to ARASAAC
   \item Missing Czech keyword? Submit the translation
   \item Note colour and gender variants you matched
-  \item Their pictograms carry synsets --- a fix helps every language
+  \item Their pictograms carry synsets, so a fix helps every language
   \end{itemize}
 \end{frame}
 
@@ -292,7 +297,7 @@
   \item Only a WordNet id (P8814)? Add the \txx{ILI} (P5063)
   \item Linked to the wrong sense? Correct the statement
   \item Confirmed a Czech label? Add it, with a reference
-  \item Cite the wordnet as the source --- statements need one
+  \item Cite the wordnet as the source: statements need one
   \end{itemize}
 \end{frame}
 
@@ -333,7 +338,7 @@
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-  \item Extraction is scaffolded --- \txx{validation} is the work
+  \item Extraction is scaffolded: \txx{validation} is the work
   \item Sample, judge, and report precision
   \item Categorise the errors; the taxonomy guides the next step
   \item Two annotators, and $\kappa$ with the table
@@ -343,7 +348,7 @@
 
 \begin{frame}{Thanks}
   \begin{itemize}
-  \item Validate carefully --- others will trust your data
+  \item Validate carefully: others will trust your data
   \item Actually look at your data!
   \item Code and template: the JPC3 repository
   \end{itemize}

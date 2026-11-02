@@ -92,7 +92,7 @@ def load_cili() -> dict[str, str]:
   \begin{itemize}
   \item \verb|<<name>>| on its own line expands that chunk
   \item Indentation is preserved, so Python stays aligned
-  \item A name used twice is joined --- prose can interleave a function
+  \item A name used twice is joined, so prose can interleave a function
   \item A \verb|```mermaid| block is a diagram
   \end{itemize}
 \begin{verbatim}
@@ -114,9 +114,9 @@ uv run ../litprog/tangle.py wikidata.lit.md
 uv run wikidata_to_czech.py 500
 \end{verbatim}
   \begin{itemize}
-  \item The \texttt{.py} is \txx{generated} --- edit the \texttt{.lit.md}, not it
+  \item The \texttt{.py} is \txx{generated}: edit the \texttt{.lit.md}, not it
   \item Re-tangle after every edit, then run to check
-  \item The tangler is $\sim$40 lines --- read it too
+  \item The tangler is $\sim$40 lines, read it too
   \end{itemize}
 \end{frame}
 
@@ -127,7 +127,7 @@ uv run ../litprog/weave.py wikidata.lit.md
 # -> wikidata.html  and  wikidata.pdf
 \end{verbatim}
   \begin{itemize}
-  \item Mermaid is rendered by \txx{Kroki} over HTTP --- no node, no browser
+  \item Mermaid is rendered by \txx{Kroki} over HTTP: no node, no browser
   \item Pure Python $+$ \texttt{pandoc} $+$ \texttt{xelatex}
   \item GitHub renders the \texttt{.lit.md} with the diagram inline anyway
   \end{itemize}
@@ -142,7 +142,7 @@ uv run ../litprog/weave.py wikidata.lit.md
   \item The problem, then a diagram of the pipeline
   \item An assembly chunk listing the pieces
   \item One named chunk per piece, prose above each
-  \item A real run at the end --- \txx{show the output}
+  \item A real run at the end: \txx{show the output}
   \end{itemize}
   \bigskip
   It \txx{tangles} to \texttt{wikidata\_to\_czech.py} (passes \texttt{ruff}, runs
@@ -155,7 +155,7 @@ uv run ../litprog/weave.py wikidata.lit.md
 \begin{frame}{Try It}
   \begin{itemize}
   \item Open \texttt{wikidata/wikidata.lit.md} and read it top to bottom
-  \item Change a chunk; re-tangle; run --- see the \texttt{.py} update
+  \item Change a chunk; re-tangle; run: see the \texttt{.py} update
   \item Weave it; open the PDF
   \item For your own project: one diagram, a few named chunks
   \item Keep the \texttt{.lit.md} the \txx{single source of truth}
