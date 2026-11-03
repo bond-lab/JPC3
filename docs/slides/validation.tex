@@ -199,7 +199,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Raw Agreement Is Not Enough}
+\begin{frame}{Raw Agreement Overcounts}
   \begin{itemize}
   \item ``We agreed 85\% of the time'' sounds good
   \item But some agreement happens by \txx{chance}
@@ -221,6 +221,9 @@
   \begin{itemize}
   \item $p_o$: observed agreement (the proportion you both called the same)
   \item $p_e$: expected agreement \txx{by chance}, from each annotator's rates
+    \begin{itemize}
+    \item if you both say ``good'' 90\% of the time, chance agreement is high
+    \end{itemize}
   \item $\kappa = 1$ perfect; $\kappa = 0$ no better than chance
   \end{itemize}
 \end{frame}
@@ -287,6 +290,9 @@
   \item Found a \txx{wrong} synset tag? Report it to ARASAAC
   \item Missing Czech keyword? Submit the translation
   \item Note colour and gender variants you matched
+    \begin{itemize}
+    \item e.g.\ the generated xkcd swatch for \textit{chestnut}
+    \end{itemize}
   \item Their pictograms carry synsets, so a fix helps every language
   \end{itemize}
 \end{frame}
@@ -297,6 +303,9 @@
   \item Only a WordNet id (P8814)? Add the \txx{ILI} (P5063)
   \item Linked to the wrong sense? Correct the statement
   \item Confirmed a Czech label? Add it, with a reference
+    \begin{itemize}
+    \item e.g.\ add \textit{Nizozemsko} to the \textit{Holandsko} synset
+    \end{itemize}
   \item Cite the wordnet as the source: statements need one
   \end{itemize}
 \end{frame}
@@ -315,6 +324,9 @@
   Project 2 --- derivational relations.
   \begin{itemize}
   \item Validated feminine-motion pairs? Offer them back
+    \begin{itemize}
+    \item e.g.\ \textit{u\v{c}itel}\into\textit{u\v{c}itelka}
+    \end{itemize}
   \item A family the wordnet \txx{lacks}? Flag the gap
   \item A DeriNet error you caught? Report it
   \item Both resources improve from the same checking
