@@ -17,6 +17,9 @@ the hours you spend coding.
 
 We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml>
 
+Tools: [`wn`](https://github.com/goodmami/wn) reads and queries wordnets from
+Python; [`wn_edit`](https://github.com/bond-lab/wn_edit), built on it, edits them.
+
 New here? See [`docs/setup.md`](docs/setup.md) to install `uv` and prime the
 wordnet database once.
 
@@ -40,9 +43,10 @@ the template in `latex/report/`:
 3. **Visualise & explain** — one figure that makes the change *and its errors*
    legible to someone who was not in the room.
 4. **Release** — valid LMF that loads with the [`wn`](https://github.com/goodmami/wn)
-   library, with a one-line data statement and a licence — and **feed back**
-   what you found to the resources you used. Each project below says what it
-   can and should send upstream.
+   library (make your edits with [`wn_edit`](https://github.com/bond-lab/wn_edit)),
+   with a one-line data statement and a licence — and **feed back** what you
+   found to the resources you used. Each project below says what it can and
+   should send upstream.
 
 Each project directory ships starter code that does most of the **Extend**
 mechanics (candidate generation, the ILI bridge, API calls). That is
