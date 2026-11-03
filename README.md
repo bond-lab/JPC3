@@ -6,6 +6,10 @@ because it is a task where you can evaluate the output properly — every added
 lemma, link, or image can be checked by a person — and because the result is
 useful: it goes back into a resource other people rely on.
 
+You already know GitHub, LaTeX and Python. This course is where you put them
+together to make something real: a change to a public resource, evaluated
+honestly, written up properly, and released for other people to use.
+
 Teams of 1–2 pick one project and carry it through a semester. The course is
 **5 credits**, which under the Rector's directive on the credit system
 (B3-11/8) means roughly **125–150 hours of total student workload** per
