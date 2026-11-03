@@ -18,6 +18,23 @@ Point at a script → ask for background / intuition / code / quiz → read it �
 for the next fix → keep each version (`…v0.html`, `…v1.html`, …) with a symlink
 to the latest → publish and share one stable link.
 
+## Checking an explainer
+
+[`explainer_check.py`](explainer_check.py) lints a generated explainer against
+its source — the mechanical half of the trust problem:
+
+```bash
+uv run explainer_check.py wikidata/wikidata_explainer.html wikidata/wikidata_to_czech.py
+# add --no-net to skip the link check
+```
+
+It flags three things: identifiers quoted in `<pre>` code blocks that are absent
+from the source (an invented name), `file:line` references past the end of the
+file (the code moved), and links that return 404/410 or fail to connect. A clean
+run is not a guarantee — read the prose too — but it catches the errors a reader
+is least likely to spot. Identifier hits can be false positives (example data in
+a code block), so read them rather than trusting the exit code blindly.
+
 ## Make it available elsewhere
 
 Claude Code auto-discovers skills under a skills directory:

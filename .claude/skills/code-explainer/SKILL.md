@@ -76,6 +76,9 @@ detail, a stale number. Guard against it, in the page and in the process:
 - The quiz answers must follow from the code; where one disagrees, the code wins.
 - Have a second reader — a person or another model — check it against the source
   before it is shared.
+- Run `explainer_check.py` (in this skill's folder) after each revision — it
+  flags identifiers, `file:line` refs, and links in the page that do not check
+  out against the source. It is the mechanical half; the reader is the other.
 
 ## The recipe, in one line
 
