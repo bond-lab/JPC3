@@ -146,7 +146,7 @@
   \item Four parts: background, intuition, a code tour, a quiz
   \item One self-contained page, one link to share
   \item The script stays a normal file, with nothing to keep in sync
-  \item The Wikidata script's explainer also grew a SPARQL primer and a glossary
+  \item Both starter scripts now have one, on the course site
   \end{itemize}
 \end{frame}
 
@@ -154,12 +154,14 @@
   \begin{itemize}
   \item React to a draft; each reply refines the same page
   \item The link stays stable, so you share it once
-  \item Keep every version in the repo: \texttt{v0}, \texttt{v1}, \texttt{v2}
+  \item Keep every version in the repo: \texttt{v0} to \texttt{v4}
   \item The actual prompts behind this explainer:
     \begin{itemize}
     \item \texttt{v0}: ``build an explainer for this script''
     \item \texttt{v1}: ``where do the ILI mappings come from? add a SPARQL appendix''
     \item \texttt{v2}: ``add a glossary''
+    \item \texttt{v3}: ``add caveats: it is AI-generated and can be wrong''
+    \item \texttt{v4}: ``hyperlink the key terms; stamp the provenance''
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -173,6 +175,19 @@
   \end{itemize}
   \bigskip
   \centering\small Packaged as the \texttt{code-explainer} skill in the repo
+\end{frame}
+
+\begin{frame}{Guarding an Explainer}
+  It is AI-generated, so treat it like any other data:
+  \begin{itemize}
+  \item A visible caveat on the page: it can be wrong, so check the code
+  \item \texttt{explainer\_check.py}: identifiers, line refs, and links against the source
+    \begin{itemize}
+    \item on ours it found nothing wrong, and one unreachable link
+    \end{itemize}
+  \item A \txx{provenance} stamp: date, model, source commit
+  \item A second reader, human or model, checks the prose
+  \end{itemize}
 \end{frame}
 
 %%% ==================================================================

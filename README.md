@@ -8,6 +8,9 @@ We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download
 New here? See [`docs/setup.md`](docs/setup.md) to install `uv` and prime the
 wordnet database once.
 
+The course website — the slides as PDF and interactive **explainers** of the
+starter scripts — is built from [`docs/`](docs/) and served with GitHub Pages.
+
 ## What every project delivers
 
 Whatever the topic, the report has the same four-part spine. It is baked into
@@ -54,7 +57,7 @@ work on Open English Wordnet is the obvious comparison point.
 - **Readings:** McCrae et al. (2025) *Remedying Gender Bias in Open English
   Wordnet* `[mccrae-etal2025gender]`; Pala & Smrž (2004) *Building Czech
   WordNet* `[palasmrz2004]`.
-- **Code:** [`patterns/`](patterns/)
+- **Code:** [`patterns/`](patterns/) · explainer: [`patterns_explainer.html`](patterns/patterns_explainer.html)
 
 **Scale of the task.** Counting *role nouns* (nouns denoting a person by their
 role) in the starting wordnet, two ways — synsets in the `noun.person`
@@ -130,7 +133,7 @@ Czech labels with no matching synset — is a ranked list of candidate gaps.
 - **Goal:** project ≥ 2000 labels; verify a 100-item sample.
 - **Readings:** Vrandečić & Krötzsch (2014) *Wikidata* `[vrandecic-krotzsch2014]`;
   Bond et al. (2016) `[bond-etal2016cili]`.
-- **Code:** [`wikidata/`](wikidata/)
+- **Code:** [`wikidata/`](wikidata/) · explainer: [`wikidata_explainer.html`](wikidata/wikidata_explainer.html)
 
 ### 6. LLM-assisted quality estimation, grounded in Wikidata
 

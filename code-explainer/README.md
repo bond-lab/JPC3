@@ -7,10 +7,12 @@ and a quiz — in the style of Geoffrey Litt's *explain-diff*. It is generated
 
 - **The skill:** [`SKILL.md`](SKILL.md) — a readable copy. The repo also ships it,
   active for this project, at `.claude/skills/code-explainer/SKILL.md`.
-- **Worked example:**
+- **Worked examples:**
   [`../wikidata/wikidata_explainer.html`](../wikidata/wikidata_explainer.html),
-  built up interactively over `v0` → `v1` → `v2` (the prompts are in
-  [`../wikidata/README.md`](../wikidata/README.md)).
+  built up interactively over `v0` → `v4` (the prompts are in
+  [`../wikidata/README.md`](../wikidata/README.md)), and
+  [`../patterns/patterns_explainer.html`](../patterns/patterns_explainer.html).
+  Both are published on the course site under *Explainers*.
 
 ## The recipe
 
