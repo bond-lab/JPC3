@@ -7,10 +7,23 @@ candidates — either a missing lemma on an existing synset, or a missing synset
 ## Explainer
 
 [`wikidata_explainer.html`](wikidata_explainer.html) is a self-contained HTML
-walkthrough of this script — background, a worked intuition, a code tour, and a
-short quiz — in the style of Geoffrey Litt's *explain-diff*. Open it in a
-browser. Unlike the literate `.lit.md`, it is generated *from* the finished
-code, so it costs nothing to maintain: regenerate it when the code changes.
+walkthrough of this script — background, a worked intuition, a code tour, a
+quiz, a SPARQL primer, and a glossary — in the style of Geoffrey Litt's
+*explain-diff*. Open it in a browser. It is generated *from* the finished code,
+so it costs nothing to maintain: regenerate when the code changes.
+
+It was built up interactively; each step is kept so you can see how it grew.
+`wikidata_explainer.html` is a symlink to the latest.
+
+| Version | Prompt that produced it |
+|---|---|
+| `…v0.html` | build an explainer for this script |
+| `…v1.html` | where do the ILI mappings come from? add a SPARQL appendix |
+| `…v2.html` | add a glossary |
+
+The workflow is packaged as the `code-explainer` skill
+(see [`../code-explainer/`](../code-explainer/)), so you can do the same for any
+project script.
 
 ## The bridge
 

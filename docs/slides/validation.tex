@@ -138,6 +138,44 @@
 \end{frame}
 
 %%% ==================================================================
+\section{Building an explainer}
+
+\begin{frame}{An Explainer, From the Code}
+  \begin{itemize}
+  \item Generate an HTML explainer \txx{from} the finished script
+  \item Four parts: background, intuition, a code tour, a quiz
+  \item One self-contained page, one link to share
+  \item The script stays a normal file, with nothing to keep in sync
+  \item The Wikidata script's explainer also grew a SPARQL primer and a glossary
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Build It Interactively}
+  \begin{itemize}
+  \item React to a draft; each reply refines the same page
+  \item The link stays stable, so you share it once
+  \item Keep every version in the repo: \texttt{v0}, \texttt{v1}, \texttt{v2}
+  \item The actual prompts behind this explainer:
+    \begin{itemize}
+    \item \texttt{v0}: ``build an explainer for this script''
+    \item \texttt{v1}: ``where do the ILI mappings come from? add a SPARQL appendix''
+    \item \texttt{v2}: ``add a glossary''
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Make It Repeatable}
+  The same \txx{recipe} works for any project script:
+  \begin{itemize}
+  \item Point at a script: ask for background, intuition, code, quiz
+  \item Read it, then ask for the next fix
+  \item Keep each version; link the latest
+  \end{itemize}
+  \bigskip
+  \centering\small Packaged as the \texttt{code-explainer} skill in the repo
+\end{frame}
+
+%%% ==================================================================
 \section{Error analysis}
 
 \begin{frame}{Error Analysis}

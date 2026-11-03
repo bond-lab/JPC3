@@ -158,6 +158,7 @@ images/            project 4 — ARASAAC / Global Symbols pictographs
 wikidata/          project 5 — Wikidata → CILI → Czech
 LLM/               project 6 — LLM-assisted quality estimation
 litprog/           literate-programming tools (tangle.py, weave.py)
+code-explainer/    reusable "explain a script" skill + recipe
 ```
 
 Each project directory has its own `README.md` with a starting snippet. Python
