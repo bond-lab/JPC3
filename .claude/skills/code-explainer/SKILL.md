@@ -63,6 +63,20 @@ the symlink. Save a short note of the prompt that produced each version.
 - To refine: read the feedback, edit into a new `vN`, repoint the symlink,
   re-publish. Repeat.
 
+## Caveats (required)
+
+An explainer is AI-generated and can be wrong — a misread line, an invented
+detail, a stale number. Guard against it, in the page and in the process:
+
+- Ground every claim in the real file; give `file:line` references the reader can
+  open.
+- Pin numbers to an actual run, or label them illustrative — never invent counts.
+- Put a visible caveat near the top ("generated from the code; verify against the
+  source; run it") and a short "How much to trust this" section.
+- The quiz answers must follow from the code; where one disagrees, the code wins.
+- Have a second reader — a person or another model — check it against the source
+  before it is shared.
+
 ## The recipe, in one line
 
 Point at a script → ask for background/intuition/code/quiz → read it → ask for
