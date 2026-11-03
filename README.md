@@ -9,7 +9,8 @@ New here? See [`docs/setup.md`](docs/setup.md) to install `uv` and prime the
 wordnet database once.
 
 The course website — the slides as PDF and interactive **explainers** of the
-starter scripts — is built from [`docs/`](docs/) and served with GitHub Pages.
+starter scripts — is at **<https://bond-lab.github.io/JPC3/>**, built from
+[`docs/`](docs/) with GitHub Pages.
 
 ## What every project delivers
 
