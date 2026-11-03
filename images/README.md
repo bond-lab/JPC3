@@ -40,14 +40,18 @@ GET https://globalsymbols.com/api/v1/labels/search?query=dog&language=eng&symbol
 The Bulgarian/Croatian sets are particular `symbolset` ids — list the sets
 first and note each one's licence before you import its images.
 
-## Generate what you can't find: colour swatches
+## Generate what you can't find: colour pictograms
 
 Some synsets will never have a drawn pictograph — and don't need one. **Colour
-terms** are the clear case: ARASAAC has a handful, but the wordnet has far more
-(*chestnut*, *burnt orange*, *dark teal*, …). The xkcd colour survey names 949
-colours with hex values, so for a colour synset you can just *generate* a swatch:
+terms** are the clear case: ARASAAC has a handful (*black* is pictogram 2886,
+*red* 2808), but the wordnet has far more (*chestnut*, *burnt orange*, *dark
+teal*, …). ARASAAC's colour pictograms are a single flat colour on a transparent
+background — a paint-splash silhouette — so a new one can be *generated* in the
+same style: keep the silhouette and refill it with the colour's hex value from
+the xkcd colour survey (949 named colours, shipped offline in matplotlib).
 
-The generator is [`colour_swatch.py`](colour_swatch.py):
+The generator is [`colour_swatch.py`](colour_swatch.py); it downloads the black
+template once and caches it beside itself:
 
 ```bash
 uv run colour_swatch.py chestnut             # -> chestnut.png  (#742802)
@@ -55,12 +59,15 @@ uv run colour_swatch.py "burnt orange" out.png
 ```
 
 Match an xkcd name to the English colour lemma, bridge to the Czech synset by the
-same ILI route as the other projects, and attach the generated image. This also
-answers the project's *colour variants* brief directly.
+same ILI route as the other projects, and attach the generated image. Note that
+ARASAAC links its colour pictograms to the **adjective** synsets (black is
+`00393873-a`); the wordnet also has each colour as a **noun**. One image serves
+both — link the adjective first, as ARASAAC does, and the noun after.
 
-Caveats for the report: say the image is **generated**, not drawn (a data
-statement); xkcd names are crowd-sourced English, so the Czech match needs
-checking; and a flat swatch suits a colour but not, say, a *shade of a feeling*.
+Caveats for the report: say the image is **generated** from ARASAAC's template
+(a data statement), and that it inherits ARASAAC's licence — CC BY-NC-SA 4.0, so
+credit ARASAAC and keep the licence; xkcd names are crowd-sourced English, so
+the Czech match needs checking.
 
 ## Angles for the four-part spine
 

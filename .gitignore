@@ -35,3 +35,6 @@
 
 # compiled PDFs live under docs/pdf/ (published); latex/ holds only sources
 latex/**/*.pdf
+
+# downloaded ARASAAC template and generated pictograms (outputs, not source)
+images/*.png
