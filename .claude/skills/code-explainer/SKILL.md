@@ -79,6 +79,8 @@ detail, a stale number. Guard against it, in the page and in the process:
 - Run `explainer_check.py` (in this skill's folder) after each revision — it
   flags identifiers, `file:line` refs, and links in the page that do not check
   out against the source. It is the mechanical half; the reader is the other.
+- Stamp provenance in the page: the date it was generated, the model, and the
+  source file's version (a commit hash or mtime), so staleness is visible.
 
 ## The recipe, in one line
 
