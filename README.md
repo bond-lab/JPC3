@@ -1,7 +1,13 @@
 # JPC3 — Improving the Czech Wordnet / Open Multilingual Wordnet
 
-Project course, our overall goal will be to  *Improve the Czech wordnet*. Teams of 1–2 pick one project and carry it through a
-semester: roughly **2–3 months at 5–6 hours a week** (≈ 50–70 hours a team).
+A project course about writing **code and data you can trust**: error
+analysis, evaluation, and explanation. We work on extending the Czech wordnet
+because it is a task where you can evaluate the output properly — every added
+lemma, link, or image can be checked by a person — and because the result is
+useful: it goes back into a resource other people rely on.
+
+Teams of 1–2 pick one project and carry it through a semester: roughly
+**2–3 months at 5–6 hours a week** (≈ 50–70 hours a team).
 
 We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml>
 
@@ -28,7 +34,9 @@ the template in `latex/report/`:
 3. **Visualise & explain** — one figure that makes the change *and its errors*
    legible to someone who was not in the room.
 4. **Release** — valid LMF that loads with the [`wn`](https://github.com/goodmami/wn)
-   library, with a one-line data statement and a licence.
+   library, with a one-line data statement and a licence — and **feed back**
+   what you found to the resources you used. Each project below says what it
+   can and should send upstream.
 
 Each project directory ships starter code that does most of the **Extend**
 mechanics (candidate generation, the ILI bridge, API calls). That is
@@ -55,6 +63,9 @@ work on Open English Wordnet is the obvious comparison point.
 - **Goal:** add variants to ≥ 500 animate/personal nouns; validate a
   100-item sample at ≥ 90 % precision.
 - **Stretch:** add national/adjectives/language adverbials (Česko/český/česky)
+- **Feedback:** the validated feminine forms go into the next Czech wordnet
+  release; concepts the English side turns out to lack go to Open English
+  Wordnet / OMW.
 - **Readings:** McCrae et al. (2025) *Remedying Gender Bias in Open English
   Wordnet* `[mccrae-etal2025gender]`; Pala & Smrž (2004) *Building Czech
   WordNet* `[palasmrz2004]`.
@@ -85,6 +96,8 @@ validating a sample.
 - **Goal:** add ≥ 1000 derivational links across ≥ 3 relation types
   (e.g. agentive, diminutive, feminine-motion); validate 100 at ≥ 90 %.
 - **Stretch:** add a different language as well, ...
+- **Feedback:** validated derivational links go into the Czech wordnet; any
+  DeriNet error you catch while judging goes back to DeriNet.
 - **Readings:** Stoyanova et al. (2025) *Expanding and Enhancing Derivational
   and Morphosemantic Relations in Princeton WordNet* `[stoyanova-etal2025derivational]`;
   Pala & Hlaváčková (2007) *Derivational Relations in Czech WordNet*
@@ -94,13 +107,19 @@ validating a sample.
 ### 3. Merging the PDT wordnet sense tags
 
 The Prague Dependency Treebank is annotated with wordnet senses, but against an
-**older version** (PWN 1.5). Map those sense tags onto the current synset inventory. The
-real deliverable is the **residue**: the tags that don't map, categorised
-(synset split / merged / renumbered / deleted / genuinely missing).
+**older version** (PWN 1.5). Map those sense tags onto the current synset
+inventory, *and use them to add corpus frequencies* to the Czech wordnet: once
+a tag maps, every tagged token in the treebank is a sense count. The other
+deliverable is the **residue**: the tags that don't map, categorised (synset
+split / merged / renumbered / deleted / genuinely missing).
 
 - **Goal:** attempt the full set of PDT wordnet tags; target ≥ 95 %
-  automatically mapped; hand-categorise 100 of the unmapped residue.
-- **Stretch:** handle **all* of the residue
+  automatically mapped; add sense frequencies for the mapped tags;
+  hand-categorise 100 of the unmapped residue.
+- **Stretch:** handle **all** of the residue.
+- **Feedback:** the mapping table and the categorised residue go to the PDT
+  maintainers; the sense frequencies go into the Czech wordnet. Stretch: add
+  the synsets the residue shows to be missing to the Czech wordnet.
 - **Readings:** Daudé, Padró & Rigau (2000) *Mapping WordNets Using Structural
   Information* `[daude-etal2000]`; Bond et al. (2016) *CILI: the Collaborative
   Interlingual Index* `[bond-etal2016cili]`. (PDT 3.0: `[bejcek-etal2013pdt]`.)
@@ -116,6 +135,9 @@ they differ — and report them.
 - **Goal:** add images to ≥ 1000 (ideally high-frequency) synsets from ≥ 3
   symbol sets; validate appropriateness on a 100-item sample.
 - **Stretch:** validate them **all**
+- **Feedback:** wrong synset tags and missing Czech keywords go back to
+  ARASAAC; validated matches — and generated colour pictograms, which inherit
+  ARASAAC's CC BY-NC-SA — go into ARAWN; record each symbol set's licence.
 - **Readings:** Sevens (2018) *Words Divide, Pictographs Unite* `[sevens2018]`;
   Bond & Foster (2013) *Linking and Extending an Open Multilingual Wordnet*
   `[bond-foster2013]`. Resources: ARASAAC `[arasaac]`, Global Symbols
@@ -132,6 +154,9 @@ Czech labels, project them onto the Czech wordnet, and verify. The residue —
 Czech labels with no matching synset — is a ranked list of candidate gaps.
 
 - **Goal:** project ≥ 2000 labels; verify a 100-item sample.
+- **Feedback:** to Wikidata — add the ILI (P5063) where only a WordNet id
+  exists, correct wrong-sense links, add confirmed Czech labels with a
+  reference; to the Czech wordnet — the verified missing lemmas and synsets.
 - **Readings:** Vrandečić & Krötzsch (2014) *Wikidata* `[vrandecic-krotzsch2014]`;
   Bond et al. (2016) `[bond-etal2016cili]`.
 - **Code:** [`wikidata/`](wikidata/) · explainer: [`wikidata_explainer.html`](wikidata/wikidata_explainer.html)
@@ -145,6 +170,8 @@ well with project 5.
 
 - **Goal:** score ≥ 1000 synsets; verify a 100-item sample; report precision
   of the flag against human judgement.
+- **Feedback:** confirmed problems become fixes in the Czech wordnet; the
+  model's mistakes, labelled, are a test set for the next team.
 - **Readings:** as for project 5, plus a paper you find on LLMs for lexical
   resource curation.
 - **Code:** [`LLM/`](LLM/) · explainer: [`llm_explainer.html`](LLM/llm_explainer.html)
