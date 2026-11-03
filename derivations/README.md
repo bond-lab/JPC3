@@ -12,24 +12,10 @@ parent→child edge where both lemmas appear in the Czech wordnet, propose a
 derivational relation between their synsets. A string-suffix heuristic (below)
 is a quick stand-in to see the shape of the data before you wire in DeriNet.
 
-```python
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["wn>=1.1"]
-# ///
-from pathlib import Path
-import wn
+The heuristic is in [`feminine_candidates.py`](feminine_candidates.py):
 
-wn.config.data_directory = Path(__file__).resolve().parent.parent / "patterns" / ".wn_data"
-cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
-
-# crude feminine-motion candidates: base noun + suffix already a lemma too
-SUFFIXES = ("ka", "kyně", "ice", "yně")
-lemmas = {w.lemma() for w in cs.words(pos="n")}
-for base in sorted(lemmas):
-    for suf in SUFFIXES:
-        if base + suf in lemmas:
-            print(f"{base} -> {base + suf}  ({suf})")
+```bash
+uv run feminine_candidates.py 40      # the first 40 base -> feminine pairs
 ```
 
 This over-generates wildly (*pes* → *peska*? no; *past* → *pastka*? different

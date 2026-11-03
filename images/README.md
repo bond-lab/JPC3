@@ -12,33 +12,10 @@ differ — and report them.
 `sex` flag, so they bridge to Czech by exactly the ILI route projects 3 and 5
 use:
 
-```python
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["wn>=1.1", "requests"]
-# ///
-from pathlib import Path
-import requests, wn
+The bridge is in [`arasaac_to_czech.py`](arasaac_to_czech.py):
 
-wn.config.data_directory = Path(__file__).resolve().parent.parent / "patterns" / ".wn_data"
-CILI = ("https://raw.githubusercontent.com/globalwordnet/cili/master/"
-        "ili-map-pwn31.tab")
-
-pwn31_to_ili = dict(
-    reversed(line.split("\t", 1))                       # 'i46360\t02086723-n'
-    for line in requests.get(CILI, timeout=120).text.splitlines() if "\t" in line
-)
-cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
-
-r = requests.get("https://api.arasaac.org/api/pictograms/cs/search/pes",
-                 headers={"accept": "application/json"}, timeout=30).json()
-for picto in r[:3]:
-    pid = picto["_id"]
-    for off in picto.get("synsets", []):                # e.g. '02086723-n'
-        ili = pwn31_to_ili.get(off)
-        cz = [w.lemma() for s in (cs.synsets(ili=ili) if ili else []) for w in s.words()]
-        img = f"https://static.arasaac.org/pictograms/{pid}/{pid}_300.png"
-        print(pid, off, ili, cz, img)
+```bash
+uv run arasaac_to_czech.py pes 5     # pictogram id, offset, ILI, Czech lemmas, image URL
 ```
 
 (`reversed(line.split(...))` flips each `ili<TAB>offset` row into
@@ -62,27 +39,11 @@ terms** are the clear case: ARASAAC has a handful, but the wordnet has far more
 (*chestnut*, *burnt orange*, *dark teal*, …). The xkcd colour survey names 949
 colours with hex values, so for a colour synset you can just *generate* a swatch:
 
-```python
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["matplotlib"]
-# ///
-from matplotlib.colors import XKCD_COLORS   # 949 named colours, offline
-import matplotlib.pyplot as plt
+The generator is [`colour_swatch.py`](colour_swatch.py):
 
-def swatch(name: str, path: str) -> str | None:
-    """Write a labelled colour swatch for an xkcd colour name; return its hex."""
-    hexv = XKCD_COLORS.get(f"xkcd:{name.lower()}")
-    if not hexv:
-        return None
-    fig, ax = plt.subplots(figsize=(2, 2)); ax.set_axis_off()
-    ax.add_patch(plt.Rectangle((0, 0), 1, 1, color=hexv))
-    ax.text(0.5, 0.08, name, ha="center", va="center", fontsize=11, color="white")
-    fig.savefig(path, dpi=150, bbox_inches="tight", pad_inches=0)
-    plt.close(fig)
-    return hexv
-
-swatch("chestnut", "chestnut.png")          # -> #742802
+```bash
+uv run colour_swatch.py chestnut             # -> chestnut.png  (#742802)
+uv run colour_swatch.py "burnt orange" out.png
 ```
 
 Match an xkcd name to the English colour lemma, bridge to the Czech synset by the

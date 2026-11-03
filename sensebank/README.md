@@ -15,37 +15,16 @@ The file has **three** tab-separated columns — `ili`, `offset-pos`,
 `confidence` — so parse all three (the confidence flag is itself worth
 reporting on in the error analysis):
 
-```python
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["wn>=1.1", "requests"]
-# ///
-from pathlib import Path
-import requests, wn
+The bridge is in [`pdt_to_czech.py`](pdt_to_czech.py) — it caches the 1.5 map
+beside itself and maps offset → ILI → Czech synset:
 
-wn.config.data_directory = Path(__file__).resolve().parent.parent / "patterns" / ".wn_data"
-URL = ("https://raw.githubusercontent.com/globalwordnet/cili/master/"
-       "older-wn-mappings/ili-map-pwn15.tab")
-
-def pwn15_to_ili() -> dict[str, str]:
-    """{ '00002403-a': 'i1', ... } from the PWN 1.5 CILI map."""
-    text = requests.get(URL, timeout=120).text
-    out = {}
-    for line in text.splitlines():
-        if line.startswith("#") or "\t" not in line:
-            continue
-        ili, offset, *rest = line.split("\t")      # rest[0] = confidence
-        out[offset.strip()] = ili.strip()
-    return out
-
-m = pwn15_to_ili()
-cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
-
-def pdt_tag_to_czech(offset_pos: str):
-    """A PDT 1.5 synset offset -> the current Czech synset(s), or []."""
-    ili = m.get(offset_pos)
-    return cs.synsets(ili=ili) if ili else []
+```bash
+uv run pdt_to_czech.py 00002403-a 00007846-n     # offsets as arguments
+uv run pdt_to_czech.py < tags.txt                 # one PDT offset per line
 ```
+
+Each line comes back as `offset  ili  lemmas | MISSING-SYNSET | NO-ILI`, with a
+count of each at the end — the residue you will categorise.
 
 Sanity check: of the ~87k distinct ILIs in the 1.5 map, **26 363** resolve to a
 synset that exists in the Czech wordnet — so the bridge reaches a large share of
