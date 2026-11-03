@@ -29,6 +29,10 @@ This over-generates wildly (*pes* → *peska*? no; *past* → *pastka*? differen
 sense) — which is the point: the candidate list is trivial, so the deliverable
 is how well you can **tell the real derivations from the coincidences**.
 
+It is a first example, not the method. Judge a sample, then refine the code to
+match what you found — restrict bases to person synsets, filter diminutives, or
+move to DeriNet — and re-judge the *same* sample to see whether precision improved.
+
 ## The validation is the deliverable
 
 - Judge a random sample (aim for ≥ 200, not just 100) by hand: is this a genuine

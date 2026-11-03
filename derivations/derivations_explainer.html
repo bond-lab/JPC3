@@ -192,6 +192,15 @@
     <p>Two of the first six are wrong, and wrong in <em>different ways</em> — a
       coincidental suffix, a diminutive. Those are the error types your taxonomy
       will name and count.</p>
+    <div class="callout">
+      <p><strong>This is a first example, not the method.</strong> Once you have
+        judged a sample, refine the code to match what you found: restrict bases
+        to person synsets (project 1's role-noun list is ready-made), drop
+        diminutives like <span class="cs">-ka</span> on inanimates, or swap the
+        heuristic for DeriNet's families. Expect the next version of
+        <code>feminine_candidates.py</code> to look different — then re-judge the
+        <em>same</em> sample and see whether precision went up.</p>
+    </div>
   </section>
 
   <section id="code">
@@ -247,7 +256,7 @@ for base in sorted(lemmas):
       <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
     <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
       <code>feminine_candidates.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
-      explainer v0 · regenerate when the code changes.</p>
+      explainer v1 · regenerate when the code changes.</p>
   </footer>
 </div>
 
