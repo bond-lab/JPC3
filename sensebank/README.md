@@ -1,8 +1,10 @@
 # Project 3 — Merging the PDT wordnet sense tags
 
 The Prague Dependency Treebank is sense-annotated against **PWN 1.5**-era Czech
-wordnet synsets. Re-anchor those tags to the current synset inventory, and
-characterise the **residue** — the tags that don't carry over.
+wordnet synsets. Re-anchor those tags to the current synset inventory, **use
+them to add corpus frequencies** to the Czech wordnet — once a tag maps, every
+tagged token in the treebank is a sense count — and characterise the
+**residue**: the tags that don't carry over.
 
 ## Explainer
 
@@ -48,8 +50,21 @@ the inventory before you even look at PDT.
      English gloss to decide).
    - **renumbered** — maps via ILI but the offset changed.
    - **deleted / missing** — no ILI, or the ILI has no Czech synset.
-4. Hand-categorise ~100 of the **unmapped residue** — that taxonomy is the
-   deliverable. Compare against the structural-mapping approach of Daudé et al.
+4. Count **sense frequencies**: for every mapped tag, tally the tagged tokens
+   per current synset (and per lemma within it), and add the counts to the
+   Czech wordnet release as sense frequencies, naming the corpus and its
+   version in the data statement.
+5. Hand-categorise ~100 of the **unmapped residue** — that taxonomy is the
+   other deliverable. Compare against the structural-mapping approach of
+   Daudé et al.
+
+## Feedback
+
+- The mapping table (PWN 1.5 offset → ILI → current synset) and the
+  categorised residue go to the **PDT maintainers**.
+- The sense frequencies go into the **Czech wordnet** release.
+- Stretch: add the synsets the residue shows to be **missing** to the Czech
+  wordnet, so the next mapping run has nothing left to map.
 
 ## Readings
 
