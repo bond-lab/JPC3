@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feminine Candidates by Suffix — JPC3 explainer</title>
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 2 · Code explainer</p>
+    <h1>Feminine Candidates by Suffix</h1>
+    <p class="lede">How <code>feminine_candidates.py</code> lists every Czech noun
+      pair that <em>looks</em> like a feminine derivation — on purpose, including the
+      ones that aren't.</p>
+    <div class="meta">
+      <span>feminine_candidates.py</span><span>49 lines</span>
+      <span>deps: wn</span><span>run: uv run feminine_candidates.py 40</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>feminine_candidates.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — cheap candidates, costly judgement</a></li>
+      <li><a href="#intuition">Intuition — real pairs and false friends</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Czech derives a feminine personal noun from a masculine one with a handful of
+      suffixes — <span class="cs">učitel → učitelka</span> "teacher",
+      <span class="cs">přítel → přítelkyně</span> "friend",
+      <span class="cs">lev → lvice</span> "lion → lioness". This is
+      <em>přechylování</em> (motion), and project 2 adds these
+      <strong>derivational relations</strong> to the wordnet.</p>
+    <p>The serious candidate source is
+      <a href="https://ufal.mff.cuni.cz/derinet">DeriNet</a>, which already encodes
+      Czech word-formation families. Before wiring that in, this script shows the
+      <em>shape</em> of the problem with the crudest possible heuristic: if a lemma
+      plus a feminine suffix is <em>also</em> a lemma, propose the pair.</p>
+    <div class="callout">
+      <p><strong>It over-generates on purpose.</strong> A string match cannot tell
+        derivation from coincidence. That is the point: the candidate list is nearly
+        free, so the deliverable is how well you can tell the real pairs from the
+        false friends — the validation, not the list.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Take every noun lemma in the Czech wordnet. For each, try appending each
+      suffix; if the result is itself a lemma, report the pair. Then look at what
+      comes out of a real run:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Base</th><th>Candidate</th><th>Suffix</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="cs">Evropan</td><td class="cs">Evropanka</td><td><code>-ka</code></td>
+          <td><span class="chip k-present">real</span> European (m → f)</td></tr>
+        <tr><td class="cs">adresát</td><td class="cs">adresátka</td><td><code>-ka</code></td>
+          <td><span class="chip k-present">real</span> addressee (m → f)</td></tr>
+        <tr><td class="cs">bit</td><td class="cs">bitka</td><td><code>-ka</code></td>
+          <td><span class="chip k-msynset">false</span> <span class="cs">bitka</span> is a brawl, not a female bit</td></tr>
+        <tr><td class="cs">brož</td><td class="cs">brožka</td><td><code>-ka</code></td>
+          <td><span class="chip k-msynset">false</span> a diminutive brooch, not a feminine</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two of the first six are wrong, and wrong in <em>different ways</em> — a
+      coincidental suffix, a diminutive. Those are the error types your taxonomy
+      will name and count.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Three parts, in the order they run.</p>
+
+    <h3>1 · Share the database, name the suffixes</h3>
+    <span class="ref">feminine_candidates.py:23–24</span>
+    <p>Reuse the <code>wn</code> database the other projects built under
+      <code>patterns/.wn_data</code>, and list the suffixes to try.</p>
+    <pre><code>SUFFIXES = ("ka", "kyně", "ice", "yně")</code></pre>
+
+    <h3>2 · candidates()</h3>
+    <span class="ref">feminine_candidates.py:27–33</span>
+    <p>Collect the set of all noun lemmas once, then for each lemma and each suffix
+      test membership. Yielding tuples keeps it lazy, so a limit stops early.</p>
+    <pre><code>lemmas = {w.lemma() for w in cs.words(pos="n")}
+for base in sorted(lemmas):
+    for suf in SUFFIXES:
+        if base + suf in lemmas:
+            yield base, base + suf, suf</code></pre>
+
+    <h3>3 · main()</h3>
+    <span class="ref">feminine_candidates.py:36–45</span>
+    <p>Print each pair, stop at an optional limit, and send the count to stderr so
+      the pairs themselves stay clean on stdout — pipe them into a file to annotate.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce,
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The example pairs are from one real run; the full list changes as the
+        wordnet grows.</li>
+      <li>The surest check is to <strong>run the script</strong> and judge a sample.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>feminine_candidates.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
+      <code>feminine_candidates.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why does the script deliberately over-generate?",
+     options:[{t:"Because the candidate list is nearly free, so the real work is judging it — the list exists to be validated",ok:true},
+              {t:"Because more candidates always means more true derivations",ok:false},
+              {t:"Because DeriNet is unavailable offline",ok:false},
+              {t:"Because the wordnet lacks feminine nouns entirely",ok:false}],
+     why:"A string heuristic cannot distinguish derivation from coincidence. The script makes the cheap part cheap and leaves the expensive part — telling real pairs from false friends — as the project's deliverable."},
+    {q:"The run proposes bit → bitka. What is wrong with it?",
+     options:[{t:"bitka means a brawl: the -ka is coincidental, not a feminine of bit",ok:true},
+              {t:"bit is not a Czech word",ok:false},
+              {t:"The suffix should have been -kyně",ok:false},
+              {t:"Nothing — bitka is the feminine of bit",ok:false}],
+     why:"Both strings are lemmas, so the heuristic fires, but bitka is an unrelated noun. This is the classic coincidental-suffix error type."},
+    {q:"Where does candidates() get its set of lemmas?",
+     options:[{t:"From every noun word in the Czech wordnet, collected once into a set",ok:true},
+              {t:"From DeriNet",ok:false},
+              {t:"From the English wordnet via ILI",ok:false},
+              {t:"From a hand-written list of masculine nouns",ok:false}],
+     why:"lemmas = {w.lemma() for w in cs.words(pos='n')} builds one set up front; membership tests against it are then O(1) per candidate."},
+    {q:"Why is the count printed to stderr and the pairs to stdout?",
+     options:[{t:"So you can redirect the pairs to a file for annotation without the summary line mixed in",ok:true},
+              {t:"Because stdout is faster",ok:false},
+              {t:"Because uv requires it",ok:false},
+              {t:"To hide the count from the user",ok:false}],
+     why:"Keeping data on stdout and chatter on stderr is the Unix convention: `uv run feminine_candidates.py > pairs.tsv` gives a clean file to judge."},
+    {q:"What should you do with the candidate list, per the project brief?",
+     options:[{t:"Judge a random sample by hand, report precision and agreement, and group the errors into types",ok:true},
+              {t:"Add every pair to the wordnet immediately",ok:false},
+              {t:"Keep only pairs ending in -ka",ok:false},
+              {t:"Sort it alphabetically and submit it",ok:false}],
+     why:"The validation is the deliverable: a judged sample with an error taxonomy (coincidental suffix, diminutive, wrong sense) is the result, not the raw list."}
+
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

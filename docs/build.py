@@ -27,6 +27,11 @@ DOCS = ROOT / "docs"
 EXPLAINERS = [
     (ROOT / "wikidata" / "wikidata_explainer.html", "wikidata.html"),
     (ROOT / "patterns" / "patterns_explainer.html", "patterns.html"),
+    (ROOT / "derivations" / "derivations_explainer.html", "derivations.html"),
+    (ROOT / "sensebank" / "sensebank_explainer.html", "sensebank.html"),
+    (ROOT / "images" / "arasaac_explainer.html", "arasaac.html"),
+    (ROOT / "images" / "swatch_explainer.html", "swatch.html"),
+    (ROOT / "LLM" / "llm_explainer.html", "llm.html"),
 ]
 PDFS = [
     ROOT / "latex" / "slides" / "validation.pdf",

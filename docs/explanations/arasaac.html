@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pictograms to Czech Synsets — JPC3 explainer</title>
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 4 · Code explainer</p>
+    <h1>Pictograms to Czech Synsets</h1>
+    <p class="lede">How <code>arasaac_to_czech.py</code> attaches an ARASAAC pictogram
+      to the right Czech concept — using the synset tag the pictogram already carries.</p>
+    <div class="meta">
+      <span>arasaac_to_czech.py</span><span>66 lines</span>
+      <span>deps: wn, requests</span><span>run: uv run arasaac_to_czech.py pes 5</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>arasaac_to_czech.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — pictures for people who cannot speak</a></li>
+      <li><a href="#intuition">Intuition — the tag is already there</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p><a href="https://arasaac.org/">ARASAAC</a> is a large open set of pictograms
+      used in <strong>augmentative and alternative communication</strong> (AAC) —
+      for people who cannot speak, a board of pictures stands in for words. Project 4
+      links those pictures to Czech wordnet synsets so that each concept has an image,
+      and, through the wordnet, the same picture can serve every language.</p>
+    <p>The lucky part: ARASAAC pictograms already carry a <strong>WordNet 3.1 synset
+      id</strong> in their metadata, plus Czech keywords and a <code>sex</code> flag for
+      gendered variants. So there is nothing to guess — only a version gap to cross.
+      That gap is the same one project 5 crosses: a 3.1 offset is not an ILI, but the
+      <a href="https://github.com/globalwordnet/cili">CILI</a> table turns it into one,
+      and the Czech wordnet is keyed to ILIs.</p>
+    <div class="callout">
+      <p><strong>Why precision matters here.</strong> A wrong synset tag means the
+        wrong picture, and a child who cannot speak is handed the wrong word. Of the
+        six projects this is the one where a lexical slip reaches a real user fastest.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Search ARASAAC for a Czech word, read each pictogram's synset tag, convert it
+      to an ILI, and look up the Czech synset. A real run for
+      <span class="cs">pes</span> "dog":</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Pictogram</th><th>Tag (3.1)</th><th>ILI</th><th>Czech synset</th></tr></thead>
+      <tbody>
+        <tr><td><code>7202</code></td><td><code>02086723-n</code></td><td><code>i46360</code></td>
+          <td class="cs">pes, psovitá šelma <span class="chip k-present">matched</span></td></tr>
+        <tr><td><code>2517</code></td><td><code>02086723-n</code></td><td><code>i46360</code></td>
+          <td class="cs">pes, psovitá šelma <span class="chip k-present">matched</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two different drawings of a dog resolve to the <em>same</em> Czech synset —
+      exactly what you want. Each line also carries the image URL, so the next step
+      (attach it, check it is a fair picture of <em>that sense</em>) can start at once.
+      A tag that yields no Czech synset prints <code>MISSING</code>: a concept the
+      Czech wordnet lacks, or a wrong tag to report back to ARASAAC.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Four parts, in the order they run.</p>
+
+    <h3>1 · Configuration</h3>
+    <span class="ref">arasaac_to_czech.py:22–28</span>
+    <p>The shared <code>wn</code> database, the CILI table URL and its local cache,
+      the ARASAAC Czech search endpoint, and the pattern for a pictogram's image URL.</p>
+    <pre><code>ARASAAC = "https://api.arasaac.org/api/pictograms/cs/search/"
+IMAGE = "https://static.arasaac.org/pictograms/{pid}/{pid}_300.png"</code></pre>
+
+    <h3>2 · load_cili()</h3>
+    <span class="ref">arasaac_to_czech.py:31–40</span>
+    <p>Download the 3.1 table once and invert it into an offset → ILI lookup. The
+      same function as in the Wikidata script; the bridge is shared.</p>
+
+    <h3>3 · search()</h3>
+    <span class="ref">arasaac_to_czech.py:43–47</span>
+    <p>One HTTP call to ARASAAC's Czech search; <code>raise_for_status()</code> turns
+      a failed request into an error instead of an empty list.</p>
+
+    <h3>4 · main()</h3>
+    <span class="ref">arasaac_to_czech.py:50–62</span>
+    <p>For each of the first <em>N</em> pictograms, and each synset tag it carries,
+      resolve the ILI, collect the Czech lemmas, and print one tab-separated line with
+      the image URL at the end.</p>
+    <pre><code>for off in picto.get("synsets", []):             # e.g. '02086723-n'
+    ili = pwn31_to_ili.get(off)
+    lemmas = [w.lemma() for s in (cs.synsets(ili=ili) if ili else []) for w in s.words()]</code></pre>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce,
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The pictogram ids and tags are from one real query; ARASAAC's data changes.</li>
+      <li>The surest check is to <strong>run the script</strong> and open the image URLs.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>arasaac_to_czech.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
+      <code>arasaac_to_czech.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Where does the script get the synset for a pictogram?",
+     options:[{t:"From the WordNet 3.1 synset id ARASAAC stores in the pictogram's own metadata",ok:true},
+              {t:"By matching the Czech keyword against wordnet lemmas",ok:false},
+              {t:"By asking an LLM to guess the concept from the picture",ok:false},
+              {t:"From the image file name",ok:false}],
+     why:"Each pictogram record has a `synsets` list of 3.1 offsets. The script reads that directly — there is no guessing, only the 3.1→ILI version gap to cross."},
+    {q:"Why is the CILI table needed at all?",
+     options:[{t:"ARASAAC's tags are WordNet 3.1 offsets, while the Czech wordnet is keyed to ILIs",ok:true},
+              {t:"To translate the Czech keywords into English",ok:false},
+              {t:"To download the pictogram images",ok:false},
+              {t:"Because ARASAAC's ids are random",ok:false}],
+     why:"A 3.1 offset like 02086723-n is not an ILI. ili-map-pwn31.tab maps it to i46360, which cs.synsets(ili=…) can look up."},
+    {q:"Two different dog pictograms (7202 and 2517) both resolve to the same Czech synset. Is that a bug?",
+     options:[{t:"No — they are two drawings of one concept, so landing on one synset is the correct result",ok:true},
+              {t:"Yes — each pictogram must get its own synset",ok:false},
+              {t:"Yes — the CILI table has a duplicate entry",ok:false},
+              {t:"It cannot happen; the script dedups pictograms",ok:false}],
+     why:"Many pictures can depict one sense. The mapping is from pictogram to concept, so several pictograms sharing a synset is expected — and lets you pick the clearest image per sense."},
+    {q:"A line prints MISSING in the lemma column. What are the two possibilities?",
+     options:[{t:"The Czech wordnet has no synset for that ILI, or the ARASAAC tag is wrong and should be reported upstream",ok:true},
+              {t:"The network request failed",ok:false},
+              {t:"The pictogram has no image",ok:false},
+              {t:"The word was misspelled",ok:false}],
+     why:"MISSING means an ILI was found but cs.synsets() returned nothing. Either the concept is absent from the Czech wordnet (a gap to add) or ARASAAC tagged the picture with the wrong synset (a fix to give back)."},
+    {q:"Why does precision matter more in this project than most?",
+     options:[{t:"A wrong synset tag puts the wrong picture in front of a person who relies on pictures to communicate",ok:true},
+              {t:"Because ARASAAC rejects low-precision submissions",ok:false},
+              {t:"Because the images are large files",ok:false},
+              {t:"It does not; all projects are the same",ok:false}],
+     why:"This is AAC: the pictures are the user's words. A lexical slip is not cosmetic here — it reaches a real user immediately."}
+
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

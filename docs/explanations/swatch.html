@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generating a Colour Pictogram — JPC3 explainer</title>
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 4 · Code explainer</p>
+    <h1>Generating a Colour Pictogram</h1>
+    <p class="lede">How <code>colour_swatch.py</code> makes a pictogram for a colour
+      synset that no one will ever draw — from a named colour and twelve lines of
+      matplotlib.</p>
+    <div class="meta">
+      <span>colour_swatch.py</span><span>48 lines</span>
+      <span>deps: matplotlib</span><span>run: uv run colour_swatch.py chestnut</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>colour_swatch.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — generate what you cannot find</a></li>
+      <li><a href="#intuition">Intuition — a name, a hex, a square</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Some synsets will never have a drawn pictogram and do not need one.
+      <strong>Colour terms</strong> are the clear case: ARASAAC has a handful, but the
+      wordnet has far more — <span class="cs">kaštanová</span> "chestnut",
+      <span class="cs">spálená oranžová</span> "burnt orange", and on. For a colour the
+      ideal picture is simply the colour.</p>
+    <p>The <a href="https://xkcd.com/color/rgb/">xkcd colour survey</a> asked
+      thousands of people to name colours and settled on 949 names with hex values.
+      <a href="https://matplotlib.org/">matplotlib</a> ships that table offline as
+      <code>XKCD_COLORS</code>. So a colour synset's pictogram can be
+      <em>generated</em>: look up the name, paint a square, label it.</p>
+    <div class="callout">
+      <p><strong>Say it is generated.</strong> A swatch is not a drawing. In the
+        report's data statement, mark these images as generated from the xkcd table,
+        and note the limits: the names are crowd-sourced English, so the Czech match
+        still needs checking, and a flat square suits a colour but not, say, a shade
+        of a feeling.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Three steps, each one line of real work:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Step</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>name → hex</td><td><code>XKCD_COLORS["xkcd:chestnut"]</code> → <code>#742802</code></td></tr>
+        <tr><td>paint a square</td><td>a 2×2-inch figure filled with that colour</td></tr>
+        <tr><td>label and save</td><td>"chestnut" in white at the bottom → <code>chestnut.png</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Bridge the result to the wordnet the way the other project-4 script does:
+      match the xkcd name to the English colour lemma, follow the ILI to the Czech
+      synset, attach the generated image. An unknown name returns <code>None</code>
+      rather than a blank image, so the caller can tell "no such colour" from "done".</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Two parts.</p>
+
+    <h3>1 · swatch()</h3>
+    <span class="ref">colour_swatch.py:22–33</span>
+    <p>Look the name up (lower-cased, with the <code>xkcd:</code> prefix matplotlib
+      uses), bail out with <code>None</code> if it is unknown, otherwise draw a
+      full-figure rectangle, add the label, save, and close the figure so a loop over
+      hundreds of colours does not leak memory.</p>
+    <pre><code>hexv = XKCD_COLORS.get(f"xkcd:{name.lower()}")
+if not hexv:
+    return None
+fig, ax = plt.subplots(figsize=(2, 2))
+ax.set_axis_off()
+ax.add_patch(plt.Rectangle((0, 0), 1, 1, color=hexv))</code></pre>
+
+    <h3>2 · main()</h3>
+    <span class="ref">colour_swatch.py:36–44</span>
+    <p>Take the colour name (and an optional output path), default the file name
+      from the colour, and exit with a message if the name is not in the table.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce,
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The hex value <code>#742802</code> is from a real run of the script.</li>
+      <li>The surest check is to <strong>run the script</strong> and look at the PNG.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>colour_swatch.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
+      <code>colour_swatch.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Where do the colour names and hex values come from?",
+     options:[{t:"The xkcd colour survey's 949 names, shipped offline in matplotlib as XKCD_COLORS",ok:true},
+              {t:"A web request to xkcd.com on every run",ok:false},
+              {t:"The Czech wordnet's colour synsets",ok:false},
+              {t:"ARASAAC's pictogram metadata",ok:false}],
+     why:"matplotlib.colors.XKCD_COLORS is a dict keyed 'xkcd:<name>' → hex, bundled with the library, so no network is needed."},
+    {q:"What does swatch() return for a name that is not an xkcd colour?",
+     options:[{t:"None, without writing any file, so the caller can tell 'unknown colour' from success",ok:true},
+              {t:"A black square",ok:false},
+              {t:"It raises an exception",ok:false},
+              {t:"An empty string",ok:false}],
+     why:"The lookup uses .get(); on a miss the function returns None before any drawing happens. main() turns that into a clear exit message."},
+    {q:"Why does the function call plt.close(fig)?",
+     options:[{t:"So generating hundreds of swatches in a loop does not keep every figure in memory",ok:true},
+              {t:"To display the image on screen",ok:false},
+              {t:"Because savefig fails otherwise",ok:false},
+              {t:"To delete the PNG file",ok:false}],
+     why:"matplotlib keeps figures alive until closed. One swatch is harmless; a loop over every colour synset would accumulate them."},
+    {q:"The report should describe these images as…",
+     options:[{t:"Generated from the xkcd colour table — not drawn — with a note that the Czech match still needs checking",ok:true},
+              {t:"Hand-drawn pictograms",ok:false},
+              {t:"Photographs",ok:false},
+              {t:"ARASAAC originals",ok:false}],
+     why:"A data statement must say what the data is. A generated swatch is a different kind of object from a drawn pictogram, and the English-named colour needs its Czech match validated."},
+    {q:"How does a generated swatch get attached to a Czech synset?",
+     options:[{t:"Match the xkcd name to the English colour lemma, follow the ILI to the Czech synset, attach the image",ok:true},
+              {t:"The script writes it into the wordnet automatically",ok:false},
+              {t:"By file name alone",ok:false},
+              {t:"It cannot; swatches are only for display",ok:false}],
+     why:"This script only makes the image. Linking it uses the same English-lemma → ILI → Czech-synset bridge as the other project-4 script."}
+
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

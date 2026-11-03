@@ -7,12 +7,11 @@ and a quiz — in the style of Geoffrey Litt's *explain-diff*. It is generated
 
 - **The skill:** [`SKILL.md`](SKILL.md) — a readable copy. The repo also ships it,
   active for this project, at `.claude/skills/code-explainer/SKILL.md`.
-- **Worked examples:**
+- **Worked examples:** every starter script in the repo has one — seven in
+  all, published on the course site under *Explainers*. The Wikidata one,
   [`../wikidata/wikidata_explainer.html`](../wikidata/wikidata_explainer.html),
-  built up interactively over `v0` → `v4` (the prompts are in
-  [`../wikidata/README.md`](../wikidata/README.md)), and
-  [`../patterns/patterns_explainer.html`](../patterns/patterns_explainer.html).
-  Both are published on the course site under *Explainers*.
+  was built up interactively over `v0` → `v4` (the prompts are in
+  [`../wikidata/README.md`](../wikidata/README.md)).
 
 ## The recipe
 
@@ -34,8 +33,9 @@ It flags three things: identifiers quoted in `<pre>` code blocks that are absent
 from the source (an invented name), `file:line` references past the end of the
 file (the code moved), and links that return 404/410 or fail to connect. A clean
 run is not a guarantee — read the prose too — but it catches the errors a reader
-is least likely to spot. Identifier hits can be false positives (example data in
-a code block), so read them rather than trusting the exit code blindly.
+is least likely to spot. Put example output in
+`<pre class="data">` and the checker skips it; remaining identifier hits can
+still be false positives, so read them rather than trusting the exit code blindly.
 
 ## Make it available elsewhere
 

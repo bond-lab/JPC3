@@ -1,0 +1,322 @@
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>From PDT Sense Tags to Today's Synsets</h1>
+    <p class="lede">How <code>pdt_to_czech.py</code> carries a sense tag made against
+      WordNet 1.5 forward to the current Czech wordnet — in one hop, through the
+      interlingual index.</p>
+    <div class="meta">
+      <span>pdt_to_czech.py</span><span>74 lines</span>
+      <span>deps: wn, requests</span><span>run: uv run pdt_to_czech.py 00002403-a</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>pdt_to_czech.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — old tags, new inventory</a></li>
+      <li><a href="#intuition">Intuition — one hop, not a chain</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>The <a href="https://ufal.mff.cuni.cz/pdt3.0">Prague Dependency Treebank</a>
+      (PDT) is sense-annotated: words are tagged with wordnet synsets. But those tags
+      were made against <strong>Princeton WordNet 1.5</strong>, an inventory decades
+      out of date. Synsets have since been split, merged, renumbered, and dropped.
+      Project 3 re-anchors the tags to the current Czech wordnet — and, more
+      interesting, characterises the <strong>residue</strong> that will not carry over.</p>
+    <p>The feared route is a chain of version maps (1.5 → 1.6 → … → 3.0). It is
+      unnecessary. The <a href="https://github.com/globalwordnet/cili">CILI</a>
+      project keeps historical tables under <code>older-wn-mappings/</code>, including
+      <code>ili-map-pwn15.tab</code>, which maps a 1.5 offset <em>straight</em> to an
+      ILI. And the Czech wordnet is keyed to ILIs.</p>
+    <div class="callout">
+      <p><strong>Three columns.</strong> The 1.5 table has <code>ili</code>,
+        <code>offset-pos</code>, and a <code>confidence</code> flag — unlike the
+        two-column 3.1 table. Parse all three; the confidence column is itself worth
+        reporting on.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Each PDT tag is a 1.5 offset. Look it up in the table to get an ILI, then ask
+      the Czech wordnet for the synset with that ILI. Every tag lands in one of
+      three buckets:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>PDT tag (1.5)</th><th>ILI</th><th>Czech synset</th><th>Bucket</th></tr></thead>
+      <tbody>
+        <tr><td><code>00002403-a</code></td><td><code>i1</code></td><td class="cs">schopný</td>
+          <td><span class="chip k-present">mapped</span></td></tr>
+        <tr><td><code>00002738-a</code></td><td><code>i2</code></td><td class="cs">neschopný</td>
+          <td><span class="chip k-present">mapped</span></td></tr>
+        <tr><td><code>99999999-n</code></td><td>—</td><td>—</td>
+          <td><span class="chip k-msynset">no-ili</span> not in the 1.5 table at all</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>A fourth outcome, <strong>missing-synset</strong>, is an ILI the table knows
+      but the Czech wordnet has no synset for. Across the whole 1.5 table, about
+      26,000 of its ~87,000 ILIs resolve to a Czech synset — so the bridge reaches a
+      large share of the inventory before you touch PDT. The unmapped rest is the
+      bug list for the maintainers.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Four parts, in the order they run.</p>
+
+    <h3>1 · Configuration</h3>
+    <span class="ref">pdt_to_czech.py:25–29</span>
+    <p>Share the <code>wn</code> database under <code>patterns/.wn_data</code>, name
+      the CILI table's URL, and cache a copy beside the script.</p>
+
+    <h3>2 · pwn15_to_ili()</h3>
+    <span class="ref">pdt_to_czech.py:32–42</span>
+    <p>Download the table once, then read the cache. Skip comment lines, split each
+      line on tabs into three fields, and build a lookup from offset to ILI.</p>
+    <pre><code>ili, offset, *_confidence = line.split("\t")   # three columns
+out[offset.strip()] = ili.strip()</code></pre>
+
+    <h3>3 · lookup()</h3>
+    <span class="ref">pdt_to_czech.py:45–50</span>
+    <p>One offset in; its ILI and the Czech lemmas out. No ILI means the tag is not
+      in the 1.5 table; an ILI with no lemmas means the Czech wordnet lacks it.</p>
+    <pre><code>ili = mapping.get(offset)
+if not ili:
+    return None, []
+return ili, [w.lemma() for s in cs.synsets(ili=ili) for w in s.words()]</code></pre>
+
+    <h3>4 · main()</h3>
+    <span class="ref">pdt_to_czech.py:53–70</span>
+    <p>Take offsets as arguments or one per line on stdin, classify each as
+      mapped / missing-synset / no-ili, print a line per tag, and the counts to
+      stderr. Feed it the real PDT tags and the counts become your first result.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce,
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The 26,000 / 87,000 figure is from one real run and will move as the
+        Czech wordnet grows.</li>
+      <li>The surest check is to <strong>run the script</strong> on real PDT tags.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>pdt_to_czech.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
+      <code>pdt_to_czech.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why is no version-chaining (1.5→1.6→…→3.0) needed?",
+     options:[{t:"CILI's older-wn-mappings table maps a 1.5 offset straight to an ILI, and the Czech wordnet is keyed to ILIs",ok:true},
+              {t:"PDT was re-annotated against WordNet 3.1",ok:false},
+              {t:"WordNet 1.5 and 3.0 share the same offsets",ok:false},
+              {t:"The Czech wordnet stores 1.5 offsets directly",ok:false}],
+     why:"ili-map-pwn15.tab is a direct 1.5→ILI table, and ILI is the Czech wordnet's key, so offset → ILI → synset is a single hop."},
+    {q:"How does the 1.5 table differ from the 3.1 table the Wikidata script uses?",
+     options:[{t:"It has a third column, a confidence flag, so the parser must split into three fields",ok:true},
+              {t:"It is comma-separated instead of tab-separated",ok:false},
+              {t:"It maps ILIs to lemmas rather than offsets",ok:false},
+              {t:"It has no header comments",ok:false}],
+     why:"The line is ili, offset, confidence; the code does `ili, offset, *_confidence = line.split('\\t')`. Splitting on the first tab only would silently glue the confidence onto the offset."},
+    {q:"A tag yields an ILI, but cs.synsets(ili=…) returns nothing. Which bucket?",
+     options:[{t:"missing-synset — the concept exists in the index but the Czech wordnet has no synset for it",ok:true},
+              {t:"no-ili — the tag was not in the table",ok:false},
+              {t:"mapped — the ILI is enough",ok:false},
+              {t:"It is an error and the script stops",ok:false}],
+     why:"lookup() returns the ILI with an empty lemma list; main() labels that MISSING-SYNSET. It is distinct from no-ili, where the offset was absent from the 1.5 table."},
+    {q:"Which of these is the project's most valuable output?",
+     options:[{t:"The residue — tags that don't map — categorised as split, merged, renumbered, or dropped",ok:true},
+              {t:"The count of tags that mapped cleanly",ok:false},
+              {t:"A copy of the CILI table",ok:false},
+              {t:"The list of all Czech synsets",ok:false}],
+     why:"Mapping is mechanical; the hand-categorised residue tells the maintainers where the old and new inventories disagree, which is what nobody else has."},
+    {q:"Why does the script cache the table beside itself?",
+     options:[{t:"So repeated runs don't re-download it; the file is gitignored because it is an input, not a result",ok:true},
+              {t:"Because the table changes every run",ok:false},
+              {t:"To commit it to the repository",ok:false},
+              {t:"Because wn cannot read remote files",ok:false}],
+     why:"TAB.exists() short-circuits the download. *.tab is gitignored across the repo, so the cache stays local."}
+
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>

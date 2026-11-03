@@ -9,7 +9,8 @@ An explainer is generated and can hallucinate. This catches the three failure
 modes a reader is least likely to notice by eye:
 
   1. identifiers quoted in <pre> code blocks that do not appear in the source
-     (an invented function or variable name, or a typo);
+     (an invented function or variable name, or a typo) -- blocks marked
+     <pre class="data"> are example output, not code, and are skipped;
   2. file:line references that point past the end of the file (the code moved);
   3. links that do not resolve (a wrong or invented URL).
 
@@ -30,7 +31,8 @@ from pathlib import Path
 import requests
 
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")      # 3+ char identifiers
-PRE = re.compile(r"<pre[^>]*>(.*?)</pre>", re.DOTALL)
+PRE = re.compile(r"<pre([^>]*)>(.*?)</pre>", re.DOTALL)
+DATA_CLASS = re.compile(r'class="[^"]*\bdata\b')   # <pre class="data">: output, not code
 TAG = re.compile(r"<[^>]+>")
 LINEREF = re.compile(r"([A-Za-z0-9_./-]+\.py):(\d+)(?:[–—\-](\d+))?")
 HREF = re.compile(r'href="(https?://[^"]+)"')
@@ -47,7 +49,9 @@ def text_of(block: str) -> str:
 def check_identifiers(doc: str, source: str) -> list[str]:
     """Identifiers inside <pre> code blocks that are absent from the source."""
     found: set[str] = set()
-    for block in PRE.findall(doc):
+    for attrs, block in PRE.findall(doc):
+        if DATA_CLASS.search(attrs):      # example output / data: not a claim about the code
+            continue
         found.update(IDENT.findall(text_of(block)))
     return sorted(t for t in found if t not in STOP and t not in source)
 

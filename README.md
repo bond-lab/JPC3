@@ -89,7 +89,7 @@ validating a sample.
   and Morphosemantic Relations in Princeton WordNet* `[stoyanova-etal2025derivational]`;
   Pala & Hlaváčková (2007) *Derivational Relations in Czech WordNet*
   `[pala-hlavackova2007]`. (See also DeriNet 2.3 <https://ufal.mff.cuni.cz/derinet>)
-- **Code:** [`derivations/`](derivations/)
+- **Code:** [`derivations/`](derivations/) · explainer: [`derivations_explainer.html`](derivations/derivations_explainer.html)
 
 ### 3. Merging the PDT wordnet sense tags
 
@@ -104,7 +104,7 @@ real deliverable is the **residue**: the tags that don't map, categorised
 - **Readings:** Daudé, Padró & Rigau (2000) *Mapping WordNets Using Structural
   Information* `[daude-etal2000]`; Bond et al. (2016) *CILI: the Collaborative
   Interlingual Index* `[bond-etal2016cili]`. (PDT 3.0: `[bejcek-etal2013pdt]`.)
-- **Code:** [`sensebank/`](sensebank/)
+- **Code:** [`sensebank/`](sensebank/) · explainer: [`sensebank_explainer.html`](sensebank/sensebank_explainer.html)
 
 ### 4. Better links to ARASAAC and Global Symbols
 
@@ -121,7 +121,7 @@ they differ — and report them.
   `[bond-foster2013]`. Resources: ARASAAC `[arasaac]`, Global Symbols
   `[globalsymbols]`, and the existing ARASAAC wordnet **ARAWN**
   <https://github.com/omwn/arawn> — the base this project extends.
-- **Code:** [`images/`](images/)
+- **Code:** [`images/`](images/) · explainers: [`arasaac_explainer.html`](images/arasaac_explainer.html), [`swatch_explainer.html`](images/swatch_explainer.html)
 
 ## Further options (a fifth project, or swaps)
 
@@ -147,7 +147,7 @@ well with project 5.
   of the flag against human judgement.
 - **Readings:** as for project 5, plus a paper you find on LLMs for lexical
   resource curation.
-- **Code:** [`LLM/`](LLM/)
+- **Code:** [`LLM/`](LLM/) · explainer: [`llm_explainer.html`](LLM/llm_explainer.html)
 
 ## Layout
 
