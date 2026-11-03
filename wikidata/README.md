@@ -4,6 +4,14 @@ Find concepts that Wikidata links to a wordnet synset, carry a Czech label, and
 ask whether the Czech wordnet already has them. The ones it doesn't are ranked
 candidates — either a missing lemma on an existing synset, or a missing synset.
 
+## Explainer
+
+[`wikidata_explainer.html`](wikidata_explainer.html) is a self-contained HTML
+walkthrough of this script — background, a worked intuition, a code tour, and a
+short quiz — in the style of Geoffrey Litt's *explain-diff*. Open it in a
+browser. Unlike the literate `.lit.md`, it is generated *from* the finished
+code, so it costs nothing to maintain: regenerate it when the code changes.
+
 ## The bridge
 
 Two Wikidata properties get you to an ILI; we use both and prefer the first:
