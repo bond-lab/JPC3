@@ -40,7 +40,7 @@ the code too.
 
 An LLM will happily flag things; the question is whether it is *right*.
 
-- Take a random sample (≥ 200), have a human give the gold `verdict`/`problem`
+- Take a random sample (≥ 500), have a human give the gold `verdict`/`problem`
   **blind** to the model, and report the model's **precision and recall for
   `suspect`**, plus a confusion matrix over `problem` types.
 - Two annotators on the gold → Cohen's κ, so the ceiling is known.

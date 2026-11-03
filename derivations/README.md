@@ -35,7 +35,7 @@ move to DeriNet — and re-judge the *same* sample to see whether precision impr
 
 ## The validation is the deliverable
 
-- Judge a random sample (aim for ≥ 200, not just 100) by hand: is this a genuine
+- Judge a random sample (aim for ≥ 500) by hand: is this a genuine
   derivational relation, and is the relation *type* right?
 - Two annotators → report Cohen's κ and how you resolved disagreements.
 - **Group the errors into types** with counts and one real example each

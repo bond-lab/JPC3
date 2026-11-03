@@ -54,7 +54,7 @@ the inventory before you even look at PDT.
    per current synset (and per lemma within it), and add the counts to the
    Czech wordnet release as sense frequencies, naming the corpus and its
    version in the data statement.
-5. Hand-categorise ~100 of the **unmapped residue** — that taxonomy is the
+5. Hand-categorise ~500 of the **unmapped residue** — that taxonomy is the
    other deliverable. Compare against the structural-mapping approach of
    Daudé et al.
 

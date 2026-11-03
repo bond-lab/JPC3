@@ -89,7 +89,7 @@ synset), or `no-ili`.
   dropped and why.
 - `missing-lemma` is the richer vein for this course: *Nizozemsko* vs the Czech
   synset's *Holandsko* (a synonym to add), *pes domácí* vs *pes* (a variant).
-- Verify a random 100 by hand: is the Wikidata Czech label really a synonym for
+- Verify a random 500 by hand: is the Wikidata Czech label really a synonym for
   that sense, or has Wikidata linked a near-neighbour? That precision number,
   broken down by `kind`, is your headline result.
 

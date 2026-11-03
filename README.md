@@ -39,7 +39,7 @@ the template in `latex/report/`:
 1. **Extend** — produce the new data *semi-automatically*: an automatic step
    plus a human in the loop.
 2. **Validate** — this is the heart of the project and where the marks are.
-   Hand-check a random sample (aim for ≥ 200), report precision, and — since
+   Hand-check a random sample (aim for ≥ 500), report precision, and — since
    you work in pairs — inter-annotator agreement (Cohen's κ) with a sentence on
    how you resolved disagreements. **Group the mistakes into types**, with
    counts and one real example each: the error taxonomy matters more than the
@@ -67,6 +67,8 @@ setup, Leipzig-style glosses, and the four sections stubbed.
 
 Numerical goals are **targets to size the work**, not pass/fail thresholds —
 adjust once you see the data, and say in the report if you changed them.
+They are sized for the 5-credit (125–150-hour) workload: validation samples
+are 500 items, judged by both of you.
 
 ### 1. Semi-automatic expansion of Czech-specific patterns (přechylování)
 
@@ -75,7 +77,7 @@ Czech patterns the English-derived wordnet does not encode. The gender-bias
 work on Open English Wordnet is the obvious comparison point.
 
 - **Goal:** add variants to ≥ 500 animate/personal nouns; validate a
-  100-item sample at ≥ 90 % precision.
+  500-item sample at ≥ 90 % precision.
 - **Stretch:** add national/adjectives/language adverbials (Česko/český/česky)
 - **Feedback:** the validated feminine forms go into the next Czech wordnet
   release; concepts the English side turns out to lack go to Open English
@@ -108,7 +110,7 @@ drawing candidates from a word-formation resource such as DeriNet and
 validating a sample.
 
 - **Goal:** add ≥ 1000 derivational links across ≥ 3 relation types
-  (e.g. agentive, diminutive, feminine-motion); validate 100 at ≥ 90 %.
+  (e.g. agentive, diminutive, feminine-motion); validate 500 at ≥ 90 %.
 - **Stretch:** add a different language as well, ...
 - **Feedback:** validated derivational links go into the Czech wordnet; any
   DeriNet error you catch while judging goes back to DeriNet.
@@ -129,7 +131,7 @@ split / merged / renumbered / deleted / genuinely missing).
 
 - **Goal:** attempt the full set of PDT wordnet tags; target ≥ 95 %
   automatically mapped; add sense frequencies for the mapped tags;
-  hand-categorise 100 of the unmapped residue.
+  hand-categorise 500 of the unmapped residue.
 - **Stretch:** handle **all** of the residue.
 - **Feedback:** the mapping table and the categorised residue go to the PDT
   maintainers; the sense frequencies go into the Czech wordnet. Stretch: add
@@ -147,7 +149,7 @@ and bring in sets from other countries (e.g. the Bulgarian and Croatian sets on
 they differ — and report them.
 
 - **Goal:** add images to ≥ 1000 (ideally high-frequency) synsets from ≥ 3
-  symbol sets; validate appropriateness on a 100-item sample.
+  symbol sets; validate appropriateness on a 500-item sample.
 - **Stretch:** validate them **all**
 - **Feedback:** wrong synset tags and missing Czech keywords go back to
   ARASAAC; validated matches — and generated colour pictograms, which inherit
@@ -167,7 +169,7 @@ Start from Wikidata items that already carry an ILI/PWN mapping, pull their
 Czech labels, project them onto the Czech wordnet, and verify. The residue —
 Czech labels with no matching synset — is a ranked list of candidate gaps.
 
-- **Goal:** project ≥ 2000 labels; verify a 100-item sample.
+- **Goal:** project ≥ 2000 labels; verify a 500-item sample.
 - **Feedback:** to Wikidata — add the ILI (P5063) where only a WordNet id
   exists, correct wrong-sense links, add confirmed Czech labels with a
   reference; to the Czech wordnet — the verified missing lemmas and synsets.
@@ -182,7 +184,7 @@ the Wikidata label and description (from project 5) as evidence rather than
 free generation. Then verify a sample and report the LLM's precision. Pairs
 well with project 5.
 
-- **Goal:** score ≥ 1000 synsets; verify a 100-item sample; report precision
+- **Goal:** score ≥ 1000 synsets; verify a 500-item sample; report precision
   of the flag against human judgement.
 - **Feedback:** confirmed problems become fixes in the Czech wordnet; the
   model's mistakes, labelled, are a test set for the next team.
