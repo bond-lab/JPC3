@@ -48,14 +48,30 @@ Each project directory has a `README.md` and a starter script or snippet:
 
 ```bash
 # report (pdfLaTeX is fine)
-cd docs/template && pdflatex report && bibtex report && pdflatex report && pdflatex report
+cd latex/report && pdflatex report && bibtex report && pdflatex report && pdflatex report
 
 # lecture slides (XeLaTeX — uses system fonts)
-cd docs/slides && xelatex validation && xelatex validation
+cd latex/slides && xelatex validation && xelatex validation
 ```
 
 On Overleaf, upload the folder and press Recompile; set the compiler to XeLaTeX
 for the slides.
+
+## 5. The course website (`docs/`)
+
+`docs/` is the GitHub Pages site: `index.html`, the slide PDFs under `pdf/`, and
+the interactive explainers under `explanations/`. The LaTeX sources live in
+`latex/` (not published); the compiled PDFs are copied into `docs/pdf/`.
+
+Rebuild the site after editing an explainer or the slides:
+
+```bash
+# build the PDFs in latex/ first (see §4), then:
+uv run docs/build.py     # wraps the explainer fragments, copies the PDFs in
+```
+
+Publish it once under **Settings → Pages → Branch `master`, folder `/docs`**. The
+`.nojekyll` file tells GitHub to serve the HTML as-is.
 
 ## Keep out of git
 

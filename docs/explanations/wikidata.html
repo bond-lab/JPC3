@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linking Wikidata to the Czech Wordnet — JPC3 explainer</title>
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;
+    font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;
+    display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .term{font-style:italic}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;
+    background:var(--code-bg);border:1px solid var(--hair);border-radius:10px;
+    padding:1rem 1.1rem;overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);
+    display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;
+    padding:.12em .5em;border-radius:999px;white-space:nowrap;
+    border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-mlemma{color:var(--mlemma)}
+  .k-msynset{color:var(--msynset)} .k-noili{color:var(--noili)}
+
+  /* pipeline diagram */
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;
+    justify-content:center;margin:1.4rem 0;font-family:var(--sans);
+    font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);
+    border-radius:8px;padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);
+    font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;
+    font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;
+    border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);font-weight:600}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  /* quiz */
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);
+    border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);
+    font-size:.92rem;background:var(--ground);color:var(--ink);cursor:pointer;
+    border:1px solid var(--hair);border-radius:8px;padding:.6rem .8rem;
+    transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);
+    background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);
+    background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;
+    padding-left:.6rem;border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 5 · Code explainer</p>
+    <h1>Linking Wikidata to the Czech Wordnet</h1>
+    <p class="lede">How <code>wikidata_to_czech.py</code> finds concepts the Czech
+      wordnet is missing — by routing Wikidata through a shared interlingual key.</p>
+    <div class="meta">
+      <span>wikidata_to_czech.py</span><span>105 lines</span>
+      <span>deps: wn, requests</span><span>run: uv run wikidata_to_czech.py 500</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>wikidata_to_czech.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — what this connects</a></li>
+      <li><a href="#intuition">Intuition — three concepts, by hand</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#sparql">Appendix — SPARQL basics</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>A <strong>wordnet</strong> groups words into <em>synsets</em> — sets of
+      synonyms that share one meaning. The Czech wordnet is an <strong>expand
+      wordnet</strong>: it does not invent its own meanings. Each Czech synset is
+      pinned to an <strong>ILI</strong> (Interlingual Index) id — a language-neutral
+      concept number like <code>i46360</code> — and borrows its structure from
+      English. Every wordnet that shares an ILI is talking about the same concept.</p>
+
+    <p><strong><a href="https://www.wikidata.org">Wikidata</a></strong> already links many of its items to a wordnet
+      concept, through one of two properties:</p>
+    <ul>
+      <li><strong><a href="https://www.wikidata.org/wiki/Property:P5063">P5063</a></strong> &ldquo;Interlingual Index ID&rdquo; — the ILI
+        <em>directly</em> (<code>i46360</code>). Fewer items carry it (~20k).</li>
+      <li><strong><a href="https://www.wikidata.org/wiki/Property:P8814">P8814</a></strong> &ldquo;WordNet 3.1 Synset ID&rdquo; — a WordNet
+        offset (<code>02086723-n</code>). More items (~35k), but it is <em>not</em>
+        an ILI yet.</li>
+    </ul>
+
+    <p>The job: take every Wikidata item that has one of these links <em>and</em> a
+      Czech label, find the matching Czech synset, and ask whether the label is
+      already there. Where it is not, we have a <strong>candidate</strong> to add.</p>
+
+    <div class="callout">
+      <p><strong>The one hard part.</strong> P8814 is a WordNet <strong>3.1</strong>
+        offset. The Czech wordnet is keyed to ILIs. To cross from one to the other
+        we use the Collaborative Interlingual Index table
+        <code>ili-map-pwn31.tab</code>. Mapping through the English wordnet
+        <code>omw-en:2.0</code> instead would fail — that is WordNet <strong>3.0</strong>,
+        whose offsets do not line up with 3.1.</p>
+    </div>
+
+    <h3>Where the mappings come from</h3>
+    <p>The ILI is the <strong>Collaborative Interlingual Index</strong> — a shared
+      registry of concepts, seeded from <a href="https://wordnet.princeton.edu/">Princeton WordNet</a> 3.0 and maintained by the
+      <a href="https://globalwordnet.org/">Global Wordnet Association</a>. It exists
+      so that every wordnet has one common set of concept ids to link to.</p>
+    <p>The offset&nbsp;&rarr;&nbsp;ILI tables live in one place, the
+      <a href="https://github.com/globalwordnet/cili">globalwordnet/cili</a>
+      repository. <code>ili-map-pwn31.tab</code> is the WordNet 3.1 table this
+      script downloads; <code>older-wn-mappings/</code> holds 1.5–2.1 for older
+      sense inventories — the Prague Dependency Treebank, in project 3, is tagged
+      against PWN 1.5. Wikidata's P5063 and P8814 values are added by editors and
+      bots; this script takes them as given.</p>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Everything reaches the same shared key — the ILI — and then looks it up in
+      Czech. P5063 hands us the ILI; P8814 needs one hop through the CILI table.</p>
+
+    <div class="wrap-x">
+      <div class="flow">
+        <div class="node"><b>Wikidata item</b><small>+ Czech label</small></div>
+        <div class="branch">
+          <div class="arrow">→<small>P5063</small></div>
+          <div class="arrow">→<small>P8814</small></div>
+        </div>
+        <div class="branch">
+          <div class="node" style="visibility:hidden">·</div>
+          <div class="node"><b>PWN 3.1</b><small>02086723-n</small></div>
+        </div>
+        <div class="arrow">→<small>CILI map</small></div>
+        <div class="node"><b>ILI</b><small>i46360</small></div>
+        <div class="arrow">→</div>
+        <div class="node"><b>Czech synset</b><small>cs.synsets(ili=…)</small></div>
+      </div>
+    </div>
+
+    <p>Run three real items by hand. Resolve each to an ILI, pull the Czech synset's
+      lemmas, and compare the Wikidata label against them:</p>
+
+    <div class="wrap-x">
+    <table class="toy">
+      <thead>
+        <tr><th>Wikidata (cs)</th><th>ILI</th><th>Czech synset lemmas</th>
+          <th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cs">pes domácí</td><td><code>i46360</code></td>
+          <td class="cs">pes, psovitá šelma</td>
+          <td><span class="chip k-mlemma">missing-lemma</span></td>
+        </tr>
+        <tr>
+          <td class="cs">Nizozemsko</td><td><code>i83737</code></td>
+          <td class="cs">Holandsko</td>
+          <td><span class="chip k-mlemma">missing-lemma</span></td>
+        </tr>
+        <tr>
+          <td class="cs">Uganda</td><td><code>i84173</code></td>
+          <td>— (no Czech synset)</td>
+          <td><span class="chip k-msynset">missing-synset</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>So the script sorts every item into four buckets:</p>
+    <ul>
+      <li><span class="chip k-present">present</span> &nbsp;the label is already a
+        lemma in the synset — nothing to do.</li>
+      <li><span class="chip k-mlemma">missing-lemma</span> &nbsp;the synset exists,
+        but lacks this label — a candidate <em>synonym</em> to add
+        (<span class="cs">Nizozemsko</span> beside <span class="cs">Holandsko</span>).</li>
+      <li><span class="chip k-msynset">missing-synset</span> &nbsp;no Czech synset
+        for that ILI at all — a candidate <em>new synset</em>.</li>
+      <li><span class="chip k-noili">no-ili</span> &nbsp;could not resolve an ILI
+        (rare).</li>
+    </ul>
+    <p>The two <code>missing-*</code> buckets are the output that matters. A first
+      sweep is full of named entities (<span class="cs">Uganda</span>), so the real
+      work — the validation — is deciding which candidates a general wordnet should
+      actually take.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Four moving parts, in the order they run.</p>
+
+    <h3>1 · Configuration</h3>
+    <span class="ref">wikidata_to_czech.py:16–22</span>
+    <p>Share one <code>wn</code> database with the other projects, name the Wikidata
+      query endpoint, send a real <code>User-Agent</code> (the query service rejects
+      anonymous bulk traffic), and cache the CILI table next to the script.</p>
+    <pre><code>WDQS = "https://query.wikidata.org/sparql"
+UA   = "JPC3-course/0.1 (https://github.com/omwn; bond@ieee.org)"
+CILI_URL = ".../globalwordnet/cili/master/ili-map-pwn31.tab"</code></pre>
+
+    <h3>2 · Load the CILI map</h3>
+    <span class="ref">wikidata_to_czech.py:25–34</span>
+    <p>Download the table once (then read the cache), and invert it into a plain
+      lookup from a PWN 3.1 offset to an ILI. This is the bridge P8814 will cross.</p>
+    <pre><code>def load_cili() -> dict[str, str]:
+    # '02086723-n' -> 'i46360'
+    ...
+    ili, pwn = line.split("\t", 1)
+    mapping[pwn.strip()] = ili.strip()</code></pre>
+
+    <h3>3 · Fetch from Wikidata</h3>
+    <span class="ref">wikidata_to_czech.py:37–57</span>
+    <p>One <a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial">SPARQL</a> query asks for items that have <em>either</em> property, plus a
+      Czech label. The <code>UNION</code> means an item carrying <em>both</em>
+      P5063 and P8814 comes back as two rows, so the loop folds rows into one record
+      per item (<code>qid</code>), keeping whichever of <code>ili</code> /
+      <code>wn</code> each row supplies.</p>
+    <pre><code>SELECT ?item ?cs ?ili ?wn WHERE {
+  { ?item wdt:P5063 ?ili . } UNION { ?item wdt:P8814 ?wn . }
+  ?item rdfs:label ?cs . FILTER(lang(?cs) = "cs")
+} LIMIT {limit}</code></pre>
+
+    <h3>4 · Resolve, classify, report</h3>
+    <span class="ref">wikidata_to_czech.py:60–94</span>
+    <p>For each item: resolve an ILI — <strong>prefer P5063</strong>, and only fall
+      back to mapping P8814 through the CILI table. Then look up the Czech synset by
+      ILI and decide the bucket. The <code>or</code> on this line is the whole
+      preference rule:</p>
+    <pre><code>ili = rec["ili"] or pwn31_to_ili.get(rec["wn"])   # prefer P5063
+
+cs_syns   = cs.synsets(ili=ili)
+cs_lemmas = [w.lemma() for s in cs_syns for w in s.words()]
+if not cs_syns:            kind = "missing-synset"
+elif label in cs_lemmas:   kind = "present"
+else:                      kind = "missing-lemma"</code></pre>
+    <p>Finally it prints the counts and the first candidates, and — given a second
+      argument — writes every row as TSV (<span class="ref" style="display:inline">:96–101</span>)
+      so you can open the full list and start validating.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file. That makes it fast to
+      produce and easy to refine — and fallible. A model can misread a line, invent
+      a plausible detail, or keep a number that has since changed.</p>
+    <p>So treat the code as the source of truth and this page as a guide to it:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it and
+        check.</li>
+      <li>The counts (present / missing-…) come from one real run and
+        <strong>drift</strong> as Wikidata changes; read them as illustrative, not
+        fixed.</li>
+      <li>The surest check is to <strong>run the script</strong> and compare its
+        output with the Intuition table.</li>
+      <li>The quiz answers are derived from the code; where one disagrees with the
+        code, the code wins — please report it.</li>
+    </ul>
+    <p>Guard the <em>process</em>, not just the page: generate the explainer only
+      from the real file, pin numbers to an actual run (or label them illustrative),
+      and have a second reader — a person or another model — check it against the
+      source before it is shared.</p>
+  </section>
+
+  <section id="sparql">
+    <h2>Appendix — SPARQL in 60 seconds</h2>
+    <p>Never written a query? SPARQL asks a graph database to find patterns. You
+      need only a few ideas to read the one in this script.</p>
+
+    <h3>Wikidata is triples</h3>
+    <p>Every fact is a <strong>triple</strong> — a subject, a predicate, an object:
+      <em>Netherlands &mdash; instance&nbsp;of &mdash; country</em>. A query draws a
+      pattern with blanks (<strong>variables</strong>, written
+      <code>?like_this</code>) and asks for every way to fill them in.</p>
+
+    <h3>Three prefixes to recognise</h3>
+    <ul>
+      <li><code>wd:</code> — an <em>entity</em>. <code>wd:Q55</code> is the Netherlands.</li>
+      <li><code>wdt:</code> — a <em>property</em>, as a direct claim.
+        <code>wdt:P5063</code> is &ldquo;Interlingual Index ID&rdquo;.</li>
+      <li><code>rdfs:label</code> — an item's name, in some language.</li>
+    </ul>
+
+    <h3>Our query, read aloud</h3>
+    <pre><code>SELECT ?item ?cs ?ili ?wn WHERE {
+  { ?item wdt:P5063 ?ili . } UNION { ?item wdt:P8814 ?wn . }
+  ?item rdfs:label ?cs . FILTER(lang(?cs) = "cs")
+} LIMIT 500</code></pre>
+    <p>&ldquo;Find every <code>?item</code> that has a P5063 value <em>or</em> a
+      P8814 value — that is what <code>UNION</code> does — and whose label
+      <code>?cs</code> is in Czech, which <code>FILTER(lang(?cs)&nbsp;=&nbsp;"cs")</code>
+      keeps. Return at most 500 rows.&rdquo; The <code>SELECT</code> line just lists
+      which blanks to report back; the <code>.</code> ends each triple pattern.</p>
+
+    <div class="callout">
+      <p><strong>Try it.</strong> Paste the query into the
+        <a href="https://query.wikidata.org">Wikidata Query Service</a> and press the
+        play button — it has autocomplete and a results table. Starting from zero? The
+        <a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial">Wikidata
+        SPARQL tutorial</a> is the place to begin.</p>
+    </div>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Term</th><th>What it means here</th></tr></thead>
+      <tbody>
+        <tr><td><strong>synset</strong></td><td>a set of synonyms sharing one
+          meaning — the unit a wordnet links. <span class="cs">pes</span> and
+          <span class="cs">psovitá šelma</span> sit in one synset.</td></tr>
+        <tr><td><strong>lemma</strong></td><td>a word form listed in a synset
+          (<span class="cs">Holandsko</span>). A
+          <span class="chip k-mlemma">missing-lemma</span> is a lemma to add.</td></tr>
+        <tr><td><strong>ILI</strong></td><td>Interlingual Index id
+          (<code>i46360</code>): a language-neutral concept number shared by every
+          wordnet.</td></tr>
+        <tr><td><strong>expand wordnet</strong></td><td>a wordnet that reuses
+          shared concepts through the ILI instead of defining its own. The Czech
+          wordnet is one.</td></tr>
+        <tr><td><strong>CILI</strong></td><td>Collaborative Interlingual Index: the
+          registry of ILIs and the PWN&nbsp;&rarr;&nbsp;ILI tables in
+          <code>globalwordnet/cili</code>.</td></tr>
+        <tr><td><strong>P5063 / P8814</strong></td><td>the two Wikidata properties
+          — the ILI directly, and a WordNet 3.1 offset.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>wikidata_to_czech.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
+      background, intuition, code, quiz.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Opus 4.8 (1M context) · source
+      <code>wikidata_to_czech.py</code> at commit <code>afa4644</code> (2026-11-03) ·
+      explainer v4 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {
+      q: "Why does the script map P8814 through the CILI table instead of through omw-en:2.0?",
+      options: [
+        {t:"omw-en:2.0 is WordNet 3.0, whose offsets differ from P8814's 3.1 ids, so the lookups miss", ok:true},
+        {t:"omw-en is English-only and has no Czech labels", ok:false},
+        {t:"The CILI table is faster to download than loading omw-en", ok:false},
+        {t:"omw-en does not expose ILIs at all", ok:false},
+      ],
+      why:"P8814 holds WordNet 3.1 offsets. omw-en:2.0 is WordNet 3.0; the 3.0 and 3.1 offsets do not line up, so matching against it resolves almost nothing. The CILI pwn31 table maps 3.1 offsets straight to ILIs."
+    },
+    {
+      q: "A result is classified missing-synset. What does that tell you?",
+      options: [
+        {t:"The ILI has no synset in the Czech wordnet at all — a candidate new synset", ok:true},
+        {t:"The Czech synset exists but lacks this particular label", ok:false},
+        {t:"The item had no ILI and could not be resolved", ok:false},
+        {t:"Wikidata linked the item to the wrong sense", ok:false},
+      ],
+      why:"missing-synset means cs.synsets(ili=…) returned nothing: the concept is absent from the Czech wordnet. missing-lemma is the other case, where the synset exists but the label is not among its lemmas."
+    },
+    {
+      q: "Why does the code prefer P5063 over P8814 when both are present?",
+      options: [
+        {t:"P5063 is the ILI itself, so no mapping step is needed", ok:true},
+        {t:"P5063 is present on more Wikidata items", ok:false},
+        {t:"P8814 values are often wrong", ok:false},
+        {t:"P5063 includes the Czech label and P8814 does not", ok:false},
+      ],
+      why:"P5063 is the Interlingual Index ID directly (iNNNN), so it needs no CILI hop. P8814 is actually on more items, which is exactly why the code still falls back to it — but when P5063 is there, it is the shorter, surer route."
+    },
+    {
+      q: "An item carries both P5063 and P8814. How does fetch() handle it?",
+      options: [
+        {t:"The UNION returns two rows; the loop folds them into one record per item, keeping both values", ok:true},
+        {t:"It raises an error on the duplicate item id", ok:false},
+        {t:"It keeps the first row seen and discards the second", ok:false},
+        {t:"It makes a separate SPARQL request for each property", ok:false},
+      ],
+      why:"The UNION in the query yields one row per matching property, so such an item appears twice. items.setdefault(qid, …) creates the record once, and each row fills in whichever of ili / wn it carries."
+    },
+    {
+      q: "Wikidata labels a concept Nizozemsko; the matching Czech synset has the lemma Holandsko. Which bucket?",
+      options: [
+        {t:"missing-lemma — the synset exists, but Nizozemsko is not yet one of its lemmas", ok:true},
+        {t:"present — both name the Netherlands", ok:false},
+        {t:"missing-synset — the synsets have different names", ok:false},
+        {t:"no-ili — the labels disagree", ok:false},
+      ],
+      why:"The synset is found by ILI, so it exists (not missing-synset). The test is label in cs_lemmas: Nizozemsko is not in [Holandsko], so it is missing-lemma — a real candidate synonym to add after checking."
+    },
+  ];
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      // deterministic-free shuffle; Math.random is fine in a published page
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q = document.createElement('div'); q.className='q';
+    const h = document.createElement('p'); h.className='qhead';
+    h.innerHTML = '<span>Q'+(qi+1)+'</span>'+item.q;
+    q.appendChild(h);
+    const ul = document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button');
+      b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why;
+    q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

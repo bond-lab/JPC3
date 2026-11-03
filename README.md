@@ -11,7 +11,7 @@ wordnet database once.
 ## What every project delivers
 
 Whatever the topic, the report has the same four-part spine. It is baked into
-the template in `docs/template/`:
+the template in `latex/report/`:
 
 1. **Extend** — produce the new data *semi-automatically*: an automatic step
    plus a human in the loop.
@@ -33,8 +33,8 @@ the grade — sits on **validation and error analysis**. A big pile of unchecked
 candidates is not a result; a carefully judged sample with an honest error
 taxonomy is.
 
-Write the report with `docs/template/report.tex` (Overleaf: upload the whole
-`docs/template/` folder and press Recompile). It already has the Czech-diacritic
+Write the report with `latex/report/report.tex` (Overleaf: upload the whole
+`latex/report/` folder and press Recompile). It already has the Czech-diacritic
 setup, Leipzig-style glosses, and the four sections stubbed.
 
 ## The projects
@@ -148,9 +148,11 @@ well with project 5.
 ## Layout
 
 ```
+docs/              GitHub Pages site: index.html, pdf/, explanations/
 docs/setup.md      one-time setup (uv, priming the wn database)
-docs/template/     report.tex, report.bib — the shared report skeleton
-docs/slides/       validation.tex, literate.tex — the two lectures
+docs/build.py      wrap explainers + copy PDFs into the site
+latex/slides/      validation.tex, literate.tex — the two lectures
+latex/report/      report.tex, report.bib — the shared report skeleton
 patterns/          project 1 — Czech-specific patterns / přechylování
 derivations/       project 2 — derivational relations
 sensebank/         project 3 — PDT sense-tag remapping

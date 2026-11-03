@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counting Role Nouns — JPC3 explainer</title>
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 1 · Code explainer</p>
+    <h1>Counting Role Nouns</h1>
+    <p class="lede">How <code>count_role_nouns.py</code> measures how many
+      person-by-role nouns (<span class="cs">učitel</span> "teacher",
+      <span class="cs">lékař</span> "doctor") the Czech wordnet has — two
+      independent ways.</p>
+    <div class="meta">
+      <span>count_role_nouns.py</span><span>106 lines</span>
+      <span>deps: wn, lxml</span><span>run: uv run count_role_nouns.py</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>count_role_nouns.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — what we are counting</a></li>
+      <li><a href="#intuition">Intuition — person-ness lives in English</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>A <strong>wordnet</strong> groups words into <em>synsets</em> — sets of
+      synonyms that share one meaning. A <strong>role noun</strong> names a person
+      by the role they fill: <span class="cs">učitel</span> "teacher",
+      <span class="cs">lékař</span> "doctor".</p>
+    <p>Why count them? Project 1 adds feminine forms
+      (<em>přechylování</em>: <span class="cs">učitel → učitelka</span>), and the
+      first thing you want is the scale of the job — how many role nouns are there
+      to work on?</p>
+    <p>The catch: the Czech wordnet is an <strong>expand wordnet</strong>. It does
+      not store its own lexicographer files; each synset is keyed to a
+      <a href="https://wordnet.princeton.edu/">Princeton WordNet</a> offset and
+      <code>Requires omw-en:2.0</code>. So "is this synset about a person?" is read
+      off the English side, two ways, and the script reports both:</p>
+    <ul>
+      <li>the English <strong>lexicographer file</strong> is <code>noun.person</code>;</li>
+      <li>the synset is a transitive <strong>hyponym</strong> of
+        <span class="cs">person, individual, someone</span> (offset <code>00007846-n</code>).</li>
+    </ul>
+    <div class="callout">
+      <p><strong>Why two ways?</strong> Neither is the exact set of role nouns, so
+        the script computes both and reports them side by side. When two different
+        definitions land on nearly the same number, that agreement is reassurance.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Every English noun synset has an <strong>offset</strong> (like
+      <code>03395514-n</code>) and a lexfile. The matching Czech synset carries the
+      <em>same</em> offset. So: pick the English person-synsets, collect their
+      offsets, and count the Czech synsets that share them.</p>
+
+    <div class="wrap-x">
+      <div class="flow">
+        <div class="node"><b>English synsets</b><small>omw-en:2.0</small></div>
+        <div class="branch">
+          <div class="arrow">→<small>noun.person</small></div>
+          <div class="arrow">→<small>hyponyms of person</small></div>
+        </div>
+        <div class="node"><b>offsets</b><small>03395514-n …</small></div>
+        <div class="arrow">→<small>same offset</small></div>
+        <div class="node"><b>Czech synsets</b><small>count them</small></div>
+      </div>
+    </div>
+
+    <p>Decide a few synsets by hand. If the English side is a person, the Czech
+      synset at the same offset is a role noun:</p>
+
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>English synset</th><th>lexfile</th><th>Counted?</th></tr></thead>
+      <tbody>
+        <tr><td>teacher</td><td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span></td></tr>
+        <tr><td>lioness</td><td><code>noun.animal</code></td>
+          <td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>door</td><td><code>noun.artifact</code></td>
+          <td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>mother</td><td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span> (but a kinship term, not a role)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Run over the whole wordnet, the two methods land close together:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Measure</th><th class="num">Czech synsets</th><th class="num">Distinct lemmas</th></tr></thead>
+      <tbody>
+        <tr><td><code>noun.person</code> lexfile</td><td class="num">1,919</td><td class="num">2,585</td></tr>
+        <tr><td>person-hyponym closure</td><td class="num">1,849</td><td class="num">2,489</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>About 1,900 role-noun synsets, against 11,087 <code>noun.person</code> synsets
+      on the English side — roughly 17% coverage. <code>noun.person</code> is an
+      <em>upper bound</em>: it also holds nationalities, kinship terms, and named
+      individuals, so the motion-eligible subset is smaller.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Five parts, in the order they run.</p>
+
+    <h3>1 · Isolate the data, then fetch it</h3>
+    <span class="ref">count_role_nouns.py:22–41</span>
+    <p>Everything is read into a private <code>.wn_data</code> directory beside the
+      script. The <code>assert</code> is not decoration — it guards a notorious
+      <a href="https://github.com/goodmami/wn">wn</a> gotcha: a mistyped data
+      directory fails silently and writes into your real <code>~/.wn_data</code>
+      instead. <code>ensure_data()</code> downloads
+      <a href="https://github.com/omwn">omw-en:2.0</a> and the Czech wordnet once.</p>
+    <pre><code>wn.config.data_directory = DATA
+assert wn.config.database_path.is_relative_to(HERE), "data dir isolation failed"</code></pre>
+
+    <h3>2 · offset()</h3>
+    <span class="ref">count_role_nouns.py:44–47</span>
+    <p>Reduce a synset id to the shared offset and part of speech, so an English
+      synset and its Czech counterpart compare equal.</p>
+    <pre><code>def offset(ss_id: str) -> str:
+    # ntumc-cs-03395514-n / omw-en-03395514-n -> 03395514-n
+    parts = ss_id.rsplit("-", 2)
+    return f"{parts[-2]}-{parts[-1]}"</code></pre>
+
+    <h3>3 · english_person_offsets()</h3>
+    <span class="ref">count_role_nouns.py:50–70</span>
+    <p>Build the two English target sets. The first is a filter on the lexfile. The
+      second walks the <strong>hyponym closure</strong> of <em>person</em> with an
+      explicit stack (a depth-first search), guarding against cycles with a
+      <code>seen</code> set.</p>
+    <pre><code>by_lexfile = {offset(ss.id) for ss in en.synsets(pos="n")
+              if ss.lexfile() == "noun.person"}
+...
+stack, seen = [root], set()
+while stack:
+    cur = stack.pop()
+    ...
+    closure.add(offset(cur.id))
+    stack.extend(cur.hyponyms())</code></pre>
+
+    <h3>4 · czech_counts()</h3>
+    <span class="ref">count_role_nouns.py:73–80</span>
+    <p>Given a set of target offsets, count the Czech synsets that match, the
+      distinct lemmas across them, and the lemma-synset pairs (senses).</p>
+
+    <h3>5 · main()</h3>
+    <span class="ref">count_role_nouns.py:83–101</span>
+    <p>Build both target sets once, list the Czech noun synsets once, and print the
+      two-way table. Listing the Czech nouns a single time keeps it from re-querying
+      the database inside the loop.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce and
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The counts are from one real run; they <strong>drift</strong> as the Czech
+        wordnet grows. Read them as of the version below.</li>
+      <li>The surest check is to <strong>run the script</strong> and compare.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Term</th><th>What it means here</th></tr></thead>
+      <tbody>
+        <tr><td><strong>synset</strong></td><td>a set of synonyms sharing one
+          meaning — the unit a wordnet counts.</td></tr>
+        <tr><td><strong>lemma</strong></td><td>a word form in a synset
+          (<span class="cs">učitel</span>).</td></tr>
+        <tr><td><strong>offset</strong></td><td>a Princeton WordNet synset id like
+          <code>03395514-n</code>; the key that matches English and Czech synsets.</td></tr>
+        <tr><td><strong>lexicographer file</strong></td><td>a coarse English sense
+          class (<code>noun.person</code>, <code>noun.artifact</code>, …).</td></tr>
+        <tr><td><strong>expand wordnet</strong></td><td>a wordnet that reuses the
+          shared structure (offsets, lexfiles) of English instead of its own.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>count_role_nouns.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
+      background, intuition, code, quiz.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Opus 4.8 (1M context) · source
+      <code>count_role_nouns.py</code> at commit <code>b292365</code> (2026-11-02) ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {
+      q: "Why does the script read person-ness off the English wordnet, not the Czech one?",
+      options: [
+        {t:"The Czech wordnet is an expand wordnet, keyed to shared Princeton offsets; it borrows lexfiles and structure from English", ok:true},
+        {t:"The Czech wordnet has no nouns of its own", ok:false},
+        {t:"English wordnet is larger, so its counts are more accurate", ok:false},
+        {t:"Czech synsets do not have offsets", ok:false},
+      ],
+      why:"An expand wordnet does not store its own lexicographer files; each Czech synset shares a Princeton offset with English, so the lexfile and hierarchy are read from omw-en and matched back by offset."
+    },
+    {
+      q: "What does the assert on line 30 protect against?",
+      options: [
+        {t:"A mistyped data directory silently writing into your real ~/.wn_data instead of the isolated project folder", ok:true},
+        {t:"The Czech wordnet failing to download", ok:false},
+        {t:"Running out of memory on a large wordnet", ok:false},
+        {t:"An out-of-date version of the wn library", ok:false},
+      ],
+      why:"Setting a wrong data_directory does not raise in wn; it falls back to ~/.wn_data. The assert checks the database path is inside the project before anything is added, so a typo fails loudly."
+    },
+    {
+      q: "The two methods give about 1,900 synsets each. Why compute both?",
+      options: [
+        {t:"They define 'role noun' differently, so close agreement is a cross-check on the count", ok:true},
+        {t:"One is for synsets, the other for lemmas", ok:false},
+        {t:"The hyponym closure is always exactly right and the lexfile is a backup", ok:false},
+        {t:"To make the script run faster", ok:false},
+      ],
+      why:"noun.person (a flat lexfile) and the hyponym closure of person (a graph walk) are independent operationalisations. When two different definitions land near the same number, you trust the number more."
+    },
+    {
+      q: "What does offset('ntumc-cs-03395514-n') return?",
+      options: [
+        {t:"'03395514-n' — the shared Princeton offset and POS, so Czech and English synsets match", ok:true},
+        {t:"'ntumc-cs' — the lexicon id", ok:false},
+        {t:"'03395514' — just the number, without the POS", ok:false},
+        {t:"the ILI of the synset", ok:false},
+      ],
+      why:"offset() does rsplit('-', 2) and rejoins the last two pieces, giving '03395514-n'. omw-en ids reduce to the same string, which is how the two wordnets are aligned."
+    },
+    {
+      q: "Why is noun.person called an upper bound on role nouns?",
+      options: [
+        {t:"It also contains nationalities, kinship terms, and named individuals, not only role nouns", ok:true},
+        {t:"It misses some role nouns that are in other lexfiles", ok:false},
+        {t:"It counts lemmas twice", ok:false},
+        {t:"It includes animals as well as people", ok:false},
+      ],
+      why:"noun.person is every person synset, which is broader than 'denotes a person by their role'. Čech (a nationality) and matka 'mother' (kinship) are noun.person but not role nouns, so the true set is smaller."
+    },
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPC3 — Improving the Czech Wordnet</title>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --serif:"Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--ground:#0f1518;--surface:#161e22;--ink:#e7ece9;--muted:#93a3a2;
+      --accent:#54bcb1;--accent-soft:#17312f;--hair:#263036;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--serif);
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:48rem;margin:0 auto;padding:4rem 1.25rem 5rem}
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.4rem;line-height:1.12;margin:0 0 .5rem;font-weight:600;text-wrap:balance}
+  .lede{font-size:1.2rem;color:var(--muted);margin:0 0 1rem;text-wrap:balance}
+  .start{font-family:var(--sans);font-size:.85rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:.7rem 0;margin:1.5rem 0}
+  .start a{color:var(--accent)}
+  h2{font-size:1.4rem;margin:2.8rem 0 1rem;font-weight:600;padding-bottom:.3rem;
+    border-bottom:2px solid var(--accent-soft)}
+  p{margin:.7rem 0}
+  a{color:var(--accent)}
+  .cards{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:1rem 0}
+  .card{display:block;text-decoration:none;color:inherit;background:var(--surface);
+    border:1px solid var(--hair);border-radius:12px;padding:1rem 1.1rem;
+    transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card .kind{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent)}
+  .card h3{font-family:var(--sans);font-size:1.05rem;margin:.25rem 0 .3rem;font-weight:600}
+  .card p{font-size:.9rem;color:var(--muted);margin:0}
+  ul.projects{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.5rem;font-size:.95rem}
+  ul.projects b{font-family:var(--sans);font-weight:600}
+  ul.projects span{color:var(--muted)}
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Palacký University, Olomouc</p>
+    <h1>Improving the Czech Wordnet</h1>
+    <p class="lede">A project course: small, careful contributions to the Czech
+      wordnet and the Open Multilingual Wordnet. The emphasis is on validation —
+      error analysis, inter-annotator agreement, and giving fixes back upstream.</p>
+    <p class="start">Code, data, and project briefs:
+      <a href="https://github.com/bond-lab/JPC3">github.com/bond-lab/JPC3</a></p>
+  </header>
+
+  <section>
+    <h2>Lectures</h2>
+    <div class="cards">
+      <a class="card" href="pdf/validation.pdf">
+        <span class="kind">Slides · PDF</span>
+        <h3>Validating data</h3>
+        <p>Error analysis, agreement, Cohen's κ, and feeding fixes back to ARASAAC,
+          Wikidata, and CILI.</p>
+      </a>
+      <a class="card" href="pdf/literate.pdf">
+        <span class="kind">Slides · PDF</span>
+        <h3>Literate programming</h3>
+        <p>Writing code for a human to read: tangle, weave, and a worked example.</p>
+      </a>
+      <a class="card" href="pdf/report.pdf">
+        <span class="kind">Template · PDF</span>
+        <h3>Report skeleton</h3>
+        <p>The shared four-part report every project hands in: extend, validate,
+          visualise, release.</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Explainers</h2>
+    <p>Interactive walkthroughs of the starter scripts — background, intuition, a
+      code tour, and a quiz. Each is generated from the code and carries a caveat:
+      read the code, not just the page.</p>
+    <div class="cards">
+      <a class="card" href="explanations/wikidata.html">
+        <span class="kind">Project 5 · interactive</span>
+        <h3>Wikidata → Czech</h3>
+        <p>Find concepts the Czech wordnet is missing by routing Wikidata through
+          a shared interlingual key.</p>
+      </a>
+      <a class="card" href="explanations/patterns.html">
+        <span class="kind">Project 1 · interactive</span>
+        <h3>Counting role nouns</h3>
+        <p>How many person-by-role nouns the Czech wordnet has, measured two
+          independent ways.</p>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>The projects</h2>
+    <ul class="projects">
+      <li><b>1 · Patterns (přechylování)</b> — <span>feminine / motion variants</span></li>
+      <li><b>2 · Derivations</b> — <span>derivational and morphosemantic relations</span></li>
+      <li><b>3 · Sensebank</b> — <span>remap the PDT 1.5 sense tags to current synsets</span></li>
+      <li><b>4 · Images</b> — <span>ARASAAC &amp; Global Symbols pictographs for AAC</span></li>
+      <li><b>5 · Wikidata</b> — <span>Wikidata → ILI → Czech candidate links</span></li>
+      <li><b>6 · LLM</b> — <span>LLM-assisted quality estimation, grounded in Wikidata</span></li>
+    </ul>
+    <p>Each has a brief, starter code, and a README in the
+      <a href="https://github.com/bond-lab/JPC3">repository</a>.</p>
+  </section>
+
+  <footer>
+    <p>Computational Linguistics Lab, Palacký University · course materials for
+      JPC3 · <a href="https://github.com/bond-lab/JPC3">source on GitHub</a>.</p>
+  </footer>
+</div>
+</body>
+</html>

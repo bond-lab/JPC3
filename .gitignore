@@ -32,3 +32,6 @@
 *.nav
 *.snm
 *.vrb
+
+# compiled PDFs live under docs/pdf/ (published); latex/ holds only sources
+latex/**/*.pdf
