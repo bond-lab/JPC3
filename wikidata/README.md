@@ -21,6 +21,7 @@ It was built up interactively; each step is kept so you can see how it grew.
 | `…v1.html` | where do the ILI mappings come from? add a SPARQL appendix |
 | `…v2.html` | add a glossary |
 | `…v3.html` | add caveats — it is AI-generated and can be wrong |
+| `…v4.html` | hyperlink the key terms (Wikidata, SPARQL, Geoffrey Litt, …) |
 
 **Windows note.** The `wikidata_explainer.html` symlink resolves on Linux and
 macOS. A Windows checkout without symlink support shows it as a one-line text
