@@ -6,8 +6,14 @@ because it is a task where you can evaluate the output properly — every added
 lemma, link, or image can be checked by a person — and because the result is
 useful: it goes back into a resource other people rely on.
 
-Teams of 1–2 pick one project and carry it through a semester: roughly
-**2–3 months at 5–6 hours a week** (≈ 50–70 hours a team).
+Teams of 1–2 pick one project and carry it through a semester. The course is
+**5 credits**, which under the Rector's directive on the credit system
+(B3-11/8) means roughly **125–150 hours of total student workload** per
+student: 25–30 hours of work per credit, with 60 credits to an academic year,
+as in ECTS. That is not contact time. The directive counts all learning
+activities — lectures, seminars, exercises, exams, finding study materials,
+note-taking, group work and self-study — so budget the whole project, not just
+the hours you spend coding.
 
 We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml>
 
