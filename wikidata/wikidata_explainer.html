@@ -149,6 +149,7 @@
       <li><a href="#intuition">Intuition — three concepts, by hand</a></li>
       <li><a href="#code">Code — how the script runs</a></li>
       <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#sparql">Appendix — SPARQL basics</a></li>
     </ol>
   </nav>
 
@@ -183,6 +184,19 @@
         <code>omw-en:2.0</code> instead would fail — that is WordNet <strong>3.0</strong>,
         whose offsets do not line up with 3.1.</p>
     </div>
+
+    <h3>Where the mappings come from</h3>
+    <p>The ILI is the <strong>Collaborative Interlingual Index</strong> — a shared
+      registry of concepts, seeded from Princeton WordNet 3.0 and maintained by the
+      <a href="https://globalwordnet.org/">Global Wordnet Association</a>. It exists
+      so that every wordnet has one common set of concept ids to link to.</p>
+    <p>The offset&nbsp;&rarr;&nbsp;ILI tables live in one place, the
+      <a href="https://github.com/globalwordnet/cili">globalwordnet/cili</a>
+      repository. <code>ili-map-pwn31.tab</code> is the WordNet 3.1 table this
+      script downloads; <code>older-wn-mappings/</code> holds 1.5–2.1 for older
+      sense inventories — the Prague Dependency Treebank, in project 3, is tagged
+      against PWN 1.5. Wikidata's P5063 and P8814 values are added by editors and
+      bots; this script takes them as given.</p>
   </section>
 
   <section id="intuition">
@@ -313,6 +327,45 @@ else:                      kind = "missing-lemma"</code></pre>
     <p>Five questions on the substance. Pick one per question; the reason appears
       either way.</p>
     <div id="quizRoot"></div>
+  </section>
+
+  <section id="sparql">
+    <h2>Appendix — SPARQL in 60 seconds</h2>
+    <p>Never written a query? SPARQL asks a graph database to find patterns. You
+      need only a few ideas to read the one in this script.</p>
+
+    <h3>Wikidata is triples</h3>
+    <p>Every fact is a <strong>triple</strong> — a subject, a predicate, an object:
+      <em>Netherlands &mdash; instance&nbsp;of &mdash; country</em>. A query draws a
+      pattern with blanks (<strong>variables</strong>, written
+      <code>?like_this</code>) and asks for every way to fill them in.</p>
+
+    <h3>Three prefixes to recognise</h3>
+    <ul>
+      <li><code>wd:</code> — an <em>entity</em>. <code>wd:Q55</code> is the Netherlands.</li>
+      <li><code>wdt:</code> — a <em>property</em>, as a direct claim.
+        <code>wdt:P5063</code> is &ldquo;Interlingual Index ID&rdquo;.</li>
+      <li><code>rdfs:label</code> — an item's name, in some language.</li>
+    </ul>
+
+    <h3>Our query, read aloud</h3>
+    <pre><code>SELECT ?item ?cs ?ili ?wn WHERE {
+  { ?item wdt:P5063 ?ili . } UNION { ?item wdt:P8814 ?wn . }
+  ?item rdfs:label ?cs . FILTER(lang(?cs) = "cs")
+} LIMIT 500</code></pre>
+    <p>&ldquo;Find every <code>?item</code> that has a P5063 value <em>or</em> a
+      P8814 value — that is what <code>UNION</code> does — and whose label
+      <code>?cs</code> is in Czech, which <code>FILTER(lang(?cs)&nbsp;=&nbsp;"cs")</code>
+      keeps. Return at most 500 rows.&rdquo; The <code>SELECT</code> line just lists
+      which blanks to report back; the <code>.</code> ends each triple pattern.</p>
+
+    <div class="callout">
+      <p><strong>Try it.</strong> Paste the query into the
+        <a href="https://query.wikidata.org">Wikidata Query Service</a> and press the
+        play button — it has autocomplete and a results table. Starting from zero? The
+        <a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial">Wikidata
+        SPARQL tutorial</a> is the place to begin.</p>
+    </div>
   </section>
 
   <footer>
