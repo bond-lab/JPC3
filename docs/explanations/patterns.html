@@ -171,15 +171,18 @@
       (<em>přechylování</em>: <span class="cs">učitel → učitelka</span>), and the
       first thing you want is the scale of the job — how many role nouns are there
       to work on?</p>
-    <p>The catch: the Czech wordnet is an <strong>expand wordnet</strong>. It does
-      not store its own lexicographer files; each synset is keyed to a
-      <a href="https://wordnet.princeton.edu/">Princeton WordNet</a> offset and
-      <code>Requires omw-en:2.0</code>. So "is this synset about a person?" is read
-      off the English side, two ways, and the script reports both:</p>
+    <p>The catch: the <a href="https://github.com/bond-lab/czech-wn">Czech WordNet</a>
+      (release 2.2) has no lexicographer files, and it records relations one way
+      only, so a synset knows its hypernym but not its hyponyms. What it does have
+      is an <strong>ILI</strong>, an identifier from the
+      <a href="https://github.com/globalwordnet/cili">Collaborative Interlingual
+      Index</a>, on 28,491 of its 28,977 synsets, and the English wordnet
+      <code>omw-en:2.0</code> carries the same ILIs. So "is this synset about a
+      person?" is read off the English side, two ways, and the script reports both:</p>
     <ul>
       <li>the English <strong>lexicographer file</strong> is <code>noun.person</code>;</li>
       <li>the synset is a transitive <strong>hyponym</strong> of
-        <span class="cs">person, individual, someone</span> (offset <code>00007846-n</code>).</li>
+        <span class="cs">person, individual, someone</span> (ILI <code>i35562</code>).</li>
     </ul>
     <div class="callout">
       <p><strong>Why two ways?</strong> Neither is the exact set of role nouns, so
@@ -190,10 +193,12 @@
 
   <section id="intuition">
     <h2>Intuition</h2>
-    <p>Every English noun synset has an <strong>offset</strong> (like
-      <code>03395514-n</code>) and a lexfile. The matching Czech synset carries the
-      <em>same</em> offset. So: pick the English person-synsets, collect their
-      offsets, and count the Czech synsets that share them.</p>
+    <p>Every English noun synset has an <strong>ILI</strong> (like
+      <code>i35562</code>) and a lexfile. The matching Czech synset carries the
+      <em>same</em> ILI. So: pick the English person-synsets, collect their ILIs,
+      and count the Czech synsets that share them. Not their ids: the Czech ids
+      are Princeton 2.0 offsets (<code>wncze-02001223-n</code>), the English ones
+      3.0, and only 124 of 28,721 coincide.</p>
 
     <div class="wrap-x">
       <div class="flow">
@@ -202,14 +207,14 @@
           <div class="arrow">→<small>noun.person</small></div>
           <div class="arrow">→<small>hyponyms of person</small></div>
         </div>
-        <div class="node"><b>offsets</b><small>03395514-n …</small></div>
-        <div class="arrow">→<small>same offset</small></div>
+        <div class="node"><b>ILIs</b><small>i35562 …</small></div>
+        <div class="arrow">→<small>same ILI</small></div>
         <div class="node"><b>Czech synsets</b><small>count them</small></div>
       </div>
     </div>
 
     <p>Decide a few synsets by hand. If the English side is a person, the Czech
-      synset at the same offset is a role noun:</p>
+      synset with the same ILI is a role noun:</p>
 
     <div class="wrap-x">
     <table class="toy">
@@ -232,8 +237,8 @@
     <table class="toy">
       <thead><tr><th>Measure</th><th class="num">Czech synsets</th><th class="num">Distinct lemmas</th></tr></thead>
       <tbody>
-        <tr><td><code>noun.person</code> lexfile</td><td class="num">1,919</td><td class="num">2,585</td></tr>
-        <tr><td>person-hyponym closure</td><td class="num">1,849</td><td class="num">2,489</td></tr>
+        <tr><td><code>noun.person</code> lexfile</td><td class="num">1,922</td><td class="num">2,581</td></tr>
+        <tr><td>person-hyponym closure</td><td class="num">1,850</td><td class="num">2,486</td></tr>
       </tbody>
     </table>
     </div>
@@ -245,51 +250,49 @@
 
   <section id="code">
     <h2>Code</h2>
-    <p>Five parts, in the order they run.</p>
+    <p>Four parts, in the order they run.</p>
 
     <h3>1 · Isolate the data, then fetch it</h3>
-    <span class="ref">count_role_nouns.py:22–41</span>
+    <span class="ref">count_role_nouns.py:23–40</span>
     <p>Everything is read into a private <code>.wn_data</code> directory beside the
       script. The <code>assert</code> is not decoration — it guards a notorious
       <a href="https://github.com/goodmami/wn">wn</a> gotcha: a mistyped data
       directory fails silently and writes into your real <code>~/.wn_data</code>
       instead. <code>ensure_data()</code> downloads
-      <a href="https://github.com/omwn">omw-en:2.0</a> and the Czech wordnet once.</p>
+      <a href="https://github.com/omwn">omw-en:2.0</a> and the
+      <a href="https://github.com/bond-lab/czech-wn/releases/tag/v2.2">Czech WordNet
+      2.2</a> release once.</p>
     <pre><code>wn.config.data_directory = DATA
 assert wn.config.database_path.is_relative_to(HERE), "data dir isolation failed"</code></pre>
 
-    <h3>2 · offset()</h3>
-    <span class="ref">count_role_nouns.py:44–47</span>
-    <p>Reduce a synset id to the shared offset and part of speech, so an English
-      synset and its Czech counterpart compare equal.</p>
-    <pre><code>def offset(ss_id: str) -> str:
-    # ntumc-cs-03395514-n / omw-en-03395514-n -> 03395514-n
-    parts = ss_id.rsplit("-", 2)
-    return f"{parts[-2]}-{parts[-1]}"</code></pre>
-
-    <h3>3 · english_person_offsets()</h3>
-    <span class="ref">count_role_nouns.py:50–70</span>
+    <h3>2 · english_person_ilis()</h3>
+    <span class="ref">count_role_nouns.py:43–64</span>
     <p>Build the two English target sets. The first is a filter on the lexfile. The
       second walks the <strong>hyponym closure</strong> of <em>person</em> with an
       explicit stack (a depth-first search), guarding against cycles with a
       <code>seen</code> set.</p>
-    <pre><code>by_lexfile = {offset(ss.id) for ss in en.synsets(pos="n")
-              if ss.lexfile() == "noun.person"}
+    <pre><code>by_lexfile = {ss.ili for ss in en.synsets(pos="n")
+              if ss.ili and ss.lexfile() == "noun.person"}
 ...
 stack, seen = [root], set()
 while stack:
     cur = stack.pop()
     ...
-    closure.add(offset(cur.id))
+    if cur.ili:
+        closure.add(cur.ili)
     stack.extend(cur.hyponyms())</code></pre>
+    <p>The walk runs on the English side on purpose: the Czech WordNet stores
+      <code>hypernym</code> links only, so <code>hyponyms()</code> on a Czech synset
+      returns nothing.</p>
 
-    <h3>4 · czech_counts()</h3>
-    <span class="ref">count_role_nouns.py:73–80</span>
-    <p>Given a set of target offsets, count the Czech synsets that match, the
-      distinct lemmas across them, and the lemma-synset pairs (senses).</p>
+    <h3>3 · czech_counts()</h3>
+    <span class="ref">count_role_nouns.py:67–74</span>
+    <p>Given a set of target ILIs, count the Czech synsets whose <code>ili</code> is
+      in it, the distinct lemmas across them, and the lemma-synset pairs (senses).</p>
+    <pre><code>syns = [ss for ss in cs_nouns if ss.ili in target]</code></pre>
 
-    <h3>5 · main()</h3>
-    <span class="ref">count_role_nouns.py:83–101</span>
+    <h3>4 · main()</h3>
+    <span class="ref">count_role_nouns.py:77–95</span>
     <p>Build both target sets once, list the Czech noun synsets once, and print the
       two-way table. Listing the Czech nouns a single time keeps it from re-querying
       the database inside the loop.</p>
@@ -325,12 +328,17 @@ while stack:
           meaning — the unit a wordnet counts.</td></tr>
         <tr><td><strong>lemma</strong></td><td>a word form in a synset
           (<span class="cs">učitel</span>).</td></tr>
+        <tr><td><strong>ILI</strong></td><td>an identifier like <code>i35562</code>
+          from the Collaborative Interlingual Index, one per concept across all
+          wordnets; the key that matches English and Czech synsets.</td></tr>
         <tr><td><strong>offset</strong></td><td>a Princeton WordNet synset id like
-          <code>03395514-n</code>; the key that matches English and Czech synsets.</td></tr>
+          <code>02001223-n</code>; it changes between WordNet versions (the Czech ids
+          are 2.0, the English 3.0), so it is <em>not</em> a safe key.</td></tr>
         <tr><td><strong>lexicographer file</strong></td><td>a coarse English sense
           class (<code>noun.person</code>, <code>noun.artifact</code>, …).</td></tr>
-        <tr><td><strong>expand wordnet</strong></td><td>a wordnet that reuses the
-          shared structure (offsets, lexfiles) of English instead of its own.</td></tr>
+        <tr><td><strong>expand wordnet</strong></td><td>a wordnet built by
+          translating the English synsets, so its concepts line up with English and
+          share ILIs; the Czech WordNet is one.</td></tr>
       </tbody>
     </table>
     </div>
@@ -342,9 +350,11 @@ while stack:
       <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
       <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
       background, intuition, code, quiz.</p>
-    <p class="prov">Generated 2026-11-03 by Claude Opus 4.8 (1M context) · source
-      <code>count_role_nouns.py</code> at commit <code>b292365</code> (2026-11-02) ·
-      explainer v0 · regenerate when the code changes.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Opus 4.8 (1M context); revised
+      2026-11-16 by Claude Fable 5.1 for Czech WordNet 2.2 (the join moved from
+      offsets to ILIs) · source <code>count_role_nouns.py</code> at commit
+      <code>155d2ef</code> (2026-11-16) · explainer v1 · regenerate when the code
+      changes.</p>
   </footer>
 </div>
 
@@ -354,15 +364,15 @@ while stack:
     {
       q: "Why does the script read person-ness off the English wordnet, not the Czech one?",
       options: [
-        {t:"The Czech wordnet is an expand wordnet, keyed to shared Princeton offsets; it borrows lexfiles and structure from English", ok:true},
+        {t:"The Czech wordnet has no lexicographer files and no hyponym links, but shares ILIs with English, where both exist", ok:true},
         {t:"The Czech wordnet has no nouns of its own", ok:false},
         {t:"English wordnet is larger, so its counts are more accurate", ok:false},
-        {t:"Czech synsets do not have offsets", ok:false},
+        {t:"Czech synsets do not have ILIs", ok:false},
       ],
-      why:"An expand wordnet does not store its own lexicographer files; each Czech synset shares a Princeton offset with English, so the lexfile and hierarchy are read from omw-en and matched back by offset."
+      why:"The Czech WordNet stores no lexfiles and only hypernym links, so neither test can run on it. Each Czech synset carries an ILI that the English synset shares, so the lexfile and hierarchy are read from omw-en and matched back by ILI."
     },
     {
-      q: "What does the assert on line 30 protect against?",
+      q: "What does the assert on line 32 protect against?",
       options: [
         {t:"A mistyped data directory silently writing into your real ~/.wn_data instead of the isolated project folder", ok:true},
         {t:"The Czech wordnet failing to download", ok:false},
@@ -382,14 +392,14 @@ while stack:
       why:"noun.person (a flat lexfile) and the hyponym closure of person (a graph walk) are independent operationalisations. When two different definitions land near the same number, you trust the number more."
     },
     {
-      q: "What does offset('ntumc-cs-03395514-n') return?",
+      q: "Why not match a Czech synset to its English one by stripping the lexicon prefix off the ids (wncze-02001223-n, omw-en-02084071-n)?",
       options: [
-        {t:"'03395514-n' — the shared Princeton offset and POS, so Czech and English synsets match", ok:true},
-        {t:"'ntumc-cs' — the lexicon id", ok:false},
-        {t:"'03395514' — just the number, without the POS", ok:false},
-        {t:"the ILI of the synset", ok:false},
+        {t:"The Czech ids are WordNet 2.0 offsets and the English ones 3.0, so the numbers differ for almost every concept", ok:true},
+        {t:"The prefixes have different lengths, so the string slicing is fragile", ok:false},
+        {t:"wn does not expose synset ids", ok:false},
+        {t:"It would work, but ILIs are faster to compare", ok:false},
       ],
-      why:"offset() does rsplit('-', 2) and rejoins the last two pieces, giving '03395514-n'. omw-en ids reduce to the same string, which is how the two wordnets are aligned."
+      why:"Offsets are byte positions in a specific WordNet release and move whenever the files change. Only 124 of the 28,721 Czech offsets coincide with an omw-en (3.0) one. The ILI is the version-independent key, which is why the script joins on ss.ili."
     },
     {
       q: "Why is noun.person called an upper bound on role nouns?",

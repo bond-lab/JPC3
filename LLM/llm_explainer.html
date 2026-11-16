@@ -172,10 +172,10 @@
   <section id="intuition">
     <h2>Intuition</h2>
     <p>One record per synset, with everything the model may cite. From a real run:</p>
-    <pre class="data"><code>{"synset": "ntumc-cs-02783161-n", "ili": "i50413",
- "czech_lemmas": ["propisovací tužka", "propiska", "kuličkové pero"],
- "english_lemmas": ["ballpoint", "ballpoint pen", "ballpen", "Biro"],
- "gloss": "a pen that has a small metal ball as the point of transfer of ink to paper",
+    <pre class="data"><code>{"synset": "wncze-02902747-n", "ili": "i51802",
+ "czech_lemmas": ["mešní roucho", "kasule"],
+ "english_lemmas": ["chasuble"],
+ "gloss": "a long sleeveless vestment worn by a priest when celebrating Mass",
  "wikidata_cs": null}</code></pre>
     <p>And the answer the model must return, the same shape every time:</p>
     <pre class="data"><code>{"synset": "...", "verdict": "ok | suspect",
@@ -247,9 +247,10 @@ sample = random.sample([s for s in cs.synsets(pos="n") if s.ili], n)</code></pre
       <code>build_evidence.py</code>. Format after
       <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
       <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
-    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1 · source
-      <code>build_evidence.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
-      explainer v0 · regenerate when the code changes.</p>
+    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1; revised 2026-11-16 for
+      Czech WordNet 2.2 (lexicon <code>wncze:2.2</code>, new example record) · source
+      <code>build_evidence.py</code> at commit <code>155d2ef</code> (2026-11-16) ·
+      explainer v1 · regenerate when the code changes.</p>
   </footer>
 </div>
 
