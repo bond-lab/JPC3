@@ -1,0 +1,258 @@
+{
+ "total": {
+  "synsets": 23094,
+  "words": 34159,
+  "kept": 29099,
+  "tagged": 102641
+ },
+ "all": {
+  "synsets": 19494,
+  "words": 26351,
+  "kept": 26351,
+  "tagged": 70347,
+  "share": 68.5,
+  "lowconf": 303
+ },
+ "some": {
+  "synsets": 1594,
+  "words": 5054,
+  "kept": 2748,
+  "tagged": 23654,
+  "share": 23.0,
+  "lowconf": 41
+ },
+ "elsewhere": {
+  "synsets": 1024,
+  "words": 1481,
+  "kept": 0,
+  "tagged": 3817,
+  "share": 3.7,
+  "lowconf": 88
+ },
+ "gone": {
+  "synsets": 345,
+  "words": 400,
+  "kept": 0,
+  "tagged": 149,
+  "share": 0.1,
+  "lowconf": 11
+ },
+ "absent": {
+  "synsets": 383,
+  "words": 560,
+  "kept": 0,
+  "tagged": 905,
+  "share": 0.9,
+  "lowconf": 120
+ },
+ "noili": {
+  "synsets": 90,
+  "words": 112,
+  "kept": 0,
+  "tagged": 64,
+  "share": 0.1,
+  "lowconf": 0
+ },
+ "newin": {
+  "synsets": 93,
+  "words": 113,
+  "kept": 0,
+  "tagged": 3386,
+  "share": 3.3,
+  "lowconf": 0
+ },
+ "newout": {
+  "synsets": 71,
+  "words": 88,
+  "kept": 0,
+  "tagged": 319,
+  "share": 0.3,
+  "lowconf": 0
+ },
+ "ufal": {
+  "synsets": 203,
+  "tagged": 17375,
+  "defs": 155,
+  "defskept": 6,
+  "examples": 242,
+  "exampleskept": 2,
+  "allkept": 68
+ },
+ "brno": {
+  "synsets": 3133,
+  "tagged": 7934,
+  "defs": 525,
+  "defskept": 499,
+  "examples": 44,
+  "exampleskept": 44,
+  "allkept": 2757
+ },
+ "defs": {
+  "total": 782,
+  "kept": 582
+ },
+ "examples": {
+  "total": 339,
+  "kept": 91
+ },
+ "newsyn": {
+  "synsets": 164,
+  "tagged": 3705
+ },
+ "idcheck": {
+  "pwn15": 22930,
+  "same": 33,
+  "overlap": 0
+ },
+ "hyper": {
+  "both": 19441,
+  "kept": 13155,
+  "orphans": 1727
+ },
+ "lemma": {
+  "l0": {
+   "pdt": 6,
+   "tagged": 598,
+   "reached": 5,
+   "now": 6
+  },
+  "l1": {
+   "pdt": 1,
+   "tagged": 258,
+   "reached": 1,
+   "now": 10
+  },
+  "l2": {
+   "pdt": 3,
+   "tagged": 688,
+   "reached": 2,
+   "now": 6
+  },
+  "l3": {
+   "pdt": 2,
+   "tagged": 791,
+   "reached": 2,
+   "now": 4
+  },
+  "l4": {
+   "pdt": 10,
+   "tagged": 484,
+   "reached": 4,
+   "now": 15
+  },
+  "l5": {
+   "pdt": 2,
+   "tagged": 375,
+   "reached": 2,
+   "now": 4
+  },
+  "l6": {
+   "pdt": 1,
+   "tagged": 469,
+   "reached": 0,
+   "now": 7
+  },
+  "l7": {
+   "pdt": 7,
+   "tagged": 179,
+   "reached": 0,
+   "now": 12
+  },
+  "l8": {
+   "pdt": 2,
+   "tagged": 268,
+   "reached": 2,
+   "now": 3
+  },
+  "l9": {
+   "pdt": 5,
+   "tagged": 468,
+   "reached": 3,
+   "now": 15
+  },
+  "l10": {
+   "pdt": 4,
+   "tagged": 2803,
+   "reached": 1,
+   "now": 9
+  },
+  "l11": {
+   "pdt": 6,
+   "tagged": 1442,
+   "reached": 0,
+   "now": 1
+  },
+  "l12": {
+   "pdt": 1,
+   "tagged": 277,
+   "reached": 1,
+   "now": 10
+  },
+  "l13": {
+   "pdt": 2,
+   "tagged": 480,
+   "reached": 1,
+   "now": 4
+  },
+  "l14": {
+   "pdt": 5,
+   "tagged": 468,
+   "reached": 4,
+   "now": 6
+  },
+  "l15": {
+   "pdt": 4,
+   "tagged": 763,
+   "reached": 1,
+   "now": 3
+  },
+  "l16": {
+   "pdt": 4,
+   "tagged": 217,
+   "reached": 2,
+   "now": 9
+  },
+  "l17": {
+   "pdt": 4,
+   "tagged": 207,
+   "reached": 0,
+   "now": 4
+  },
+  "l18": {
+   "pdt": 2,
+   "tagged": 2219,
+   "reached": 2,
+   "now": 5
+  },
+  "l19": {
+   "pdt": 8,
+   "tagged": 1002,
+   "reached": 2,
+   "now": 13
+  },
+  "l20": {
+   "pdt": 4,
+   "tagged": 422,
+   "reached": 1,
+   "now": 6
+  },
+  "l21": {
+   "pdt": 1,
+   "tagged": 216,
+   "reached": 1,
+   "now": 4
+  },
+  "l22": {
+   "pdt": 4,
+   "tagged": 348,
+   "reached": 3,
+   "now": 10
+  },
+  "l23": {
+   "pdt": 2,
+   "tagged": 422,
+   "reached": 2,
+   "now": 5
+  }
+ }
+}

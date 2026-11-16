@@ -17,12 +17,10 @@ the code too.
 
 CILI ships historical maps under
 [`older-wn-mappings/`](https://github.com/globalwordnet/cili/tree/master/older-wn-mappings),
-including `ili-map-pwn15.tab`. So the hop you feared (chaining 1.5→1.6→…→3.0)
-is unnecessary: map the PDT synset offset straight to an ILI, then to Czech.
+including `ili-map-pwn15.tab`. So we can map the PDT synset offset straight to an ILI, then to Czech.
 
 The file has **three** tab-separated columns — `ili`, `offset-pos`,
-`confidence` — so parse all three (the confidence flag is itself worth
-reporting on in the error analysis):
+`confidence` — so parse all three (the confidence flag is interesting  in the error analysis):
 
 The bridge is in [`pdt_to_czech.py`](pdt_to_czech.py) — it caches the 1.5 map
 beside itself and maps offset → ILI → Czech synset:
@@ -39,19 +37,61 @@ Sanity check: of the ~87k distinct ILIs in the 1.5 map, **26 363** resolve to a
 synset that exists in the Czech wordnet — so the bridge reaches a large share of
 the inventory before you even look at PDT.
 
-**A second bridge.** The Czech WordNet repository keeps, under
+**The annotation wordnet.** The Czech WordNet repository keeps, under
 [`sources/`](https://github.com/bond-lab/czech-wn/tree/main/sources), the very
 version of the wordnet that was used to annotate PDT
 (`nas_anotacni_slovnik.xml`, 23,094 synsets; CC BY-NC-SA 3.0, a *different*
-licence from the release). Its synsets carry the PDT-era ids, so it can confirm
-or contradict what the CILI map says, and it names the Czech words the
-annotators saw. Compare the two routes and report where they disagree.
+licence from the release). 
 
 **Counts already exist.** Release 2.2 carries counts for 1,736 senses, how
 often each is tagged in the NTU-MC Czech corpus, made by the repository's
 `scripts/corpus_counts.py`. Your PDT frequencies go in the same way, as
 `Count` records with the corpus as their source, and become the second corpus
 the wordnet reports.
+
+## The worked example
+
+No one chose this project in 2026, so it is done here as an example. The report is
+[`report/report.tex`](report/report.tex) (PDF on the course site); the
+papers it discusses are in [`papers/`](papers/).
+
+```bash
+uv run pdt_wordnet_vs_wncze.py   # what of the PDT wordnet reached wncze 2.2
+uv run pdt_frequencies.py        # sense counts from the tags, and the residue
+uv run report/facts_tex.py       # the figures the report cites
+uv run new_sense_sheets.py       # validation sheets for the missing senses
+uv run --with pytest pytest test_pdt.py
+```
+
+The first run downloads the annotation, its wordnet and PDT 3.0 (130 MB) from
+LINDAT into `data/` (git-ignored: CC BY-NC-SA). `pdt_sources.py` reads them.
+Outputs, also in `data/`:
+
+| File | What |
+|---|---|
+| `pdt_vs_wncze.tsv` | each PDT-wordnet synset: its ILI, wncze synset, words kept, definitions and examples kept, tags |
+| `pdt_counts.tsv` | sense counts from PDT, beside the NTU-MC counts already in the release |
+| `pdt_set_count.jsonl` | the same as `set_count` change records for `bond-lab/czech-wn` |
+| `pdt_missing_words.tsv` | tagged words the wncze synset lacks: `add_sense` candidates |
+| `pdt_new_synsets.tsv` | tags on synsets with no Princeton id: `add_synset` candidates |
+| `pdt_exceptions.tsv` | words tagged with an exception, by type and lemma |
+| `sheets/` | `sheet-A.xlsx` … `sheet-G.xlsx` for seven students, and `items.tsv`, the key |
+
+Two findings to start from. The tags' exception codes are not documented;
+the report's Table 2 infers them, and tests two. And the synsets came
+through but ÚFAL's edits did not: the new senses of *mít* and *moci*, with
+their definitions and examples, are not in the release.
+
+**Validating the missing senses.** `new_sense_sheets.py` takes the PDT
+senses that wncze 2.2 lacks and makes one workbook per student: all 150 whose
+concept or synset is missing, and a random 60 of the 985 where only the word
+is missing from the wncze synset (adding a word is easy, so the sample just
+measures how often it would be right). Each sense goes to two students (one of the 21 pairs),
+who choose *add*, *already in wncze*, *wrong tag* or *unsure*. The script's
+docstring explains the randomisation: dealing by frequency so every pair's
+κ covers rare and frequent senses, random item numbers and sheet order, and a
+fixed seed so the key never changes. The sheets hold PDT sentences
+(CC BY-NC-SA): hand them out directly, don't commit them.
 
 ## What to actually build
 

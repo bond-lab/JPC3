@@ -1,0 +1,30 @@
+{
+ "items": 210,
+ "students": 7,
+ "pairs": 21,
+ "perstudent": 60,
+ "perpair": 10,
+ "tagged": 5083,
+ "population": 1135,
+ "word": {
+  "judged": 60,
+  "of": 985
+ },
+ "concept": {
+  "judged": 80,
+  "of": 80
+ },
+ "newsyn": {
+  "judged": 53,
+  "of": 53
+ },
+ "noili": {
+  "judged": 17,
+  "of": 17
+ },
+ "wordsample": {
+  "once": 17,
+  "ten": 14,
+  "tagged": 600
+ }
+}

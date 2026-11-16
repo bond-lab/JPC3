@@ -34,9 +34,10 @@ EXPLAINERS = [
     (ROOT / "LLM" / "llm_explainer.html", "llm.html"),
 ]
 PDFS = [
-    ROOT / "latex" / "slides" / "validation.pdf",
-    ROOT / "latex" / "slides" / "literate.pdf",
-    ROOT / "latex" / "report" / "report.pdf",
+    (ROOT / "latex" / "slides" / "validation.pdf", "validation.pdf"),
+    (ROOT / "latex" / "slides" / "literate.pdf", "literate.pdf"),
+    (ROOT / "latex" / "report" / "report.pdf", "report.pdf"),
+    (ROOT / "sensebank" / "report" / "report.pdf", "sensebank-report.pdf"),
 ]
 
 SKELETON = """<!doctype html>
@@ -73,12 +74,12 @@ def main() -> None:
             SKELETON.format(title=title_of(body, dest), body=body), encoding="utf-8")
         print(f"wrote explanations/{dest}")
 
-    for pdf in PDFS:
+    for pdf, dest in PDFS:
         if pdf.exists():
-            shutil.copy2(pdf, DOCS / "pdf" / pdf.name)
-            print(f"copied pdf/{pdf.name}")
+            shutil.copy2(pdf, DOCS / "pdf" / dest)
+            print(f"copied pdf/{dest}")
         else:
-            print(f"skip {pdf.name} (not built — compile the LaTeX first)")
+            print(f"skip {dest} (not built — compile the LaTeX first)")
 
 
 if __name__ == "__main__":

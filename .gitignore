@@ -38,3 +38,13 @@ latex/**/*.pdf
 
 # downloaded ARASAAC template and generated pictograms (outputs, not source)
 images/*.png
+
+# sensebank: LINDAT downloads (CC BY-NC-SA) and outputs, the built report
+# (published as docs/pdf/sensebank-report.pdf), and a paper we may not share
+sensebank/data/
+sensebank/report/*.pdf
+sensebank/papers/bejcek-etal-2006-tsd.pdf
+
+# Python caches
+__pycache__/
+.pytest_cache/

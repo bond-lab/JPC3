@@ -1,0 +1,573 @@
+%%% ------------------------------------------------------------------
+%%% JPC3 --- Improving the Czech Wordnet
+%%% Project 3 (sensebank): the worked example.
+%%%
+%%% Every figure that comes from data is cited as \fact{key} from
+%%% facts.tex.  To rebuild them:
+%%%     cd sensebank
+%%%     uv run pdt_wordnet_vs_wncze.py
+%%%     uv run pdt_frequencies.py
+%%%     uv run report/facts_tex.py
+%%% then compile:
+%%%     pdflatex report; bibtex report; pdflatex report; pdflatex report
+%%% Figures quoted from the papers are typed, with their citation.
+%%% ------------------------------------------------------------------
+
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[margin=25mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\usepackage[svgnames]{xcolor}
+\usepackage{hyperref,url}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=DarkBlue,
+    urlcolor=DarkRed,
+    citecolor=DarkGreen,
+}
+
+\usepackage{langsci-gb4e}
+\let\eachwordone=\itshape
+\providecommand{\noautomath}{}
+\noautomath
+\newcommand{\gm}[1]{\textsc{\MakeLowercase{#1}}}
+
+\input{facts}
+
+\title{Merging the PDT Sense Annotation into the Czech WordNet 2.2\\
+  \large JPC3 --- Improving the Czech Wordnet}
+\author{Francis Bond}
+\date{2026-11-16 (draft: the hand validation is still to do)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Between 2004 and 2011 ÚFAL annotated \fact{freq.words} words of the
+  Prague Dependency Treebank with synsets of their own copy of the Czech
+  WordNet, and edited that copy as they went.  We ask how much of that work
+  reached the current Czech WordNet, release 2.2, and use the annotation
+  to give the release corpus frequencies.  Mapping the annotation
+  wordnet's Princeton WordNet 1.5 ids through the Collaborative
+  Interlingual Index, \fact{cmp.all.synsets} of its
+  \fact{cmp.total.synsets} synsets reach a synset with all their words,
+  and those synsets carry \fact{cmp.all.share}\% of the tags.  The edits made in Brno reached the release, but of the
+  \fact{cmp.ufal.defs} definitions ÚFAL wrote, only
+  \fact{cmp.ufal.defskept} did.
+  The tags give counts for \fact{freq.senses.pdt} senses, from
+  \fact{freq.counted.share}\% of the words tagged with a synset.
+\end{abstract}
+
+%%% ------------------------------------------------------------------
+\section{Introduction}
+%%% ------------------------------------------------------------------
+
+The PDT annotators tagged the Czech modal verb \textbf{\textit{moci}} \fact{cmp.lemma.l11.tagged}
+times.  The two annotators disagreed on 1,435 of them, so ÚFAL rewrote
+its senses \citep{bejcek-etal2006}: \factw{cmp.lemma.l11.pdt} new synsets
+(possibility, permission, suitability, futility, estimate,
+responsibility), each with a definition and examples such
+as~(\ref{ex:moci}).  The Czech WordNet 2.2 has
+\factw{cmp.lemma.l11.now} synset for \textit{moci}, and none of the
+\factw{cmp.lemma.l11.pdt}.
+
+\begin{exe}
+  \ex \label{ex:moci} Czech [ces] \\
+      \gll Každý se může zmýlit. \\
+           everyone \gm{refl} can.\gm{3sg} err.\gm{inf} \\
+  \trans ``Anyone can make a mistake.'' \hfill \citep{cwn19pdt2011}
+\end{exe}
+
+In this paper we ask how much of the annotation's work reached the
+current wordnet.  The tags are useful only as far as they link to a
+wordnet people use, and for the release they are a second source of
+sense frequencies, beside the NTU-MC corpus.
+
+The project brief sets three goals.  Map the PDT tags to the current
+synsets, aiming for at least 95\% automatically; use them to add
+\emph{corpus frequencies} to the wordnet; and hand-categorise 500 of the
+tags that do not map.  Section~\ref{sec:data} describes the data,
+Section~\ref{sec:previous} the four papers on it, and
+Section~\ref{sec:method} what reached the release and the frequencies.
+Section~\ref{sec:validation} reports the checks done so far and the hand
+validation still to do.
+
+%%% ------------------------------------------------------------------
+\section{Data and resources}
+\label{sec:data}
+%%% ------------------------------------------------------------------
+
+Table~\ref{tab:data} lists the five resources.  The three from LINDAT are
+licensed CC BY-NC-SA, non-commercial, unlike the CC BY-SA of the Czech
+WordNet release; Section~\ref{sec:release} returns to this.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Resource & Used for & Licence \\
+    \midrule
+    Czech WordNet 1.9 PDT \citep{cwn19pdt2011} & the tagged synsets & CC BY-NC-SA 3.0 \\
+    PDT sense annotation \citep{pdt-wsd2011} & the tags (stand-off) & CC BY-NC-SA 3.0 \\
+    PDT 3.0 \citep{pdt30} & the lemmas & CC BY-NC-SA 3.0 \\
+    CILI 1.5 map \citep{bond-etal2016cili} & offset to ILI & CC BY 4.0 \\
+    Czech WordNet 2.2 \citep{pala-etal2026wncze} & the target & CC BY-SA 4.0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Resources, what each is used for, and its licence.}
+  \label{tab:data}
+\end{table}
+
+\subsection{The annotation wordnet}
+
+  It has \fact{cmp.total.synsets}
+synsets and \fact{cmp.total.words} words.  \fact{cmp.idcheck.pwn15} synsets
+have Princeton WordNet ids, and \fact{cmp.newsyn.synsets} were added
+without one.  The Princeton ids are \emph{1.5} offsets, not the 2.0
+offsets the release uses: read as 2.0 ids, \fact{cmp.idcheck.same} of them
+name a synset in the release, and \fact{cmp.idcheck.overlap} of those share a word
+with it.  Read as 1.5 offsets through CILI they line up
+(Section~\ref{sec:method}).  Edit stamps record who changed a synset and
+when: Bejček, at ÚFAL in 2006, on \fact{cmp.ufal.synsets} synsets (the 203
+``created or modified by ÚFAL'' of the LINDAT record), and the Brno team on
+\fact{cmp.brno.synsets}.
+
+\subsection{The annotation}
+
+  One stand-off file per PDT document gives,
+for each annotated word, its id and a tag.  The tag is a synset id without
+leading zeros or part of speech (\texttt{1307561} for \texttt{01307561-v},
+\textit{mít} ``have''), an id of a new synset, a small number for an
+exception, or a hyphen for a word with no agreed tag.  The papers list the
+exceptions but not their codes, so we inferred them (Table~\ref{tab:exc}).
+Code~4 is the easiest to test: PDT lemmatises a negated word to its
+positive form, so a word whose sense the wordnet has only in the positive
+should be negated, and \fact{freq.negated.4}\% of code-4 words are, against
+\fact{freq.negated.synset}\% of words tagged with a synset.  Code~8 has
+\fact{freq.exc.8} words and code~10 has \factw{freq.exc.10}, close to the
+20 and 0 agreed cases \citet{bejcek-etal2006} report for the exceptions
+they number 8 and 10.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}rlrl@{}}
+    \toprule
+    Code & Exception & Words & Evidence; commonest lemmas \\
+    \midrule
+    1 & missing sense (guess)    & \fact{freq.exc.1} & none; \textit{kolo, hráč, kontakt} \\
+    7 & proper name              & \fact{freq.exc.7} & lemmas; \textit{Profit} (a newspaper), \textit{Zeman} \\
+    4 & missing negative sense   & \fact{freq.exc.4} & \fact{freq.negated.4}\% negated; \textit{chtít, vědět} \\
+    2 & incorrect reflexivity    & \fact{freq.exc.2} & reflexive verbs; \textit{objevit (se), konat (se)} \\
+    5 & incorrect lemma          & \fact{freq.exc.5} & lemmas; \textit{bank, haš} \\
+    6 & figurative use           & \fact{freq.exc.6} & lemmas; \textit{dát, ruka, uzda} \\
+    0 & other problem (guess)    & \fact{freq.exc.0} & none \\
+    8 & unclear word meaning     & \fact{freq.exc.8} & count, as in \citet{bejcek-etal2006} \\
+    10 & missing more general sense & \fact{freq.exc.10} & count, as in \citet{bejcek-etal2006} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Exception codes in the 2011 data, how each was identified, and
+    its commonest lemmas.}
+  \label{tab:exc}
+\end{table}
+
+%%% ------------------------------------------------------------------
+\section{Previous work}
+\label{sec:previous}
+%%% ------------------------------------------------------------------
+
+\citet{hajic-etal2004} describe the first year of the annotation.  The
+Czech WordNet is the sense inventory; for each lemma the annotator sees
+the synsets containing it and chooses one, preferring synsets where the
+lemma is a single word, or one of eleven exceptions.  Two annotators tag
+every word independently.  After a year they had 125,129 words, about
+15\% of PDT, and report three findings.  Coverage was poor:
+only 34\% of the words were in the wordnet, no adverbs at all, as the
+version they used (1.2a) had none.  Agreement was low, 61.4\% on synsets
+and 69.9\% counting exceptions, and did not fall as ambiguity rose.  The annotation also fed back into the wordnet: only 12\% of its synsets were
+used, and very common senses of frequent words were missing.  They
+present that feedback as the second purpose of the project, beside
+training data for word sense disambiguation, and note that only SemCor
+\citep{landes-etal1998} had done this before.
+
+\citet{bejcek-etal2006} report the annotation at scale: 431,447 words read,
+148,774 annotated, over 20\% of PDT 2.0.  Agreement counting exceptions
+rose to 74.6\%.  They argue against letting annotators assign several
+synsets: the exceptions for that case were agreed only 20 and 0 times.
+Their main contribution is a correction procedure.  A third annotator
+judges disagreements, and the 25 lemmas with at least 200 disagreements,
+\textit{mít} with 2,853 and \textit{moci} with 1,435 among them, get
+their senses rewritten in the wordnet, each with a definition and an
+example, and are re-annotated.  Correcting 0.5\% of the problem lemmas
+raised the words tagged with a single-word synset by 7.4 points and the
+fully disambiguated sentences from 5,111 to 6,941, for 320 hours of a
+corrector's time and 215 of a programmer's.  The data and the edited
+wordnet were released in 2011 \citep{pdt-wsd2011,cwn19pdt2011}.  The released data agree: they have \fact{freq.words} annotated words,
+against the 148,774 reported.
+
+\citet{rambousek-etal2017} and \citet{rambousek-etal2018} tell the
+wordnet's side.  The original Czech WordNet \citep{palasmrz2004} has
+28,201 synsets linked to Princeton WordNet 2.0, and was published by ELRA
+under a closed licence.  Later versions were never merged: a 2009 edit of
+2,400 base-concept synsets, a 2011 extension from a bilingual dictionary
+(40,621 synsets, 30\% of a checked sample with wrong synonyms), VerbaLex,
+and 5,676 definitions written by students but kept in text files.  The
+2017 roadmap is an open licence and links to CILI; the 2018 paper adds
+derivational relations and a crowdsourcing tool for suggested fixes.
+Neither mentions folding the PDT edits back in, though the 2018 paper
+points to the PDT version on LINDAT as a ``slightly modified (corrected)''
+copy of the original.  This project measures how much of them arrived.  The copies
+had also drifted apart in their identifiers: the release's ids are
+WordNet 2.0 offsets, the PDT copy's are 1.5 offsets.
+
+%%% ------------------------------------------------------------------
+\section{Method and results}
+\label{sec:method}
+%%% ------------------------------------------------------------------
+
+\subsection{The bridge}
+
+Each annotation synset with a Princeton id is mapped to an ILI through
+the CILI table from WordNet~1.5 \citep{bond-etal2016cili}, which gives a
+confidence for each link.  The release synset with that ILI is the
+target.  We then compare the words, definitions, examples and hypernym
+links of the two synsets, and count the tags on each annotation synset so
+that every figure can be weighted by use
+(\texttt{pdt\_wordnet\_vs\_wncze.py}).
+
+\subsection{What reached the release}
+
+Table~\ref{tab:status} gives the result.  \fact{cmp.all.synsets} synsets
+reach a release synset with all their words, and they hold
+\fact{cmp.all.share}\% of the tags; with partial matches it is
+\fact{cmp.some.share}\% more.  The links below confidence~1 are where the
+bridge breaks: \textit{dobrý} ``good'', \fact{cmp.lemma.l6.tagged} tags, maps
+to \textit{výborný} ``excellent'' with confidence below 0.25.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    What became of the synset & Synsets & Words & Tags & \% of tags \\
+    \midrule
+    all words kept                     & \fact{cmp.all.synsets} & \fact{cmp.all.words} & \fact{cmp.all.tagged} & \fact{cmp.all.share} \\
+    some words kept                    & \fact{cmp.some.synsets} & \fact{cmp.some.words} & \fact{cmp.some.tagged} & \fact{cmp.some.share} \\
+    no word kept, words elsewhere      & \fact{cmp.elsewhere.synsets} & \fact{cmp.elsewhere.words} & \fact{cmp.elsewhere.tagged} & \fact{cmp.elsewhere.share} \\
+    no word kept, words gone           & \fact{cmp.gone.synsets} & \fact{cmp.gone.words} & \fact{cmp.gone.tagged} & \fact{cmp.gone.share} \\
+    concept not in the release         & \fact{cmp.absent.synsets} & \fact{cmp.absent.words} & \fact{cmp.absent.tagged} & \fact{cmp.absent.share} \\
+    no ILI for the 1.5 offset          & \fact{cmp.noili.synsets} & \fact{cmp.noili.words} & \fact{cmp.noili.tagged} & \fact{cmp.noili.share} \\
+    new synset, words in one release synset & \fact{cmp.newin.synsets} & \fact{cmp.newin.words} & \fact{cmp.newin.tagged} & \fact{cmp.newin.share} \\
+    new synset, not in the release     & \fact{cmp.newout.synsets} & \fact{cmp.newout.words} & \fact{cmp.newout.tagged} & \fact{cmp.newout.share} \\
+    \midrule
+    total                              & \fact{cmp.total.synsets} & \fact{cmp.total.words} & \fact{cmp.total.tagged} & \\
+    \bottomrule
+  \end{tabular}
+  \caption{The annotation wordnet's synsets by what became of them in the
+    Czech WordNet 2.2, weighted by the tags on them.  A new synset whose
+    words share a release synset is weak evidence: for a single word it
+    only means the word is there in some sense.}
+  \label{tab:status}
+\end{table}
+
+Most of the editing done in Brno reached the release, and little of
+ÚFAL's did.  Of
+\fact{cmp.brno.defs} definitions in synsets Brno stamped,
+\fact{cmp.brno.defskept} are in the release, and all
+\fact{cmp.brno.examples} of their examples.  Of the \fact{cmp.ufal.defs}
+definitions in synsets ÚFAL stamped, \fact{cmp.ufal.defskept} are, and
+\fact{cmp.ufal.exampleskept} of \fact{cmp.ufal.examples} examples.  Those
+\fact{cmp.ufal.synsets} synsets carry \fact{cmp.ufal.tagged} tags, the
+most-used part of the annotation.  Of the hypernym links whose two ends
+both reached the release, \fact{cmp.hyper.kept} of \fact{cmp.hyper.both}
+are there; \fact{cmp.hyper.orphans} of the rest start from a release synset
+with no hypernym at all, such as \textit{ampér} ``ampere''.
+
+Table~\ref{tab:lemmas} follows the 25 corrected lemmas.  ``Reached''
+counts the annotation senses whose ILI leads to a release synset that
+contains the lemma.  For the two modal verbs, \textit{mít} and
+\textit{moci}, almost nothing of the re-analysis arrived, and they are
+among the most-tagged lemmas.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}llrrrr@{}}
+    \toprule
+    Lemma & Gloss & PDT senses & Tags & Reached & Release senses \\
+    \midrule
+    \textit{čas}    & time     & \fact{cmp.lemma.l0.pdt} & \fact{cmp.lemma.l0.tagged} & \fact{cmp.lemma.l0.reached} & \fact{cmp.lemma.l0.now} \\
+    \textit{část}   & part     & \fact{cmp.lemma.l1.pdt} & \fact{cmp.lemma.l1.tagged} & \fact{cmp.lemma.l1.reached} & \fact{cmp.lemma.l1.now} \\
+    \textit{cena}   & price    & \fact{cmp.lemma.l2.pdt} & \fact{cmp.lemma.l2.tagged} & \fact{cmp.lemma.l2.reached} & \fact{cmp.lemma.l2.now} \\
+    \textit{člověk} & human    & \fact{cmp.lemma.l3.pdt} & \fact{cmp.lemma.l3.tagged} & \fact{cmp.lemma.l3.reached} & \fact{cmp.lemma.l3.now} \\
+    \textit{dát}    & give     & \fact{cmp.lemma.l4.pdt} & \fact{cmp.lemma.l4.tagged} & \fact{cmp.lemma.l4.reached} & \fact{cmp.lemma.l4.now} \\
+    \textit{den}    & day      & \fact{cmp.lemma.l5.pdt} & \fact{cmp.lemma.l5.tagged} & \fact{cmp.lemma.l5.reached} & \fact{cmp.lemma.l5.now} \\
+    \textit{dobrý}  & good     & \fact{cmp.lemma.l6.pdt} & \fact{cmp.lemma.l6.tagged} & \fact{cmp.lemma.l6.reached} & \fact{cmp.lemma.l6.now} \\
+    \textit{dostat} & get      & \fact{cmp.lemma.l7.pdt} & \fact{cmp.lemma.l7.tagged} & \fact{cmp.lemma.l7.reached} & \fact{cmp.lemma.l7.now} \\
+    \textit{fax}    & fax      & \fact{cmp.lemma.l8.pdt} & \fact{cmp.lemma.l8.tagged} & \fact{cmp.lemma.l8.reached} & \fact{cmp.lemma.l8.now} \\
+    \textit{místo}  & place    & \fact{cmp.lemma.l9.pdt} & \fact{cmp.lemma.l9.tagged} & \fact{cmp.lemma.l9.reached} & \fact{cmp.lemma.l9.now} \\
+    \textit{mít}    & have     & \fact{cmp.lemma.l10.pdt} & \fact{cmp.lemma.l10.tagged} & \fact{cmp.lemma.l10.reached} & \fact{cmp.lemma.l10.now} \\
+    \textit{moci}   & can      & \fact{cmp.lemma.l11.pdt} & \fact{cmp.lemma.l11.tagged} & \fact{cmp.lemma.l11.reached} & \fact{cmp.lemma.l11.now} \\
+    \textit{návrh}  & proposal & \fact{cmp.lemma.l12.pdt} & \fact{cmp.lemma.l12.tagged} & \fact{cmp.lemma.l12.reached} & \fact{cmp.lemma.l12.now} \\
+    \textit{podnik} & business & \fact{cmp.lemma.l13.pdt} & \fact{cmp.lemma.l13.tagged} & \fact{cmp.lemma.l13.reached} & \fact{cmp.lemma.l13.now} \\
+    \textit{práce}  & work     & \fact{cmp.lemma.l14.pdt} & \fact{cmp.lemma.l14.tagged} & \fact{cmp.lemma.l14.reached} & \fact{cmp.lemma.l14.now} \\
+    \textit{právo}  & law      & \fact{cmp.lemma.l15.pdt} & \fact{cmp.lemma.l15.tagged} & \fact{cmp.lemma.l15.reached} & \fact{cmp.lemma.l15.now} \\
+    \textit{řada}   & row      & \fact{cmp.lemma.l16.pdt} & \fact{cmp.lemma.l16.tagged} & \fact{cmp.lemma.l16.reached} & \fact{cmp.lemma.l16.now} \\
+    \textit{říkat}  & say      & \fact{cmp.lemma.l17.pdt} & \fact{cmp.lemma.l17.tagged} & \fact{cmp.lemma.l17.reached} & \fact{cmp.lemma.l17.now} \\
+    \textit{rok}    & year     & \fact{cmp.lemma.l18.pdt} & \fact{cmp.lemma.l18.tagged} & \fact{cmp.lemma.l18.reached} & \fact{cmp.lemma.l18.now} \\
+    \textit{stát}   & state; stand & \fact{cmp.lemma.l19.pdt} & \fact{cmp.lemma.l19.tagged} & \fact{cmp.lemma.l19.reached} & \fact{cmp.lemma.l19.now} \\
+    \textit{svět}   & world    & \fact{cmp.lemma.l20.pdt} & \fact{cmp.lemma.l20.tagged} & \fact{cmp.lemma.l20.reached} & \fact{cmp.lemma.l20.now} \\
+    \textit{systém} & system   & \fact{cmp.lemma.l21.pdt} & \fact{cmp.lemma.l21.tagged} & \fact{cmp.lemma.l21.reached} & \fact{cmp.lemma.l21.now} \\
+    \textit{uvést}  & state    & \fact{cmp.lemma.l22.pdt} & \fact{cmp.lemma.l22.tagged} & \fact{cmp.lemma.l22.reached} & \fact{cmp.lemma.l22.now} \\
+    \textit{vysoký} & high     & \fact{cmp.lemma.l23.pdt} & \fact{cmp.lemma.l23.tagged} & \fact{cmp.lemma.l23.reached} & \fact{cmp.lemma.l23.now} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The 25 lemmas ÚFAL re-analysed \citep[Table~4]{bejcek-etal2006}:
+    senses in the annotation wordnet, tags on them, senses that reached a
+    release synset with the lemma, and the lemma's senses in the release.
+    \textit{stát} is the noun and the verb together.}
+  \label{tab:lemmas}
+\end{table}
+
+\subsection{Corpus frequencies}
+
+A tag is a count for a sense when its synset reaches a release synset by
+a link of confidence~1, and that synset has the tagged word: the PDT lemma,
+its reflexive form with \textit{se} or \textit{si}, or for a negated word
+its form with \textit{ne-} (\texttt{pdt\_frequencies.py}).
+Table~\ref{tab:fate} shows what became of every annotated word.
+\fact{freq.counted.share}\% of the words tagged with a synset are counted,
+giving counts for \fact{freq.senses.pdt} senses.  The release already has
+counts from the NTU-MC Czech corpus for \fact{freq.senses.ntumc} senses;
+\fact{freq.senses.both} senses have both.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lr@{}}
+    \toprule
+    What became of the word & Words \\
+    \midrule
+    counted                                    & \fact{freq.fate.counted} \\
+    no agreed tag                              & \fact{freq.fate.untagged} \\
+    an exception (Table~\ref{tab:exc})         & \fact{freq.fate.exception} \\
+    the word is not in the release synset      & \fact{freq.fate.notinsynset} \\
+    a new synset, no Princeton id              & \fact{freq.fate.newsynset} \\
+    CILI link below confidence 1               & \fact{freq.fate.lowconf} \\
+    concept not in the release                 & \fact{freq.fate.absent} \\
+    no ILI for the 1.5 offset                  & \fact{freq.fate.noili} \\
+    the tag names no synset                    & \fact{freq.fate.badtag} \\
+    the document is not in PDT 3.0             & \fact{freq.fate.nodoc} \\
+    \midrule
+    annotated words                            & \fact{freq.words} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The fate of each annotated word.}
+  \label{tab:fate}
+\end{table}
+
+Table~\ref{tab:goals} sets the results against the goals.  The mapping
+falls short of 95\%; most of the shortfall is words the release synset
+lacks (\fact{freq.missing.words} words, \fact{freq.missing.pairs} pairs of
+synset and lemma) and new synsets with no Princeton id, most of them
+ÚFAL's (\fact{freq.new.words} words, \fact{freq.new.pairs} pairs).  Both lists are candidates for additions to
+the release, which is the stretch goal.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    & Goal & Produced \\
+    \midrule
+    tags mapped automatically & $\geq$ 95\% & \fact{freq.counted.share}\% of synset tags \\
+    senses with a frequency   & all mapped tags & \fact{freq.senses.pdt} \\
+    residue hand-categorised  & 500 & \fact{sheet.items} senses, judged twice: TODO \\
+    \bottomrule
+  \end{tabular}
+  \caption{What we set out to do, and what we did.}
+  \label{tab:goals}
+\end{table}
+
+%%% ------------------------------------------------------------------
+\section{Validation}
+\label{sec:validation}
+%%% ------------------------------------------------------------------
+
+Four checks are done.  The id check and the negation test of
+Section~\ref{sec:data} confirm the WordNet 1.5 ids and code~4.  The
+definitions said to have reached the release are identical strings, not
+near matches, in a random sample of six we read.  And the total of annotated words
+agrees with \citet{bejcek-etal2006} to within 0.1\%.
+
+The hand validation asks whether the senses the release lacks should be
+added.  The author does not speak Czech, so \factw{sheet.students}
+students of the course who do judge them, on sheets made by
+\texttt{new\_sense\_sheets.py}.  The release lacks
+\fact{sheet.population} PDT senses, a sense being a lemma with the
+synset it was tagged with.  Table~\ref{tab:sheets} shows which of them
+are judged: all those whose concept or synset is missing, and a random
+\fact{sheet.word.judged} of the \fact{sheet.word.of} where only the word
+is missing from the release synset.  Adding a word to a synset is easy,
+so the sample serves only to measure how often it would be right; as it
+is drawn uniformly, that share estimates the precision of adding all
+\fact{sheet.word.of}.  The \fact{sheet.items} senses judged cover
+\fact{sheet.tagged} tagged words.
+
+For each sense a student sees up to three PDT sentences with the word
+marked, the PDT synset with its definition and examples, its English
+lemmas and gloss through the ILI, and the senses the release already has
+for the lemma, each with its English gloss.  They choose one of four
+answers: \emph{add}, a sense the release is missing; \emph{already in
+the release}, giving which of its senses; \emph{wrong tag}, the
+sentences do not use the word in the PDT sense; or \emph{unsure}.
+
+The design is randomised, and every random step has its own seeded
+stream, so the assignment is the same on every run.  Each sense goes to
+one of the \fact{sheet.pairs} pairs of students, so every pair shares
+\fact{sheet.perpair} senses and each student judges
+\fact{sheet.perstudent}.  This gives Cohen's $\kappa$ for every pair, not
+only overall, and shows up a student who reads the task differently.
+The senses are dealt in order of frequency, in rounds of
+\fact{sheet.pairs} to the pairs in a fresh random order, so every pair
+judges both frequent and rare senses.  Item numbers and the order of each
+sheet are random, and the sheets show neither how often a sense was
+tagged nor why it is missing.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lrrrrrrr@{}}
+    \toprule
+    Reason & Senses & Judged & Add & Already & Wrong & Unsure & $\kappa$ \\
+    \midrule
+    word not in the synset & \fact{sheet.word.of} & \fact{sheet.word.judged} & TODO & TODO & TODO & TODO & TODO \\
+    concept not in the release & \fact{sheet.concept.of} & \fact{sheet.concept.judged} & TODO & TODO & TODO & TODO & TODO \\
+    new synset, no Princeton id & \fact{sheet.newsyn.of} & \fact{sheet.newsyn.judged} & TODO & TODO & TODO & TODO & TODO \\
+    no ILI for the 1.5 offset & \fact{sheet.noili.of} & \fact{sheet.noili.judged} & TODO & TODO & TODO & TODO & TODO \\
+    \midrule
+    total                                  & \fact{sheet.population} & \fact{sheet.items} & TODO & TODO & TODO & TODO & TODO \\
+    \bottomrule
+  \end{tabular}
+  \caption{The PDT senses the release lacks, by why it lacks them; how
+    many are judged; the students' answers; and agreement as Cohen's
+    $\kappa$.}
+  \label{tab:sheets}
+\end{table}
+
+TODO: when the sheets are back, fill in Table~\ref{tab:sheets}, report
+$\kappa$ for each of the \fact{sheet.pairs} pairs, and resolve the
+disagreements.  Then read the comments and the \emph{already} and
+\emph{wrong tag} answers for why the release lacks each sense.
+Table~\ref{tab:errors} lists the causes we have seen so far; count them
+in the judged senses.
+
+\begin{table}[ht]
+  \centering\small
+  \begin{tabular}{@{}lrl@{}}
+    \toprule
+    Cause & Count & Example \\
+    \midrule
+    wrong CILI link        & TODO & \textit{dobrý} ``good'' $\rightarrow$ \textit{výborný} ``excellent'' \\
+    word dropped from the synset & TODO & \textit{práce} ``work'' not in \textit{robota, dřina, lopota} \\
+    ÚFAL sense not in the release & TODO & \textit{moci} ``possibility'' \\
+    senses split differently & TODO & \textit{mít}: \fact{cmp.lemma.l10.pdt} senses in PDT, \fact{cmp.lemma.l10.now} in the release \\
+    hypernym missing in the release & TODO & \textit{ampér} has none \\
+    \bottomrule
+  \end{tabular}
+  \caption{Why the release lacks a PDT sense: the causes seen so far, to
+    count in the \fact{sheet.items} judged senses.}
+  \label{tab:errors}
+\end{table}
+
+%%% ------------------------------------------------------------------
+\section{Visualisation and explanation}
+%%% ------------------------------------------------------------------
+
+TODO: a flow diagram of the \fact{freq.words} annotated words, from the tag to
+its fate (Table~\ref{tab:fate}), with the width of each band its number of
+words.  It would show that, once a word has an agreed synset tag, the
+mapping loses most words at two points: the missing words and the new
+senses.
+
+\begin{figure}[ht]
+  \centering
+  \fbox{\parbox[c][5cm][c]{.8\linewidth}{\centering TODO: flow of the annotated words}}
+  \caption{Where the annotated words go.}
+  \label{fig:flow}
+\end{figure}
+
+%%% ------------------------------------------------------------------
+\section{Release}
+\label{sec:release}
+%%% ------------------------------------------------------------------
+
+The frequencies are written as \fact{freq.senses.pdt} change records of the
+Czech WordNet, one \texttt{set\_count} line per sense with corpus
+\texttt{PDT}, ready for a pull request to the release repository.  The
+missing words become \texttt{add\_sense} records once validated, and the
+ÚFAL senses \texttt{add\_synset} records with their definitions and examples.
+
+TODO: count how many of the annotation wordnet's definitions and examples
+could be used in the release.  \fact{cmp.defs.total} definitions and
+\fact{cmp.examples.total} examples are in it, and \fact{cmp.defs.kept} and
+\fact{cmp.examples.kept} of them are in the release already; most of the
+rest are ÚFAL's (\fact{cmp.ufal.defs} definitions and
+\fact{cmp.ufal.examples} examples, \fact{cmp.ufal.defskept} and
+\fact{cmp.ufal.exampleskept} in the release).  For each one missing, ask:
+does its synset reach a release synset, or does it belong to a sense the
+students judge worth adding; is it a definition of the concept or
+an example filed as one (the second definition of \textit{rameno}
+``branch'' is ``mrtvé rameno řeky''); and is an example a real sentence of the sense?
+The answer is the number of \texttt{set\_definition} and
+\texttt{add\_example} records to propose, under the licence below.
+
+Before any of it goes in, the licence needs settling.  The annotation is
+CC BY-NC-SA and the release CC BY-SA.  A count is a fact about the corpus,
+but the senses and definitions ÚFAL wrote are their text, so we will ask
+ÚFAL for permission, as Masaryk University gave it for the wordnet itself.
+
+We will send ÚFAL the exception codes as we inferred them, for the
+documentation of the data, and send CILI the WordNet 1.5 links the
+validation finds wrong.
+
+%%% ------------------------------------------------------------------
+\section{Conclusion}
+%%% ------------------------------------------------------------------
+
+We have mapped the PDT sense annotation to the Czech WordNet 2.2.  The
+synsets and their words came through: \fact{cmp.all.synsets} of
+\fact{cmp.total.synsets} reach a release synset with all their words.  So
+did the definitions written in Brno.  The senses, definitions and
+examples ÚFAL wrote for the hard lemmas did not:
+\fact{cmp.ufal.defskept} of \fact{cmp.ufal.defs} definitions are in the
+release, and those senses are among the most tagged.  The tags give the
+release counts for \fact{freq.senses.pdt} senses from a second corpus.
+The scripts are in the \texttt{sensebank} directory of the JPC3
+repository, and the counts go to the release as change records once ÚFAL
+agrees to the licence.  Next, the students' judgements decide which of
+the missing senses to add, starting with \textit{mít} and \textit{moci}.
+
+%%% ------------------------------------------------------------------
+\subsection*{Use of AI tools}
+%%% ------------------------------------------------------------------
+
+Claude Opus 5.5 (Anthropic) wrote the analysis scripts, inferred the
+exception codes, and drafted this report, including the discussion of
+the papers.  TODO: the author checks every result against the source data
+and the papers before the report is final, and is responsible for the
+content.
+
+%%% ------------------------------------------------------------------
+
+\bibliography{report}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

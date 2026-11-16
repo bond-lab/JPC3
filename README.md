@@ -164,6 +164,9 @@ split / merged / renumbered / deleted / genuinely missing).
   Information* `[daude-etal2000]`; Bond et al. (2016) *CILI: the Collaborative
   Interlingual Index* `[bond-etal2016cili]`. (PDT 3.0: `[bejcek-etal2013pdt]`.)
 - **Code:** [`sensebank/`](sensebank/) · explainer: [`sensebank_explainer.html`](sensebank/sensebank_explainer.html)
+- **Worked example:** no one chose this project, so it is done in full as an
+  example: [`sensebank/report/`](sensebank/report/) (report and the scripts
+  behind every number), with the papers in [`sensebank/papers/`](sensebank/papers/).
 
 ### 4. Better links to ARASAAC and Global Symbols
 
