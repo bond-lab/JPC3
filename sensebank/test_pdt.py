@@ -98,3 +98,9 @@ def test_number_gives_unique_ids():
 def test_detokenise_attaches_punctuation():
     from pdt_sources import detokenise
     assert detokenise(["Ahoj", ",", "světe", "(", "a", ")", "."]) == "Ahoj, světe (a)."
+
+
+def test_tag_key_strips_zeros_from_offsets_only():
+    from pdt_sources import tag_key
+    assert [tag_key(t) for t in ["00600945", "1307561", "0", "10", "NAS-1", "-"]] == \
+        ["600945", "1307561", "0", "10", "NAS-1", "-"]

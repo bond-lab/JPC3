@@ -2,22 +2,22 @@
  "words": 148865,
  "synsettags": 102696,
  "fate": {
-  "counted": 88836,
+  "counted": 88854,
   "untagged": 33189,
   "exception": 12980,
-  "notinsynset": 7679,
+  "notinsynset": 7716,
   "newsynset": 3704,
   "lowconf": 1640,
   "absent": 715,
   "noili": 64,
-  "badtag": 55,
+  "badtag": 0,
   "nodoc": 3
  },
  "counted": {
   "share": 86.5
  },
  "senses": {
-  "pdt": 7079,
+  "pdt": 7080,
   "ntumc": 1736,
   "both": 414
  },
@@ -33,8 +33,8 @@
   "10": 1
  },
  "missing": {
-  "pairs": 985,
-  "words": 7679
+  "pairs": 988,
+  "words": 7716
  },
  "new": {
   "pairs": 53,

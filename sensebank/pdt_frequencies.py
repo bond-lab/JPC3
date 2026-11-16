@@ -47,6 +47,7 @@ from pdt_sources import (
     read_nas,
     read_tokens,
     tag_index,
+    tag_key,
 )
 from pdt_wordnet_vs_wncze import CES, Wncze, load_wncze
 
@@ -132,7 +133,7 @@ def fate(tok: Token, b: Bridge) -> Fate:
         return Fate("document not in PDT 3.0")
     if tok.tag in EXCEPTIONS:
         return Fate("exception")
-    syn = b.nas.get(b.index.get(tok.tag, ""))
+    syn = b.nas.get(b.index.get(tag_key(tok.tag), ""))
     if syn is None:
         return Fate("tag names no synset")
     if syn.pwn15 is None:

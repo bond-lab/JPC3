@@ -3,7 +3,7 @@
   "synsets": 23094,
   "words": 34159,
   "kept": 29099,
-  "tagged": 102641
+  "tagged": 102696
  },
  "all": {
   "synsets": 19494,
@@ -17,8 +17,8 @@
   "synsets": 1594,
   "words": 5054,
   "kept": 2748,
-  "tagged": 23654,
-  "share": 23.0,
+  "tagged": 23709,
+  "share": 23.1,
   "lowconf": 41
  },
  "elsewhere": {
@@ -71,7 +71,7 @@
  },
  "ufal": {
   "synsets": 203,
-  "tagged": 17375,
+  "tagged": 17430,
   "defs": 155,
   "defskept": 6,
   "examples": 242,
@@ -136,7 +136,7 @@
   },
   "l4": {
    "pdt": 10,
-   "tagged": 484,
+   "tagged": 515,
    "reached": 4,
    "now": 15
   },
@@ -196,7 +196,7 @@
   },
   "l14": {
    "pdt": 5,
-   "tagged": 468,
+   "tagged": 476,
    "reached": 4,
    "now": 6
   },
@@ -244,7 +244,7 @@
   },
   "l22": {
    "pdt": 4,
-   "tagged": 348,
+   "tagged": 364,
    "reached": 3,
    "now": 10
   },

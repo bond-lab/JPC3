@@ -37,6 +37,7 @@ from pdt_sources import (
     read_nas,
     read_tags,
     tag_index,
+    tag_key,
 )
 
 wn.config.data_directory = HERE.parent / "patterns" / ".wn_data"
@@ -359,8 +360,8 @@ def main() -> None:
     rows = {sid: classify(syn, cili, cs) for sid, syn in nas.items()}
     index = tag_index(nas)
     for tok in read_tags():
-        if tok.tag in index:
-            rows[index[tok.tag]].tokens += 1
+        if tag_key(tok.tag) in index:
+            rows[index[tag_key(tok.tag)]].tokens += 1
     report(rows, cs)
     write_tsv(rows, OUT)
     FACTS.write_text(json.dumps(facts(rows, cs), indent=1) + "\n")

@@ -183,6 +183,22 @@ def tag_index(nas: dict[str, NasSynset]) -> dict[str, str]:
     return index
 
 
+def tag_key(tag: str) -> str:
+    """The form of a tag that tag_index() is keyed by.
+
+    Most tags drop the zeros of the offset (1307561), but a few keep them
+    (00600945); exception codes (0 to 10) and ids of new synsets are left
+    as they are.
+
+    Args:
+        tag: the tag as written in the annotation
+
+    Returns:
+        The tag without leading zeros, if it is a Princeton offset
+    """
+    return tag.lstrip("0") if tag.isdigit() and len(tag) > 2 else tag
+
+
 def pwn15_ili() -> dict[str, tuple[str, float]]:
     """Read the CILI map from Princeton WordNet 1.5, downloading it once.
 

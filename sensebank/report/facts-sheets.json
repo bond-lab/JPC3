@@ -4,11 +4,11 @@
  "pairs": 21,
  "perstudent": 60,
  "perpair": 10,
- "tagged": 5083,
- "population": 1135,
+ "tagged": 4817,
+ "population": 1138,
  "word": {
   "judged": 60,
-  "of": 985
+  "of": 988
  },
  "concept": {
   "judged": 80,
@@ -23,8 +23,8 @@
   "of": 17
  },
  "wordsample": {
-  "once": 17,
-  "ten": 14,
-  "tagged": 600
+  "once": 24,
+  "ten": 11,
+  "tagged": 334
  }
 }
