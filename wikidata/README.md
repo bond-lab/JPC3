@@ -48,8 +48,10 @@ Two Wikidata properties get you to an ILI; we use both and prefer the first:
 ILI via the Collaborative Interlingual Index table
 [`ili-map-pwn31.tab`](https://github.com/globalwordnet/cili). Do **not** map
 through `omw-en:2.0` — that is WordNet 3.0 and the offsets don't line up (every
-lookup misses). The Czech NTU-MC synsets expose ILIs
-(`cs.synsets(ili="i46360")`), so ILI is the common key.
+lookup misses). The Czech WordNet synsets carry ILIs
+(`cs.synsets(ili="i46360")`), so ILI is the common key. Their own ids are
+WordNet **2.0** offsets (`wncze-02001223-n`), a third numbering: one more
+reason never to join on offsets.
 
 ## Literate version
 

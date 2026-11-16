@@ -62,7 +62,7 @@ def main() -> None:
     out = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 
     pwn31_to_ili = load_cili()
-    cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
+    cs = wn.Wordnet(lexicon="wncze:2.2")
 
     items = fetch(limit)
     counts = {"present": 0, "missing-lemma": 0, "missing-synset": 0, "no-ili": 0}

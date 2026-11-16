@@ -28,9 +28,9 @@ uv run count_role_nouns.py
 You should see ~1900 role-noun synsets. After this, the `sensebank/`,
 `images/`, and `wikidata/` scripts reuse the same `.wn_data` and start fast.
 
-- The starting wordnet is
-  [`wn-ntumc-ces.xml`](https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml);
-  the scripts fetch it for you.
+- The starting wordnet is the Czech WordNet, release 2.2
+  ([`wncze-2.2.tar.xz`](https://github.com/bond-lab/czech-wn/releases/tag/v2.2),
+  lexicon `wncze:2.2`); the scripts fetch it for you.
 - `.wn_data/`, the downloaded `*.xml`, and the CILI `*.tab` maps are
   git-ignored — they are inputs, not results. Don't commit them.
 

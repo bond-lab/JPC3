@@ -55,7 +55,7 @@ def main() -> None:
     if not offsets:
         sys.exit("usage: uv run pdt_to_czech.py <offset>... | < tags.txt")
     mapping = pwn15_to_ili()
-    cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
+    cs = wn.Wordnet(lexicon="wncze:2.2")
     counts = {"mapped": 0, "missing-synset": 0, "no-ili": 0}
     for off in offsets:
         ili, lemmas = lookup(off, mapping, cs)

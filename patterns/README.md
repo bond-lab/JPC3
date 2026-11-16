@@ -24,8 +24,8 @@ uv run count_role_nouns.py
 
 | Measure | Czech synsets | Distinct Czech lemmas |
 |---|---|---|
-| `noun.person` lexfile | 1919 | 2585 |
-| person-hyponym closure of *person* `00007846-n` | 1849 | 2489 |
+| `noun.person` lexfile | 1922 | 2581 |
+| person-hyponym closure of *person* `i35562` | 1850 | 2486 |
 
 ~1900 role-noun synsets / ~2500 lemmas, against 11 087 `noun.person` synsets on
 the English side (≈ 17 % coverage). The script shares the `wn` database in
@@ -33,10 +33,12 @@ the English side (≈ 17 % coverage). The script shares the `wn` database in
 
 ## Where the count comes from
 
-The Czech wordnet is an *expand* wordnet — its synsets are keyed to Princeton
-offsets and it `Requires omw-en:2.0` — so "is this a person synset?" is read
-off the English side (`ss.lexfile() == "noun.person"`, or hyponymy of *person*),
-matched back to Czech by synset offset.
+The Czech WordNet has no lexicographer files, and its relations run one way
+only (a synset knows its hypernym, not its hyponyms), so "is this a person
+synset?" is read off the English side (`ss.lexfile() == "noun.person"`, or
+hyponymy of *person* in `omw-en:2.0`) and matched back to Czech by **ILI**.
+Not by offset: the Czech ids are Princeton 2.0 offsets (`wncze-02001223-n`),
+the English ones 3.0, and only 124 of them coincide.
 
 ## Caveats worth putting in the report
 

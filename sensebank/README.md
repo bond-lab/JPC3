@@ -39,6 +39,20 @@ Sanity check: of the ~87k distinct ILIs in the 1.5 map, **26 363** resolve to a
 synset that exists in the Czech wordnet — so the bridge reaches a large share of
 the inventory before you even look at PDT.
 
+**A second bridge.** The Czech WordNet repository keeps, under
+[`sources/`](https://github.com/bond-lab/czech-wn/tree/main/sources), the very
+version of the wordnet that was used to annotate PDT
+(`nas_anotacni_slovnik.xml`, 23,094 synsets; CC BY-NC-SA 3.0, a *different*
+licence from the release). Its synsets carry the PDT-era ids, so it can confirm
+or contradict what the CILI map says, and it names the Czech words the
+annotators saw. Compare the two routes and report where they disagree.
+
+**Counts already exist.** Release 2.2 carries counts for 1,736 senses, how
+often each is tagged in the NTU-MC Czech corpus, made by the repository's
+`scripts/corpus_counts.py`. Your PDT frequencies go in the same way, as
+`Count` records with the corpus as their source, and become the second corpus
+the wordnet reports.
+
 ## What to actually build
 
 1. Read the PDT sense tags (your input data). Each is an old synset id / offset.

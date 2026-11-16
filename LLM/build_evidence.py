@@ -29,7 +29,7 @@ import wn
 wn.config.data_directory = Path(__file__).resolve().parent.parent / "patterns" / ".wn_data"
 
 SCHEMA = {
-    "synset": "ntumc-cs-02086723-n",
+    "synset": "wncze-02001223-n",
     "verdict": "ok | suspect",
     "problem": "wrong-sense | missing-lemma | spurious-lemma | bad-gloss | none",
     "rationale": "one sentence, citing the evidence",
@@ -63,7 +63,7 @@ def main() -> None:
     out = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("evidence.jsonl")
     tsv = Path(sys.argv[3]) if len(sys.argv) > 3 else None
 
-    cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
+    cs = wn.Wordnet(lexicon="wncze:2.2")
     en = wn.Wordnet(lexicon="omw-en:2.0")
     labels = wikidata_labels(tsv)
 

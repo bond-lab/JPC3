@@ -19,7 +19,24 @@ activities — lectures, seminars, exercises, exams, finding study materials,
 note-taking, group work and self-study — so budget the whole project, not just
 the hours you spend coding.
 
-We start with this wordnet: <https://github.com/bond-lab/NTUMC/releases/download/2026.08/wn-ntumc-ces.xml>
+We start from the **Czech WordNet, release 2.2**
+(<https://github.com/bond-lab/czech-wn>, CC BY-SA 4.0): 34,662 words, 48,302
+senses and 28,977 synsets, of which 28,491 carry an ILI. Built at Masaryk
+University since 1998, it is now maintained in that repository by our lab as
+a last release plus an ordered log of changes. Load it with one line:
+
+```python
+import wn
+wn.download("https://github.com/bond-lab/czech-wn/releases/download/v2.2/wncze-2.2.tar.xz")
+cs = wn.Wordnet(lexicon="wncze:2.2")
+```
+
+Two things to know before you query it. Synset ids are Princeton WordNet
+**2.0** offsets (`wncze-02001223-n`), so never match Czech to English by
+offset: join on the **ILI**, which both sides carry. And relations are stored
+one way only (a synset has its hypernym; the hypernym does not list its
+hyponyms), so `hyponyms()` finds nothing. The repository's
+`notes/reverse_relations.py` loads the file with the reverse relations added.
 
 Tools: [`wn`](https://github.com/goodmami/wn) reads and queries wordnets from
 Python; [`wn_edit`](https://github.com/bond-lab/wn_edit), built on it, edits them.
@@ -50,7 +67,11 @@ the template in `latex/report/`:
    library (make your edits with [`wn_edit`](https://github.com/bond-lab/wn_edit)),
    with a one-line data statement and a licence — and **feed back** what you
    found to the resources you used. Each project below says what it can and
-   should send upstream.
+   should send upstream. Additions to the Czech WordNet itself go in as
+   **change records** — one JSON line per change, with the user, the source
+   (a person, a dictionary, a corpus) and the reason — in a pull request to
+   [`bond-lab/czech-wn`](https://github.com/bond-lab/czech-wn/blob/main/changes/README.md).
+   A model alone is not a source for an addition; your validation is.
 
 Each project directory ships starter code that does most of the **Extend**
 mechanics (candidate generation, the ILI bridge, API calls). That is
@@ -93,8 +114,8 @@ lexicographer file, and transitive hyponyms of *person* `00007846-n`:
 
 | Measure | Czech synsets | Distinct Czech lemmas |
 |---|---|---|
-| `noun.person` lexfile | 1919 | 2585 |
-| person-hyponym closure | 1849 | 2489 |
+| `noun.person` lexfile | 1922 | 2581 |
+| person-hyponym closure | 1850 | 2486 |
 
 So ~1900 role-noun synsets / ~2500 lemmas, against 11 087 `noun.person`
 synsets on the English side (≈ 17 % coverage). `noun.person` is an upper bound
@@ -134,8 +155,11 @@ split / merged / renumbered / deleted / genuinely missing).
   hand-categorise 500 of the unmapped residue.
 - **Stretch:** handle **all** of the residue.
 - **Feedback:** the mapping table and the categorised residue go to the PDT
-  maintainers; the sense frequencies go into the Czech wordnet. Stretch: add
-  the synsets the residue shows to be missing to the Czech wordnet.
+  maintainers; the sense frequencies go into the Czech wordnet as `Count`
+  records (release 2.2 already carries 1,736 counts from the NTU-MC corpus,
+  made by its `scripts/corpus_counts.py`; PDT would be the second corpus).
+  Stretch: add the synsets the residue shows to be missing to the Czech
+  wordnet.
 - **Readings:** Daudé, Padró & Rigau (2000) *Mapping WordNets Using Structural
   Information* `[daude-etal2000]`; Bond et al. (2016) *CILI: the Collaborative
   Interlingual Index* `[bond-etal2016cili]`. (PDT 3.0: `[bejcek-etal2013pdt]`.)

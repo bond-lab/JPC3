@@ -21,7 +21,7 @@ the code too.
 
    ```json
    {
-     "synset": "ntumc-cs-02086723-n",
+     "synset": "wncze-02001223-n",
      "verdict": "ok | suspect",
      "problem": "wrong-sense | missing-lemma | spurious-lemma | bad-gloss | none",
      "rationale": "one sentence, citing the evidence",

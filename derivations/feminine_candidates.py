@@ -35,7 +35,7 @@ def candidates(cs: wn.Wordnet) -> Iterator[tuple[str, str, str]]:
 
 def main() -> None:
     limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
-    cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
+    cs = wn.Wordnet(lexicon="wncze:2.2")
     n = 0
     for base, fem, suf in candidates(cs):
         print(f"{base} -> {fem}  ({suf})")

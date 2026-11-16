@@ -53,7 +53,7 @@ def main() -> None:
     word = sys.argv[1]
     limit = int(sys.argv[2]) if len(sys.argv) > 2 else 5
     pwn31_to_ili = load_cili()
-    cs = wn.Wordnet(lexicon="ntumc-cs:2026.08")
+    cs = wn.Wordnet(lexicon="wncze:2.2")
     for picto in search(word)[:limit]:
         pid = picto["_id"]
         for off in picto.get("synsets", []):             # e.g. '02086723-n'
