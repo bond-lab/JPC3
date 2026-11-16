@@ -1,0 +1,496 @@
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>Reading the PDT Sense Annotation</h1>
+    <p class="lede">How <code>pdt_sources.py</code> fetches three LINDAT datasets and
+      turns them into one stream of tagged words: each with its tag, its PDT lemma,
+      and its sentence.</p>
+    <div class="meta">
+      <span>pdt_sources.py</span><span>313 lines</span>
+      <span>deps: requests</span><span>imported by the other sensebank scripts</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong: a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>pdt_sources.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background: three datasets, one annotation</a></li>
+      <li><a href="#intuition">Intuition: from a stand-off tag to a word in a sentence</a></li>
+      <li><a href="#code">Code: how the loader works</a></li>
+      <li><a href="#quiz">Quiz: check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Between 2004 and 2011, ÚFAL in Prague tagged words of the
+      <a href="https://ufal.mff.cuni.cz/pdt3.0">Prague Dependency Treebank</a> (PDT)
+      with synsets of the Czech WordNet. The work is spread over three datasets on
+      <a href="https://lindat.mff.cuni.cz/">LINDAT</a>, all CC BY-NC-SA 3.0, and the
+      loader needs all three:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Key</th><th>Dataset</th><th>What the loader takes from it</th></tr></thead>
+      <tbody>
+        <tr><td><code>cwn</code></td><td><a href="http://hdl.handle.net/11858/00-097C-0000-0001-4880-3">Czech WordNet 1.9 PDT</a></td>
+          <td>the 23,094 synsets the annotators chose from (<code>nas_anotacni_slovnik.xml</code>, "our annotation dictionary")</td></tr>
+        <tr><td><code>ann</code></td><td><a href="http://hdl.handle.net/11858/00-097C-0000-0001-487A-4">Lexico-Semantic Annotation of PDT</a></td>
+          <td>1,814 stand-off files, one tag per annotated word, 148,865 words in all</td></tr>
+        <tr><td><code>pdt</code></td><td><a href="http://hdl.handle.net/11858/00-097C-0000-0023-1AAF-3">PDT 3.0</a></td>
+          <td>only the morphological layer: each word's form, lemma and tag, and its sentence (128 MB zip)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>The annotation is <strong>stand-off</strong>: a tag does not contain the word.
+      It points at a word in PDT by id, such as <code>m-cmpr9406-054-p3s1w2</code>
+      (document <code>cmpr9406_054</code>, paragraph 3, sentence 1, word 2). To know
+      which word was tagged, you have to open PDT too.</p>
+    <p>A tag is one of four things:</p>
+    <ul>
+      <li><strong>a Princeton WordNet 1.5 offset</strong>, usually without its leading zeros
+        or part of speech: <code>1307561</code> is synset <code>01307561-v</code>,
+        <span class="cs">mít</span> "have, own"; <code>429214</code> is
+        <code>00429214-a</code>, <span class="cs">velký</span> "big";</li>
+      <li><strong>the id of a synset added to this copy</strong> with no Princeton
+        counterpart: <code>NAS-430683854</code> (<span class="cs">mít</span> "have to",
+        added by ÚFAL in 2006), <code>1448862335</code>
+        (<span class="cs">panáčkování</span>);</li>
+      <li><strong>a small number</strong>, one of the exceptions the annotators could
+        choose instead of a synset: <code>1</code>, <code>7</code>, <code>4</code>;</li>
+      <li><strong>a hyphen</strong>, <code>-</code>: no agreed tag.</li>
+    </ul>
+    <div class="callout">
+      <p><strong>The codes are not documented.</strong> The papers list the
+        exceptions in order but never say which number is which. The meanings in
+        <code>EXCEPTIONS</code> were inferred from the data, and two of them are
+        guesses.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Each word passes through three files. The tag file says which word and which
+      tag; the annotation wordnet says what the tag means; PDT says what the word is.</p>
+
+    <div class="wrap-x">
+      <div class="flow">
+        <div class="node"><b>stand-off tag</b><small>cmpr9406_054.s</small></div>
+        <div class="arrow">→<small>m-id</small></div>
+        <div class="node"><b>PDT m-layer</b><small>cmpr9406_054.m.gz</small></div>
+        <div class="arrow">→<small>lemma, form, sentence</small></div>
+        <div class="node"><b>Token</b><small>one per tagged word</small></div>
+      </div>
+      <div class="flow">
+        <div class="node"><b>tag</b><small>1307561</small></div>
+        <div class="arrow">→<small>tag_index</small></div>
+        <div class="node"><b>annotation synset</b><small>01307561-v</small></div>
+        <div class="arrow">→<small>CILI 1.5 map</small></div>
+        <div class="node"><b>ILI</b><small>i33221</small></div>
+      </div>
+    </div>
+
+    <p>One tag record, as the annotation stores it:</p>
+    <pre class="data"><code>&lt;st id="4"&gt;
+  &lt;lexicon-id&gt;429214&lt;/lexicon-id&gt;
+  &lt;a.rf&gt;m-cmpr9406-054-p3s1w2&lt;/a.rf&gt;
+&lt;/st&gt;</code></pre>
+    <p>And the first four words of that document once the loader has joined the
+      tags to PDT (from a real run):</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Tag</th><th>PDT lemma</th><th>Form</th><th>Sentence</th></tr></thead>
+      <tbody>
+        <tr><td><code>1</code> exception</td><td><code>vycházet_:T</code></td><td class="cs">Vychází</td><td class="cs">«Vychází» Reflex č. 6</td></tr>
+        <tr><td><code>7</code> proper name</td><td><code>reflex</code></td><td class="cs">Reflex</td><td class="cs">Vychází «Reflex» č. 6</td></tr>
+        <tr><td><code>-</code> no tag</td><td><code>číslo_:B</code></td><td class="cs">č</td><td class="cs">Vychází Reflex «č». 6</td></tr>
+        <tr><td><code>429214</code> synset</td><td><code>velký</code></td><td class="cs">největším</td><td class="cs">K «největším» osobnostem českého umění tohoto století patří nestor výtvarníků, šestadevadesátiletý Jan Bauch.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><span class="cs">Reflex</span> is a magazine, so code 7 (proper name) fits.
+      <span class="cs">Největším</span> "biggest" is a form of
+      <span class="cs">velký</span>, so its lemma, not its form, matches the synset.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Eight parts, from the constants to the stream of tokens.</p>
+
+    <h3>1 · Where the data comes from</h3>
+    <span class="ref">pdt_sources.py:30–41</span>
+    <p>Each source is a LINDAT bitstream URL and the file name to cache it under in
+      <code>./data</code>. The CILI table from WordNet 1.5 is cached beside the
+      script. <code>fetch()</code> downloads a source once and returns the cached path
+      every time after.</p>
+    <pre><code>SOURCES = {
+    "cwn": (LINDAT + "a0bd7658-eaf3-49f0-9a60-e6fc06aa284f/content", "Czech_WordNet_1.9_PDT.zip"),
+    "ann": (LINDAT + "57842d3d-246b-45bb-a2ea-7c0123cb2605/content", "pdt-wsd-annotation.zip"),
+    "pdt": (LINDAT + "d0a1771e-816a-4475-8a23-54f0ebafce3c/content", "PDT_3.0.zip"),
+}</code></pre>
+    <span class="ref">pdt_sources.py:100–123 (fetch)</span>
+
+    <h3>2 · The exception codes</h3>
+    <span class="ref">pdt_sources.py:43–61</span>
+    <p>The comment says how each meaning was found. Code 4 is the clearest test:
+      PDT lemmatises a negated word to its positive form, so a word whose sense the
+      wordnet has only in the positive should be negated, and 99.7% of code-4 words
+      are. Codes 5 to 7 were read off their commonest lemmas, 8 and 10 match the
+      counts in Bejček et al. (2006), and 0 and 1 are guesses.</p>
+    <pre><code>EXCEPTIONS = {
+    "0": "other problem (guess)",
+    "1": "missing sense (guess)",
+    "2": "incorrect reflexivity",
+    ...
+    "10": "missing more general sense",
+}
+UNTAGGED = "-"</code></pre>
+
+    <h3>3 · Reading the annotation wordnet</h3>
+    <span class="ref">pdt_sources.py:126–163</span>
+    <p>The XML is ISO-8859-2 and has no root element, just one
+      <code>&lt;SYNSET&gt;</code> after another, so <code>read_nas()</code> strips the
+      declaration and wraps the body in <code>&lt;wn&gt;</code> before parsing.
+      <code>literal()</code> drops homonym marks: <code>'vypadat ^2'</code> becomes
+      <code>vypadat</code>.</p>
+    <pre><code>body = re.sub(r"^&lt;\?xml[^&gt;]*\?&gt;", "", raw)
+root = ET.fromstring(f"&lt;wn&gt;{body}&lt;/wn&gt;")</code></pre>
+    <p>Each synset becomes a <code>NasSynset</code>. Two real ones:</p>
+    <pre class="data"><code>01307561-v  mít  "vlastnit, získat"  e.g. "Mám spoustu peněz."  hypernym 01286642-v
+            stamp "bejce9am 2006/03/14"  pwn15 -&gt; 01307561-v
+NAS-430683854  mít  "mít povinnost"  e.g. "Mám připravit večeři? [z Vallexu]"
+            stamp "bejce9am 2006/03/14"  pwn15 -&gt; None</code></pre>
+    <span class="ref">pdt_sources.py:64–84 (NasSynset, pwn15)</span>
+    <p>The <code>pwn15</code> property returns the 1.5 offset for an id like
+      <code>01307561-v</code>, writing adverbs (<code>b</code> in the file) as
+      <code>r</code>, and <code>None</code> for a synset with no Princeton id.</p>
+
+    <h3>4 · From a tag to a synset id</h3>
+    <span class="ref">pdt_sources.py:166–183</span>
+    <p>Tags drop the zeros and the part of speech, so <code>tag_index()</code>
+      builds the reverse map: <code>1307561</code> →
+      <code>01307561-v</code>. Ids with no Princeton offset map to themselves.</p>
+    <pre><code>index.setdefault(sid.split("-")[0].lstrip("0") if sid[0].isdigit() and "-" in sid
+                 else sid, sid)</code></pre>
+    <p>Dropping the part of speech loses information: 9 numbers name a synset in two
+      parts of speech, and <code>setdefault</code> keeps the first one in the file.</p>
+
+    <h3>5 · Normalising a tag</h3>
+    <span class="ref">pdt_sources.py:186–199</span>
+    <p>Most tags drop the offset's zeros, but a few keep them, so a lookup of the
+      raw tag misses. <code>tag_key()</code> strips the zeros from any tag that looks
+      like an offset, and leaves exception codes and ids of new synsets alone.</p>
+    <pre><code>return tag.lstrip("0") if tag.isdigit() and len(tag) &gt; 2 else tag</code></pre>
+    <pre class="data"><code>00600945       -&gt; 600945       -&gt; 00600945-v  poskytnout, dát, dávat, udělit
+00604079       -&gt; 604079       -&gt; 00604079-v  zavést, představit, uvést, uvádět
+1307561        -&gt; 1307561      -&gt; 01307561-v  mít
+0              -&gt; 0            (exception code, unchanged)
+NAS-450034833  -&gt; NAS-450034833 -&gt; NAS-450034833  moci</code></pre>
+    <p>Four zero-padded tags occur, on 55 words; before <code>tag_key()</code> they
+      reached no synset. The <code>len(tag) &gt; 2</code> test protects the exception
+      codes: without it, <code>"0"</code> would become the empty string.</p>
+
+    <h3>6 · From a synset to an ILI</h3>
+    <span class="ref">pdt_sources.py:202–231</span>
+    <p><code>pwn15_ili()</code> reads the
+      <a href="https://github.com/globalwordnet/cili">CILI</a> table
+      <code>ili-map-pwn15.tab</code> (90,030 entries), keeping the third column, the
+      confidence of each link. <code>ili_of()</code> looks up an annotation synset's
+      offset, and retries an adjective as a satellite (<code>-s</code>), since 1.5
+      may file it that way.</p>
+    <pre class="data"><code>01307561-v  -&gt; ('i33221', 1.0)    mít "have"
+00003711-n  -&gt; ('i35560', 1.0)    buňka "cell"
+01781692-a  -&gt; ('i9930', 0.228)   dobrý "good", a doubtful link
+NAS-430683854 -&gt; None</code></pre>
+    <p>The confidence matters downstream. The 0.228 link for
+      <span class="cs">dobrý</span> leads to <span class="cs">výborný</span>
+      "excellent", which is wrong, so the other scripts use only links of
+      confidence 1.</p>
+
+    <h3>7 · Reading the tags, then joining PDT</h3>
+    <span class="ref">pdt_sources.py:234–267</span>
+    <p><code>read_tags()</code> walks the <code>.s</code> files in sorted order and
+      yields one <code>Token</code> per <code>&lt;st&gt;</code>, with the document, the
+      m-id and the tag. <code>read_tokens()</code> wraps it: when the document
+      changes, it opens that document's <code>.m.gz</code> file inside the PDT zip
+      (without unpacking the 128 MB archive) and fills in the lemma, the
+      morphological tag, the form and the sentence.</p>
+    <pre><code>if tok.doc != doc:
+    doc = tok.doc
+    morph = read_morph(pdt.read(mfiles[doc])) if doc in mfiles else {}
+if tok.mid in morph:
+    tok.lemma, tok.mtag, tok.form, words, i = morph[tok.mid]
+    tok.sentence = detokenise([*words[:i], f"«{tok.form}»", *words[i + 1:]])</code></pre>
+    <p>Reading one document at a time keeps memory small, and works because the tags
+      come in document order. Two annotated documents are missing from PDT 3.0; their
+      three words come back with an empty lemma.</p>
+
+    <h3>8 · Sentences and lemmas</h3>
+    <span class="ref">pdt_sources.py:270–313</span>
+    <p><code>read_morph()</code> maps every m-id in a document to its lemma, tag,
+      form, the forms of its sentence, and its position. <code>detokenise()</code>
+      joins tokens without a space before punctuation:
+      <code>["Ahoj", ",", "světe", "(", "a", ")", "."]</code> becomes
+      <span class="cs">Ahoj, světe (a).</span></p>
+    <p><code>base_lemma()</code> strips PDT's technical suffixes, so the lemma can be
+      compared with wordnet lemmas:</p>
+    <pre class="data"><code>stát-2_^(státní_útvar)  -&gt; stát
+vycházet_:T             -&gt; vycházet
+Praha_;G                -&gt; Praha
+e-mail                  -&gt; e-mail</code></pre>
+    <p>The last line is why the pattern removes <code>-2</code> only at the end, and
+      only when something comes before it: the hyphen in
+      <span class="cs">e-mail</span> stays.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Six questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file and is fallible. Treat
+      the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference: open it.</li>
+      <li>The examples and counts (23,094 synsets, 1,814 files, 148,865 words, 90,030
+        CILI entries, 9 tag collisions, 55 words with zero-padded tags) come from one
+        run on 2026-11-16 against the cached LINDAT data.</li>
+      <li>The meanings of the exception codes are inferences, two of them guesses.
+        If ÚFAL documents them, that documentation wins.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <tbody>
+        <tr><td><strong>stand-off annotation</strong></td><td>tags kept in separate
+          files that point at the words by id, instead of being written into the text.</td></tr>
+        <tr><td><strong>m-layer</strong></td><td>PDT's morphological layer: each word's
+          form, lemma and morphological tag (<code>VB-S---3P-AA---</code>).</td></tr>
+        <tr><td><strong>offset</strong></td><td>a Princeton WordNet synset id such as
+          <code>01307561-v</code>; it changes between WordNet versions.</td></tr>
+        <tr><td><strong>ILI</strong></td><td>an Interlingual Index id such as
+          <code>i33221</code>, one per concept across wordnets; the stable key.</td></tr>
+        <tr><td><strong>CILI</strong></td><td>the
+          <a href="https://github.com/globalwordnet/cili">Collaborative Interlingual
+          Index</a>, which keeps maps from old WordNet versions to ILIs.</td></tr>
+        <tr><td><strong>exception</strong></td><td>a code an annotator chose when no
+          synset fitted: a proper name, a missing sense, a wrong lemma.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>pdt_sources.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-16 by Claude Opus 5.5 · source
+      <code>pdt_sources.py</code> at commit <code>df27b6f</code> ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why does read_tokens() have to open PDT at all?",
+     options:[{t:"The annotation is stand-off: a tag points at a word by its m-id, and only PDT says which word, lemma and sentence that is",ok:true},
+              {t:"PDT holds the synset definitions",ok:false},
+              {t:"The tags are stored inside the PDT files",ok:false},
+              {t:"To check the licence",ok:false}],
+     why:"An <st> record has only a lexicon-id and an a.rf such as m-cmpr9406-054-p3s1w2. The lemma, form and sentence live in PDT's m-layer, which read_morph() reads."},
+    {q:"The tag 1307561 appears in an annotation file. What does tag_index() map it to?",
+     options:[{t:"01307561-v, the synset with that 1.5 offset, zeros and part of speech restored",ok:true},
+              {t:"The ILI i33221",ok:false},
+              {t:"An exception code",ok:false},
+              {t:"Nothing: tags must already be synset ids",ok:false}],
+     why:"tag_index() keys each Princeton synset by its offset with the leading zeros and the part of speech stripped, which is how the tags write it. The ILI is a later step, ili_of()."},
+    {q:"Why can tag_index() be wrong for a few tags?",
+     options:[{t:"Without the part of speech, one number can name a synset in two parts of speech, and setdefault keeps the first",ok:true},
+              {t:"Some tags have too many digits",ok:false},
+              {t:"The CILI map is out of date",ok:false},
+              {t:"ÚFAL's ids clash with exception codes",ok:false}],
+     why:"The tag format drops the part of speech, so 9 numbers are ambiguous. setdefault() keeps whichever synset comes first in the file; the other is unreachable from a tag."},
+    {q:"What does ili_of() return for NAS-430683854 (mít 'have to')?",
+     options:[{t:"None: it has no Princeton id, so pwn15 is None and there is nothing to look up",ok:true},
+              {t:"The ILI of mít 'have'",ok:false},
+              {t:"A low-confidence ILI",ok:false},
+              {t:"It raises an error",ok:false}],
+     why:"pwn15 only matches ids of the form 8 digits, hyphen, part of speech. A synset ÚFAL added has no counterpart in WordNet 1.5, so it has no ILI either."},
+    {q:"Why does base_lemma() keep the hyphen in e-mail but turn stát-2 into stát?",
+     options:[{t:"It removes a hyphen and digits only at the end of the lemma, which is PDT's homonym number",ok:true},
+              {t:"It has a list of words with hyphens",ok:false},
+              {t:"It removes every hyphen except the first",ok:false},
+              {t:"e-mail is not a PDT lemma",ok:false}],
+     why:"The pattern (?<=.)-\\d+$ needs digits up to the end of the string. In e-mail the hyphen is followed by letters, so it stays."},
+    {q:"The tag 00600945 keeps its zeros. What does tag_key() do with it, and why does it leave '0' alone?",
+     options:[{t:"It strips the zeros to 600945, the form tag_index() is keyed by; '0' is an exception code, and the length test keeps it intact",ok:true},
+              {t:"It pads every tag to eight digits",ok:false},
+              {t:"It drops tags that start with a zero",ok:false},
+              {t:"It strips zeros from every tag, so '0' becomes ''",ok:false}],
+     why:"tag_key() strips leading zeros only from all-digit tags longer than two characters. Exception codes run from 0 to 10, so they pass through unchanged."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>

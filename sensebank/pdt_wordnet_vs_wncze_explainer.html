@@ -1,0 +1,477 @@
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+  .k-mlemma{color:var(--mlemma)} .k-noili{color:var(--noili)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>What Reached the Release?</h1>
+    <p class="lede">How <code>pdt_wordnet_vs_wncze.py</code> follows every synset of the
+      wordnet the PDT annotators used into the Czech WordNet 2.2, and says what became
+      of its words, definitions, examples and hypernyms.</p>
+    <div class="meta">
+      <span>pdt_wordnet_vs_wncze.py</span><span>372 lines</span>
+      <span>deps: wn, requests</span><span>run: uv run pdt_wordnet_vs_wncze.py</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong: a misread line, an invented detail, a stale number. Trust the
+      code, not this page. Check anything that matters against
+      <code>pdt_wordnet_vs_wncze.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background: two copies of one wordnet</a></li>
+      <li><a href="#intuition">Intuition: eight fates for a synset</a></li>
+      <li><a href="#code">Code: how the script runs</a></li>
+      <li><a href="#quiz">Quiz: check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Between 2004 and 2011, ÚFAL in Prague tagged words of the
+      <a href="https://ufal.mff.cuni.cz/pdt3.0">Prague Dependency Treebank</a> with
+      synsets of their own copy of the Czech WordNet, released on LINDAT as
+      <a href="http://hdl.handle.net/11858/00-097C-0000-0001-4880-3">Czech WordNet 1.9 PDT</a>
+      (23,094 synsets). The tags themselves are a separate
+      <a href="http://hdl.handle.net/11858/00-097C-0000-0001-487A-4">LINDAT record</a>.
+      While they annotated, they edited that copy:
+      <a href="https://doi.org/10.1007/11846406_3">Bejček et al. (2006)</a> describe
+      rewriting the senses of the 25 most-disputed lemmas, such as
+      <span class="cs">mít</span> "have", <span class="cs">moci</span> "can" and
+      <span class="cs">cena</span> "price", each with a definition and an example.</p>
+    <p>Meanwhile the main line of the wordnet went on in Brno, and is now the open
+      <a href="https://github.com/bond-lab/czech-wn">Czech WordNet release 2.2</a>
+      (lexicon <code>wncze:2.2</code>). The script asks what of the PDT copy is in the
+      release today.</p>
+    <p>The two copies number their synsets differently. The PDT copy uses
+      <strong>WordNet 1.5</strong> offsets (<code>01307561-v</code> is
+      <span class="cs">mít</span>); the release uses WordNet 2.0 offsets
+      (<code>wncze-02231793-v</code> is <span class="cs">mít</span>). So the script
+      never compares ids. It goes through the
+      <a href="https://github.com/globalwordnet/cili">Collaborative Interlingual Index</a>
+      (CILI), whose <code>ili-map-pwn15.tab</code> maps each 1.5 offset to an ILI, with a
+      confidence between 0 and 1. The release carries ILIs, so the ILI names the
+      release synset.</p>
+    <div class="callout">
+      <p><strong>Why not compare ids?</strong> The script tests that too
+        (<code>id_check</code>). Read as 2.0 ids, 33 of the 22,930 PDT offsets name a
+        synset in the release, and none of those 33 shares a single word with it.</p>
+    </div>
+    <p>Who edited a PDT synset is written in its <strong>edit stamp</strong>. Stamps
+      starting <code>bejce</code> are Eduard Bejček's at ÚFAL (<code>bejce9am</code>,
+      <code>bejcek</code>; 203 synsets, all in 2006). The rest are the Brno team's
+      (3,133 synsets, from users such as <code>xcapek1</code>, <code>pala</code>,
+      <code>ybara</code> and <code>ydita</code>, 2001 to 2006).</p>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Each PDT synset goes down a short decision path and comes out with one of
+      eight statuses:</p>
+    <div class="wrap-x">
+      <div class="flow">
+        <div class="node"><b>PDT synset</b><small>01781692-a dobrý</small></div>
+        <div class="arrow">→<small>1.5 offset?</small></div>
+        <div class="node"><b>ILI</b><small>i9930 (conf. 0.228)</small></div>
+        <div class="arrow">→<small>by_ili</small></div>
+        <div class="node"><b>release synset</b><small>wncze-02262136-a</small></div>
+        <div class="arrow">→<small>compare words</small></div>
+        <div class="node"><b>status</b><small>no word kept, elsewhere</small></div>
+      </div>
+    </div>
+    <p>A synset with no Princeton id (<code>NAS-450034833</code>) skips the ILI and is
+      looked up by its words; an offset missing from the CILI table stops at the
+      second step. The table shows the most-tagged real synset of each status
+      (<code>data/pdt_vs_wncze.tsv</code>, from the run at commit df27b6f):</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>PDT synset</th><th>Words</th><th class="num">Tags</th><th>Release</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><code>01307561-v</code></td><td class="cs">mít</td><td class="num">1,792</td>
+          <td><code>wncze-02231793-v</code></td><td><span class="chip k-present">all words kept</span></td></tr>
+        <tr><td><code>09127492-n</code></td><td class="cs">rok, kalendářní rok, léto</td><td class="num">2,219</td>
+          <td><code>wncze-14343019-n</code> <span class="cs">rok, léto</span></td><td><span class="chip k-mlemma">some words kept</span></td></tr>
+        <tr><td><code>01781692-a</code></td><td class="cs">dobrý</td><td class="num">469</td>
+          <td><code>wncze-02262136-a</code> <span class="cs">výborný</span></td><td><span class="chip k-mlemma">no word kept, words elsewhere</span></td></tr>
+        <tr><td><code>00504078-a</code></td><td class="cs">výroční</td><td class="num">27</td>
+          <td><code>wncze-02526517-a</code></td><td><span class="chip k-msynset">no word kept, words gone</span></td></tr>
+        <tr><td><code>00344049-n</code></td><td class="cs">premiér</td><td class="num">174</td>
+          <td>none for i88906</td><td><span class="chip k-msynset">concept not in wncze</span></td></tr>
+        <tr><td><code>00549286-a</code></td><td class="cs">stranický</td><td class="num">24</td>
+          <td>no ILI</td><td><span class="chip k-noili">no ILI for the 1.5 offset</span></td></tr>
+        <tr><td><code>NAS-450034833</code></td><td class="cs">moci</td><td class="num">1,183</td>
+          <td><code>wncze-NTUMC-80001788-v</code></td><td><span class="chip k-mlemma">new synset, its words in one wncze synset</span></td></tr>
+        <tr><td><code>NAS-850425170</code></td><td class="cs">říkat, říci</td><td class="num">191</td>
+          <td>none</td><td><span class="chip k-msynset">new synset, not in wncze</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two rows are worth a second look. <span class="cs">dobrý</span> "good" lands on
+      <span class="cs">výborný</span> "excellent" because its CILI link has confidence
+      0.228: the bridge, not the wordnet, is wrong there. And the
+      <span class="cs">moci</span> row says only that the word <em>moci</em> exists in some
+      release synset (<span class="cs">dát se, moci, moct</span>). ÚFAL wrote six senses
+      of <span class="cs">moci</span> (possibility, permission, and four more); the release
+      has one synset with it, so the status is weak evidence for a one-word synset.</p>
+    <p>Weighted by tags, the eight statuses split the 102,696 tags like this:</p>
+    <pre class="data">all words kept                    19,494 synsets   70,347 tags   68.5%
+some words kept                    1,594 synsets   23,709 tags   23.1%
+no word kept, words elsewhere      1,024 synsets    3,817 tags    3.7%
+no word kept, words gone             345 synsets      149 tags    0.1%
+concept not in wncze                 383 synsets      905 tags    0.9%
+no ILI for the 1.5 offset             90 synsets       64 tags    0.1%
+new synset, its words in one ...      93 synsets    3,386 tags    3.3%
+new synset, not in wncze              71 synsets      319 tags    0.3%</pre>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Seven parts, in the order they run.</p>
+
+    <h3>1 · Configuration and the 25 lemmas</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:43–65</span>
+    <p>Share the <code>wn</code> database under <code>patterns/.wn_data</code>, name
+      the release and the outputs, and fix the vocabulary: <code>UFAL</code> is the stamp
+      prefix that marks Bejček's edits, <code>CORRECTED</code> the 25 re-analysed lemmas
+      (24 strings: <span class="cs">stát</span> is both "state" and "stand"), and
+      <code>STATUSES</code> the eight fates, with short <code>SLUGS</code> for the facts
+      file.</p>
+
+    <h3>2 · load_wncze()</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:91–104</span>
+    <p>Load <code>wncze:2.2</code> (downloading it once) and build the two lookups the
+      rest needs: the release synset for each ILI, and the synsets each lemma is in,
+      by part of speech. <code>pos()</code> folds the PDT copy's <code>b</code> (adverb)
+      and satellites to <code>n v a r</code>.</p>
+    <pre><code>cs = wn.Wordnet(lexicon=CES)
+by_lemma: dict[tuple[str, str], set[str]] = defaultdict(set)
+for sense in cs.senses():
+    ss = sense.synset()
+    by_lemma[(sense.word().lemma(), pos(ss.pos))].add(ss.id)
+return Wncze({ss.ili: ss for ss in cs.synsets() if ss.ili}, by_lemma)</code></pre>
+
+    <h3>3 · classify()</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:148–183</span>
+    <p>The heart of the script: one PDT synset in, one <code>Row</code> out. A new
+      synset (no Princeton id) is looked up by its words: the release synsets that hold
+      <em>every</em> one of them. Otherwise the 1.5 offset goes to an ILI, the ILI to a
+      release synset, and the words are compared.</p>
+    <pre><code>words = {w.lemma() for w in ss.words()}
+kept = sum(1 for w in syn.literals if w in words)
+if kept == len(syn.literals):
+    status = "all words kept"
+elif kept:
+    status = "some words kept"
+elif any((w, p) in cs.by_lemma for w in syn.literals):
+    status = "no word kept, words elsewhere"
+else:
+    status = "no word kept, words gone"</code></pre>
+    <p>"Elsewhere" means the word is in the release, in some other synset of the same
+      part of speech: a sign of a moved word or a wrong link, as with
+      <span class="cs">dobrý</span>. "Gone" means the release has no such word at all.</p>
+
+    <h3>4 · norm() and carried(): definitions and examples</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:119–145</span>
+    <p>The PDT copy often starts a definition with its lemma
+      (<code>fax: zpráva přenesená zařízením Fax-1</code>). <code>norm()</code> drops that
+      prefix, quotes and final punctuation, and lower-cases, giving
+      <code>zpráva přenesená zařízením fax-1</code>. <code>carried()</code> then counts a
+      PDT text as carried if its normalised form is in, or inside, one of the release
+      synset's.</p>
+    <pre><code>targets = [norm(t) for t in into]
+return sum(1 for t in texts if norm(t) and any(norm(t) in x for x in targets))</code></pre>
+    <p>The result splits by who wrote the text:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Edit stamps</th><th class="num">Synsets</th><th class="num">Definitions</th><th class="num">in 2.2</th><th class="num">Examples</th><th class="num">in 2.2</th></tr></thead>
+      <tbody>
+        <tr><td>ÚFAL (Bejček)</td><td class="num">203</td><td class="num">155</td><td class="num">6</td><td class="num">242</td><td class="num">2</td></tr>
+        <tr><td>Brno</td><td class="num">3,133</td><td class="num">525</td><td class="num">499</td><td class="num">44</td><td class="num">44</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>5 · hypernyms_kept()</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:186–209</span>
+    <p>For each PDT hypernym link whose two ends both reached the release, is the
+      link there too? Of 19,441 such links, 13,155 are. Of the rest, 1,727 start from a
+      release synset with no hypernym at all: <span class="cs">ampér</span> has
+      <span class="cs">elektromagnetická jednotka</span> above it in the PDT copy and
+      nothing in the release.</p>
+    <pre><code>parents = {h.id for h in child.hypernyms()}
+for target in row.nas.hypernyms:
+    up = rows.get(target)
+    if up and up.ili and up.wncze:
+        both += 1
+        kept += up.wncze in parents
+        orphans += not parents</code></pre>
+
+    <h3>6 · id_check() and facts()</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:263–334</span>
+    <p><code>id_check()</code> reads each 1.5 offset as if it were a 2.0 id
+      (<code>f"wncze-{row.nas.id}"</code>) and counts the hits and the shared words: 33
+      and 0. <code>facts()</code> gathers every figure the report cites, keyed by slug
+      (<code>all</code>, <code>ufal</code>, <code>hyper</code>, <code>lemma.l11</code> for
+      <span class="cs">moci</span>), into <code>report/facts-compare.json</code>. For each
+      corrected lemma it counts the PDT senses, their tags, how many reach a release
+      synset holding the lemma, and the lemma's senses in the release:</p>
+    <pre class="data">lemma  PDT senses  tags  reached  release senses
+moci        6      1,442     0           1
+mít         4      2,803     1           9
+dobrý       1        469     0           7</pre>
+
+    <h3>7 · main() and the TSV</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:355–368</span>
+    <p>Classify every synset, count the tags on each with <code>read_tags()</code> (each
+      tag normalised by <code>tag_key()</code>, so a tag written with its zeros still finds
+      its synset), print
+      the summary, and write <code>data/pdt_vs_wncze.tsv</code> (one row per PDT synset,
+      most-tagged first) and the facts file. The TSV's first line, first eight columns:</p>
+    <pre class="data">pdt_synset  status          tagged  ili      cili_confidence  wncze             words                      kept
+09127492-n  some words kept   2219  i117116  1.0              wncze-14343019-n  rok|kalendářní rok|léto     2</pre>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file. Treat the code as the
+      source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference: open it.</li>
+      <li>The numbers come from one run, at commit df27b6f, against
+        <code>wncze:2.2</code>; they will move with the next release.</li>
+      <li>Look hypernyms up through <code>wn.Wordnet(lexicon="wncze:2.2")</code>, as the
+        script does. <code>wn.synset()</code> uses all lexicons and can show an inferred,
+        empty hypernym for a synset such as <span class="cs">ampér</span>.</li>
+      <li>"Carried" is a string match: a definition reworded in the release counts as
+        not carried.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <tbody>
+        <tr><td><strong>PDT copy</strong></td><td>Czech WordNet 1.9 PDT, the wordnet the
+          annotators chose senses from; ids are WordNet 1.5 offsets or new ids such as
+          <code>NAS-450034833</code>.</td></tr>
+        <tr><td><strong>release</strong></td><td>Czech WordNet 2.2, <code>wncze:2.2</code>;
+          ids are WordNet 2.0 offsets.</td></tr>
+        <tr><td><strong>ILI</strong></td><td>an Interlingual Index id such as
+          <code>i33221</code>, one per concept across wordnets.</td></tr>
+        <tr><td><strong>CILI confidence</strong></td><td>how sure the 1.5-to-ILI map is,
+          0 to 1; below 1 the link is often wrong.</td></tr>
+        <tr><td><strong>edit stamp</strong></td><td>who changed a PDT synset and when,
+          e.g. <code>bejce9am 2006/03/14</code>.</td></tr>
+        <tr><td><strong>tags</strong></td><td>annotated words in PDT carrying that
+          synset.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>pdt_wordnet_vs_wncze.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-16 by Claude Opus 5.5 · source
+      <code>pdt_wordnet_vs_wncze.py</code> at commit <code>df27b6f</code> · explainer v0 ·
+      regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why does the script map PDT synsets through CILI instead of comparing ids?",
+     options:[{t:"The PDT copy's ids are WordNet 1.5 offsets and the release's are 2.0 offsets, so the same number names different concepts",ok:true},
+              {t:"The release has no synset ids",ok:false},
+              {t:"Comparing ids would be too slow for 23,094 synsets",ok:false},
+              {t:"CILI also carries the Czech words",ok:false}],
+     why:"id_check() shows it: read as 2.0 ids, 33 offsets name a release synset and none of them shares a word with it. The 1.5 map to ILIs, and the release's ILIs, line the two up."},
+    {q:"A PDT synset's ILI leads to a release synset that has none of its words, but one of them is in another release synset. Which status?",
+     options:[{t:"no word kept, words elsewhere",ok:true},
+              {t:"some words kept",ok:false},
+              {t:"no word kept, words gone",ok:false},
+              {t:"concept not in wncze",ok:false}],
+     why:"classify() checks cs.by_lemma for each word with the same part of speech; finding one gives 'elsewhere'. dobrý is the example: its low-confidence link leads to výborný."},
+    {q:"Why is 'new synset, its words in one wncze synset' weak evidence that the sense reached the release?",
+     options:[{t:"For a one-word synset it only shows the word is in some release synset, not that this sense is",ok:true},
+              {t:"Because new synsets have no definitions",ok:false},
+              {t:"Because the words are compared without their part of speech",ok:false},
+              {t:"Because CILI confidence is ignored for them",ok:false}],
+     why:"The branch intersects the synsets of every word. With one word, moci, that is any synset holding moci: here the single release synset dát se, moci, moct, which cannot be all six of ÚFAL's senses."},
+    {q:"A PDT definition reads 'cena: trofej.' and the release synset's is 'trofej'. Does carried() count it?",
+     options:[{t:"Yes: norm() strips the lemma prefix, the full stop and case, leaving the same string",ok:true},
+              {t:"No: the strings differ",ok:false},
+              {t:"Only if the CILI confidence is 1",ok:false},
+              {t:"Only for Brno's edits",ok:false}],
+     why:"norm() removes a leading 'word: ', quotes and final punctuation, then lower-cases; carried() also accepts a match inside a longer release text."},
+    {q:"What does the ÚFAL/Brno split of edit stamps show?",
+     options:[{t:"Brno's definitions reached the release (499 of 525) and ÚFAL's did not (6 of 155)",ok:true},
+              {t:"ÚFAL edited more synsets than Brno",ok:false},
+              {t:"Brno's synsets have no ILIs",ok:false},
+              {t:"Both teams' examples were all lost",ok:false}],
+     why:"facts() groups synsets by stamp prefix (UFAL = 'bejce'). ÚFAL's 203 synsets carry 17,430 tags, the most-used part of the annotation, yet almost none of their text is in the release."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>

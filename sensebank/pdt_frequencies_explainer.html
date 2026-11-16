@@ -1,0 +1,482 @@
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  .k-noili{color:var(--noili)} .k-mlemma{color:var(--mlemma)}
+  ol.chain{list-style:none;counter-reset:c;padding:0;margin:1.4rem 0;font-family:var(--sans);font-size:.86rem}
+  ol.chain li{counter-increment:c;display:grid;grid-template-columns:2rem 1fr auto;gap:.6rem;align-items:start;
+    background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:.55rem .7rem;margin:0 0 .35rem}
+  ol.chain li::before{content:counter(c);color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+  ol.chain .test{color:var(--ink)}
+  ol.chain .test small{display:block;color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  ol.chain .out{text-align:right;white-space:nowrap}
+  ol.chain .out small{display:block;color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  ol.chain li.end{border-color:var(--present)}
+  @media (max-width:540px){ol.chain li{grid-template-columns:1.5rem 1fr}ol.chain .out{grid-column:2;text-align:left}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>Counting Senses in the PDT Annotation</h1>
+    <p class="lede">How <code>pdt_frequencies.py</code> turns each word the PDT
+      annotators tagged into a count for a sense of the Czech WordNet 2.2, and
+      what it does with the words it cannot count.</p>
+    <div class="meta">
+      <span>pdt_frequencies.py</span><span>287 lines</span>
+      <span>deps: wn, requests</span><span>run: uv run pdt_frequencies.py</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong: a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>pdt_frequencies.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background: tags, senses and counts</a></li>
+      <li><a href="#intuition">Intuition: ten fates for a tagged word</a></li>
+      <li><a href="#code">Code: how the script runs</a></li>
+      <li><a href="#quiz">Quiz: check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Between 2004 and 2011, ÚFAL annotated words of the
+      <a href="http://hdl.handle.net/11858/00-097C-0000-0023-1AAF-3">Prague Dependency
+      Treebank</a> (PDT) with synsets of their own copy of the Czech WordNet. The
+      annotation is <a href="http://hdl.handle.net/11858/00-097C-0000-0001-487A-4">stand-off</a>:
+      a file per document that says, for each word id, which tag it got. The copy
+      of the wordnet is
+      <a href="http://hdl.handle.net/11858/00-097C-0000-0001-4880-3">Czech WordNet 1.9 PDT</a>.
+      All three are on LINDAT under CC BY-NC-SA.</p>
+    <p>A <strong>sense</strong> is a word in a synset: <span class="cs">slovo</span>
+      in the synset for "word", <span class="cs">cenit si</span> "value" in its synset.
+      A <strong>count</strong> says how often a sense is used in a corpus. The Czech
+      WordNet 2.2 already has counts for 1,736 senses from the
+      <a href="https://github.com/bond-lab/NTUMC">NTU-MC</a> Czech corpus; PDT is far
+      larger, so every tag that reaches a sense is a count worth having.</p>
+    <p>The catch is that the tags name synsets of a different wordnet, by
+      Princeton WordNet <strong>1.5</strong> offsets, while the release counts in
+      2.0. The bridge is the <a href="https://github.com/globalwordnet/cili">CILI</a>
+      map from 1.5 offsets to ILIs, and the release synset with the same ILI.
+      Each link in that map has a <strong>confidence</strong>; the low ones are
+      often wrong: <span class="cs">dobrý</span> "good" maps to the concept the
+      release calls <span class="cs">výborný</span> "excellent".</p>
+    <p>A tag is not always a synset. It can be one of the annotators'
+      <strong>exceptions</strong> (a small number such as <code>1</code> or
+      <code>7</code>, for "missing sense" or "proper name"), or a hyphen for a word
+      the annotators did not agree on.</p>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Every annotated word walks down the same chain of tests. The first test it
+      fails decides its <strong>fate</strong>; a word that passes them all is
+      counted. The numbers are the words with each fate in the full run
+      (<code>report/facts-freq.json</code>), out of 148,865 annotated words.</p>
+
+    <ol class="chain" aria-label="The fate decision chain">
+      <li><span class="test">Is there a tag at all?<small>tag == "-"</small></span>
+        <span class="out"><span class="chip k-noili">no agreed tag</span><small>33,189</small></span></li>
+      <li><span class="test">Is the document in PDT 3.0?<small>no lemma found</small></span>
+        <span class="out"><span class="chip k-noili">document not in PDT 3.0</span><small>3</small></span></li>
+      <li><span class="test">Is the tag a synset, not an exception?<small>tag in EXCEPTIONS</small></span>
+        <span class="out"><span class="chip k-noili">exception</span><small>12,980</small></span></li>
+      <li><span class="test">Does the tag name a synset?<small>b.index lookup via tag_key()</small></span>
+        <span class="out"><span class="chip k-msynset">tag names no synset</span><small>0</small></span></li>
+      <li><span class="test">Does the synset have a Princeton id?<small>syn.pwn15</small></span>
+        <span class="out"><span class="chip k-mlemma">new synset (no Princeton id)</span><small>3,704</small></span></li>
+      <li><span class="test">Does CILI know the 1.5 offset?<small>ili_of()</small></span>
+        <span class="out"><span class="chip k-msynset">no ILI for the 1.5 offset</span><small>64</small></span></li>
+      <li><span class="test">Is the link certain?<small>confidence &lt; MIN_CONFIDENCE</small></span>
+        <span class="out"><span class="chip k-msynset">CILI link below confidence 1</span><small>1,640</small></span></li>
+      <li><span class="test">Does the release have the concept?<small>b.words.get(ili)</small></span>
+        <span class="out"><span class="chip k-mlemma">concept not in wncze</span><small>715</small></span></li>
+      <li><span class="test">Is the word in that synset?<small>candidates()</small></span>
+        <span class="out"><span class="chip k-mlemma">word not in the wncze synset</span><small>7,716</small></span></li>
+      <li class="end"><span class="test">All tests passed<small>found[(synset, lemma)] += 1</small></span>
+        <span class="out"><span class="chip k-present">counted</span><small>88,854</small></span></li>
+    </ol>
+
+    <p>Real words from the run, one per fate (the tagged word is in «»):</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Word in context</th><th>Tag</th><th>Fate</th></tr></thead>
+      <tbody>
+        <tr><td>Třikrát rychlejší než «<span class="cs">slovo</span>»</td><td><code>4157535</code></td>
+          <td><span class="chip k-present">counted</span> as <span class="cs">slovo</span> in <code>wncze-05903215-n</code></td></tr>
+        <tr><td>Zřejmě si v té organizaci «<span class="cs">cenili</span>» času</td><td><code>390535</code></td>
+          <td><span class="chip k-present">counted</span> as <span class="cs">cenit si</span>: the reflexive form</td></tr>
+        <tr><td>«<span class="cs">neúspěchy</span>» jednotlivých firem</td><td><code>4707379</code></td>
+          <td><span class="chip k-present">counted</span> as <span class="cs">neúspěch</span>: PDT's lemma is <span class="cs">úspěch</span>, negated</td></tr>
+        <tr><td>přetížené telefonní «<span class="cs">linky</span>»</td><td><code>3172521</code></td>
+          <td><span class="chip k-mlemma">word not in the wncze synset</span>: it has <span class="cs">telefonní linka, telefonní spojení, telefonní vedení</span></td></tr>
+        <tr><td>«<span class="cs">Pomocí</span>» může být systém ECM</td><td><code>-</code></td>
+          <td><span class="chip k-noili">no agreed tag</span></td></tr>
+        <tr><td>Pomocí «<span class="cs">může</span>» být systém ECM</td><td><code>NAS-450034833</code></td>
+          <td><span class="chip k-mlemma">new synset (no Princeton id)</span>: ÚFAL's <span class="cs">moci</span> "possibility"</td></tr>
+        <tr><td>obrázky, grafy, «<span class="cs">fotografie</span>»</td><td><code>0</code></td>
+          <td><span class="chip k-noili">exception</span></td></tr>
+        <tr><td>je však značně «<span class="cs">lepší</span>»</td><td><code>1781692</code></td>
+          <td><span class="chip k-msynset">CILI link below confidence 1</span>: <span class="cs">dobrý</span></td></tr>
+        <tr><td>Jak konstatoval «<span class="cs">premiér</span>» Václav Klaus</td><td><code>344049</code></td>
+          <td><span class="chip k-mlemma">concept not in wncze</span></td></tr>
+        <tr><td>musí vláda «<span class="cs">poskytnout</span>» výjimku</td><td><code>00600945</code></td>
+          <td>was <span class="chip k-msynset">tag names no synset</span>, now
+          <span class="chip k-mlemma">word not in the wncze synset</span>: see <a href="#trust">trust</a></td></tr>
+        <tr><td>Toto «<span class="cs">přímořské</span>» letovisko</td><td><code>342887</code></td>
+          <td><span class="chip k-msynset">no ILI for the 1.5 offset</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two fates are nearly empty. <em>Document not in PDT 3.0</em> has three words:
+      their document has no morphological file in PDT 3.0, so there is no lemma
+      to match. <em>Tag names no synset</em> has none since the fix described in
+      <a href="#trust">How much to trust this</a>, but the test stays as a guard.</p>
+    <div class="callout">
+      <p><strong>Why the order matters.</strong> The confidence test comes before
+        the release is consulted, so a doubtful link is never counted, even when
+        its word happens to be in the target synset. Counting fewer words is the
+        price of not counting <span class="cs">lepší</span> as "excellent".</p>
+    </div>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Six parts, in the order they run.</p>
+
+    <h3>1 · Settings</h3>
+    <span class="ref">pdt_frequencies.py:54–67</span>
+    <p>Only links of confidence 1 are trusted. <code>FATES</code> lists every fate
+      with the short name the report's <code>facts.tex</code> uses. The rest
+      describes the change records: corpus, source, reason and user.</p>
+    <pre><code>MIN_CONFIDENCE = 1.0
+CORPUS = "PDT"
+REASON = "how often the sense is tagged in the corpus"</code></pre>
+
+    <h3>2 · candidates(): the forms a word may have</h3>
+    <span class="ref">pdt_frequencies.py:70–83</span>
+    <p>PDT lemmatises <span class="cs">cenili</span> to <span class="cs">cenit</span>
+      (the <span class="cs">si</span> is a separate word) and
+      <span class="cs">neúspěchy</span> to <span class="cs">úspěch</span> (negation is
+      in the tag). The wordnet lists <span class="cs">cenit si</span> and
+      <span class="cs">neúspěch</span>. So the script tries the bare lemma, both
+      reflexive forms, and, if position 11 of the morphological tag is
+      <code>N</code>, the <span class="cs">ne-</span> form.</p>
+    <pre><code>base = base_lemma(tok.lemma)
+out = [base, f"{base} se", f"{base} si"]
+if len(tok.mtag) > 10 and tok.mtag[10] == "N":
+    out.append("ne" + base)</code></pre>
+    <pre class="data">úspěch, NNIP1-----N----  ->  ['úspěch', 'úspěch se', 'úspěch si', 'neúspěch']
+cenit_:T, VpMP---XR-AA---  ->  ['cenit', 'cenit se', 'cenit si']</pre>
+
+    <h3>3 · Bridge and load_bridge(): everything loaded once</h3>
+    <span class="ref">pdt_frequencies.py:86–116</span>
+    <p>A <code>Bridge</code> holds the annotation wordnet, the tag index, the CILI
+      map, wncze 2.2, and, for every ILI, the senses of its release synset keyed
+      by lemma. That last dictionary makes the final test a lookup.</p>
+    <pre><code>words = {ili: {s.word().lemma(): s for s in ss.senses()} for ili, ss in cs.by_ili.items()}
+return Bridge(nas, tag_index(nas), pwn15_ili(), cs, words)</code></pre>
+
+    <h3>4 · fate(): the decision chain</h3>
+    <span class="ref">pdt_frequencies.py:119–152</span>
+    <p>Ten early returns, one per fate, in the order of the diagram above. The
+      tag is looked up through <code>tag_key()</code>, which drops the leading
+      zeros of an offset as the index does. Each
+      returns a <code>Fate</code> carrying as much as the word got: the annotation
+      synset, then the ILI, then the sense. The same function decides the words
+      for the validation sheets, so the counts and the sheets cannot disagree.</p>
+    <pre><code>syn = b.nas.get(b.index.get(tag_key(tok.tag), ""))
+...
+if hit[1] < MIN_CONFIDENCE:
+    return Fate("CILI link below confidence 1", syn, hit[0])
+senses = b.words.get(hit[0])
+if senses is None:
+    return Fate("concept not in wncze", syn, hit[0])
+lemma = next((c for c in candidates(tok) if c in senses), None)</code></pre>
+
+    <h3>5 · main(): count, keep the residue, check negation</h3>
+    <span class="ref">pdt_frequencies.py:169–230</span>
+    <p>For every token it tallies the fate, and keeps four counters keyed by what
+      a maintainer would act on: counted senses, missing words, new synsets and
+      exceptions. It also counts, for each kind of tag, how many words are
+      negated: 99.7% of words with exception 4 are, against 0.7% of words tagged
+      with a synset, which is how exception 4 was identified as "missing negative
+      sense".</p>
+    <pre><code>negated[kind] += tok.mtag[10:11] == "N"
+f = fate(tok, b)
+fates[f.label] += 1</code></pre>
+    <p>Then it writes the files, with the NTU-MC counts already in the release
+      beside the PDT ones:</p>
+    <pre class="data">synset             lemma   pdt   ntumc
+wncze-14343019-n   rok     2219  6
+wncze-02231793-v   mít     1792  1
+wncze-07570097-n   firma    940</pre>
+    <pre class="data">pdt_missing_words.tsv
+wncze-00586216-n   práce   266   robota|dřina|lopota</pre>
+
+    <h3>6 · write_records(): change records for czech-wn</h3>
+    <span class="ref">pdt_frequencies.py:267–283</span>
+    <p>Each count becomes a <code>set_count</code> line in the format of the
+      <a href="https://github.com/bond-lab/czech-wn/blob/main/changes/README.md">czech-wn
+      change log</a>, naming the corpus, source and reason. The ids are
+      provisional; the maintainer numbers them into the log.</p>
+    <pre class="data">{"id": "wncze-2.2-pdt-4295", "action": "set_count", "lexicon": "wncze",
+ "synset": "wncze-05903215-n", "lemma": "slovo", "new": "39", "corpus": "PDT", ...}</pre>
+    <p>The result: counts for 7,080 senses, from 86.5% of the 102,696 words tagged
+      with a synset. 414 of those senses already have an NTU-MC count.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file, and checked by
+      <code>explainer_check.py</code> for identifiers, line references and links.
+      Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference: open it.</li>
+      <li>The numbers come from one run on 2026-11-16, recorded in
+        <code>report/facts-freq.json</code>, and move when the data does.</li>
+      <li>The example words were found by running <code>fate()</code> over
+        <code>read_tokens()</code> and keeping the first word with each fate.</li>
+      <li>Writing this page found a bug, since fixed (commit <code>df27b6f</code>).
+        Most tags drop the offset's leading zeros (<code>1307561</code>), and the
+        tag index is keyed that way, but four tags keep them (<code>00600945</code>
+        for <span class="cs">poskytnout, dát, dávat, udělit</span>, and three more).
+        Their 55 words failed the lookup and were reported as <em>tag names no
+        synset</em>. <code>tag_key()</code> in <code>pdt_sources.py</code> now strips
+        the zeros before the lookup. Of the 55 words, 18 are now counted and 37
+        are words missing from their wncze synset: counted 88,836 &rarr; 88,854,
+        senses 7,079 &rarr; 7,080.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <tbody>
+        <tr><td><strong>tag</strong></td><td>what the annotation gives a word: a
+          synset id without zeros (<code>1307561</code>), an id of a new synset
+          (<code>NAS-450034833</code>), an exception code, or <code>-</code>.</td></tr>
+        <tr><td><strong>annotation wordnet</strong></td><td>Czech WordNet 1.9 PDT, the
+          copy of the wordnet the annotators chose from; its ids are WordNet 1.5
+          offsets.</td></tr>
+        <tr><td><strong>ILI</strong></td><td>an Interlingual Index id
+          (<code>i69544</code>), one per concept across wordnets; the key that
+          joins the two Czech wordnets.</td></tr>
+        <tr><td><strong>confidence</strong></td><td>how sure the CILI 1.5 map is of a
+          link, from 0 to 1; only links of 1 are used.</td></tr>
+        <tr><td><strong>sense</strong></td><td>a lemma in a synset; what a count
+          is attached to.</td></tr>
+        <tr><td><strong>change record</strong></td><td>one JSON line of the czech-wn log
+          that changes the wordnet, with its user, source and reason.</td></tr>
+        <tr><td><strong>exception</strong></td><td>a tag saying no synset fits:
+          missing sense, proper name, missing negative sense, and so on.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>pdt_frequencies.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Generated 2026-11-16 by Claude Opus 5.5 · source
+      <code>pdt_frequencies.py</code> at commit <code>df27b6f</code> ·
+      explainer v0 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"A word is tagged 1781692 (dobrý), its CILI link has confidence below 1, and the release synset for that ILI happens to contain dobrý. What happens?",
+     options:[{t:"It is not counted: the confidence test returns before the release synset is looked at",ok:true},
+              {t:"It is counted, because the word is in the synset",ok:false},
+              {t:"It is counted with half weight",ok:false},
+              {t:"It is written to the missing-words file",ok:false}],
+     why:"fate() returns 'CILI link below confidence 1' at lines 144-145, before b.words is consulted. Doubtful links are never counted, whatever the target holds."},
+    {q:"PDT lemmatises the verb in 'cenili si' as cenit. Why can it still be counted as cenit si?",
+     options:[{t:"candidates() tries the lemma with se and with si as well as the bare lemma",ok:true},
+              {t:"The release lists every verb without its reflexive particle",ok:false},
+              {t:"PDT 3.0 stores reflexive lemmas with the particle",ok:false},
+              {t:"fate() ignores the lemma for verbs",ok:false}],
+     why:"candidates() returns [base, base se, base si] and fate() takes the first one the release synset has."},
+    {q:"How does the script decide to try neúspěch for a word whose PDT lemma is úspěch?",
+     options:[{t:"Position 11 of the PDT morphological tag is N, marking the word as negated",ok:true},
+              {t:"Every noun gets a ne- form tried",ok:false},
+              {t:"The annotation tag says so",ok:false},
+              {t:"The word form starts with ne",ok:false}],
+     why:"candidates() checks tok.mtag[10] == 'N' (the eleventh character); only then does it append 'ne' + base."},
+    {q:"Which of these words ends up in pdt_missing_words.tsv?",
+     options:[{t:"linky tagged with the synset telefonní linka, telefonní spojení, telefonní vedení, which lacks linka",ok:true},
+              {t:"může tagged with ÚFAL's new synset for moci",ok:false},
+              {t:"fotografie tagged with exception 0",ok:false},
+              {t:"Pomocí with no agreed tag",ok:false}],
+     why:"Only the fate 'word not in the wncze synset' feeds the missing counter. A new synset goes to pdt_new_synsets.tsv, an exception to pdt_exceptions.tsv, and an untagged word to no file."},
+    {q:"Why does the script count negated words for each kind of tag?",
+     options:[{t:"To test what exception 4 means: if it is 'missing negative sense', its words should be negated far more often than words tagged with a synset",ok:true},
+              {t:"Negated words are not counted, so they must be removed",ok:false},
+              {t:"Change records need the share of negated words",ok:false},
+              {t:"To find the reflexive verbs",ok:false}],
+     why:"The papers list the exceptions but not their codes. 99.7% of code-4 words are negated against 0.7% of synset-tagged words, which pins code 4 down; the shares go to facts-freq.json for the report."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>

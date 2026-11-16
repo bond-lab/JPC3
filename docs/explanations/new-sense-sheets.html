@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seven Students, Twenty-One Pairs — JPC3 explainer</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+  .k-mlemma{color:var(--mlemma)} .k-noili{color:var(--noili)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+  .grid7{display:grid;grid-template-columns:repeat(7,minmax(2.1rem,1fr));gap:.3rem;margin:1rem 0;
+    font-family:var(--mono);font-size:.78rem}
+  .grid7 div{background:var(--surface);border:1px solid var(--hair);border-radius:6px;
+    padding:.35rem .2rem;text-align:center}
+  .grid7 .h{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+  .grid7 .x{color:var(--muted);opacity:.45}
+  .grid7 .p{color:var(--accent);font-weight:600}
+  .round{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin:.8rem 0;
+    font-family:var(--mono);font-size:.76rem}
+  .round span{border:1px solid var(--hair);border-radius:999px;padding:.15rem .55rem;background:var(--surface)}
+  .round span b{color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>Seven Students, Twenty-One Pairs</h1>
+    <p class="lede">How <code>new_sense_sheets.py</code> turns the PDT senses the Czech
+      WordNet lacks into seven blind, seeded validation sheets, so that every sense
+      is judged twice and every pair of students yields its own agreement score.</p>
+    <div class="meta">
+      <span>new_sense_sheets.py</span><span>327 lines</span>
+      <span>deps: wn, requests, openpyxl</span><span>run: uv run new_sense_sheets.py</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong: a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>new_sense_sheets.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background: what is judged, and why twice</a></li>
+      <li><a href="#intuition">Intuition: dealing 210 senses to 21 pairs</a></li>
+      <li><a href="#code">Code: from tags to sheets</a></li>
+      <li><a href="#quiz">Quiz</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>The PDT annotators tagged words with senses of their own copy of the Czech
+      WordNet. When those tags are carried over to the Czech WordNet 2.2, some
+      senses are not there. A <strong>sense</strong> here is a lemma with the
+      synset it was tagged with: <span class="cs">moci</span> in the ÚFAL synset
+      <code>NAS-450034833</code> ("possibility"), <span class="cs">mít</span> in
+      <code>NAS-430683854</code> ("have to"), <span class="cs">znát</span> in
+      <code>00334470-v</code>. The script sorts them into four reasons the release
+      lacks them:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Reason</th><th>In the release?</th><th class="num">Senses</th><th class="num">Judged</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>word not in the wncze synset</td><td>the concept, without this word</td><td class="num">988</td><td class="num">60</td><td><span class="cs">znát</span>, 43 tags</td></tr>
+        <tr><td>concept not in wncze</td><td>no synset for the ILI</td><td class="num">80</td><td class="num">80</td><td><span class="cs">premiér</span>, <span class="cs">voda</span></td></tr>
+        <tr><td>new synset (no Princeton id)</td><td>a synset ÚFAL or Brno added</td><td class="num">53</td><td class="num">53</td><td><span class="cs">moci</span>, <span class="cs">mít</span>, <span class="cs">říkat</span></td></tr>
+        <tr><td>no ILI for the 1.5 offset</td><td>CILI has no link</td><td class="num">17</td><td class="num">17</td><td><span class="cs">stranický</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>The first reason is easy to fix: add the word to a synset that exists. So
+      only a <strong>sample</strong> of 60 is judged, to measure how often adding
+      the word would be right. The other three are judged in full. Counts are from
+      <code>report/facts-sheets.json</code> after the run at commit df27b6f.</p>
+    <p>Why judge each sense <strong>twice</strong>? One judge gives a decision; two
+      give a decision and a measure of how reliable decisions are.
+      <a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen's kappa</a>
+      compares the judges' agreement with the agreement chance alone would give.
+      With seven students, any two of them form a <strong>pair</strong>, and there
+      are 7&times;6/2 = 21 pairs: A&ndash;B, A&ndash;C, &hellip; F&ndash;G.</p>
+    <p>And why <strong>random</strong>? Three things would bias the results if
+      they were left to the order of a file: which senses are judged, who judges
+      which, and what each judge sees first. The script draws all three at random,
+      from a fixed seed so the draw can be repeated exactly.</p>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Lay out the 21 pairs as the upper half of a 7&times;7 grid. Each cell is a
+      pair that will share about ten senses; each row and column is one student,
+      who sits in six pairs.</p>
+    <div class="wrap-x">
+    <div class="grid7" aria-label="The 21 pairs of seven students">
+      <div class="h">A</div><div class="p">AB</div><div class="p">AC</div><div class="p">AD</div><div class="p">AE</div><div class="p">AF</div><div class="p">AG</div>
+      <div class="x">&middot;</div><div class="h">B</div><div class="p">BC</div><div class="p">BD</div><div class="p">BE</div><div class="p">BF</div><div class="p">BG</div>
+      <div class="x">&middot;</div><div class="x">&middot;</div><div class="h">C</div><div class="p">CD</div><div class="p">CE</div><div class="p">CF</div><div class="p">CG</div>
+      <div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="h">D</div><div class="p">DE</div><div class="p">DF</div><div class="p">DG</div>
+      <div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="h">E</div><div class="p">EF</div><div class="p">EG</div>
+      <div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="h">F</div><div class="p">FG</div>
+      <div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="x">&middot;</div><div class="h">G</div>
+    </div>
+    </div>
+    <p>Now sort the 210 senses from most to least tagged and deal them like cards,
+      21 at a time. Before each round the 21 pairs are shuffled, so who gets the
+      first card of a round is random. The first round of the real run went:</p>
+    <div class="round" aria-label="The first five deals of round one">
+      <span><b>moci</b> 1183 &rarr; B&ndash;E</span>
+      <span><b>mít</b> 902 &rarr; A&ndash;G</span>
+      <span><b>moci</b> 240 &rarr; E&ndash;G</span>
+      <span><b>říkat</b> 191 &rarr; B&ndash;G</span>
+      <span>&hellip; 17 more</span>
+    </div>
+    <p>Because every round gives each pair exactly one sense, and the rounds walk
+      down the frequency list, every pair ends with one sense from the top band,
+      one from the next, and so on. Two real pairs, their senses' tag counts:</p>
+    <pre class="data"><code>A–B  67, 18, 6, 5, 3, 3, 2, 1, 1, 1
+B–E  1183, 14, 9, 5, 4, 2, 2, 1, 1, 1</code></pre>
+    <p>Both pairs judge a frequent sense and several rare ones, so neither pair's
+      kappa rests only on easy, well-attested senses. Then three more shuffles: the
+      item numbers, the order of each sheet, and the example sentences. The key
+      that undoes them all is <code>items.tsv</code>; its first rows:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>item</th><th>lemma</th><th>pdt_synset</th><th>reason</th><th class="num">tagged</th><th>judges</th></tr></thead>
+      <tbody>
+        <tr><td>S001</td><td class="cs">spolupracovník</td><td><code>06005989-n</code></td><td>concept not in wncze</td><td class="num">36</td><td>C, D</td></tr>
+        <tr><td>S002</td><td class="cs">povolat</td><td><code>00444911-v</code></td><td>word not in the wncze synset</td><td class="num">4</td><td>F, G</td></tr>
+        <tr><td>S003</td><td class="cs">skvrna</td><td><code>03319199-n</code></td><td>word not in the wncze synset</td><td class="num">2</td><td>E, G</td></tr>
+        <tr><td>S004</td><td class="cs">mít</td><td><code>NAS-1748496367</code></td><td>new synset (no Princeton id)</td><td class="num">11</td><td>B, D</td></tr>
+        <tr><td>S008</td><td class="cs">dorůst</td><td><code>00325173-v</code></td><td>no ILI for the 1.5 offset</td><td class="num">2</td><td>B, E</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Item numbers follow neither frequency nor reason: S001 is tagged 36 times,
+      S002 four times, and the most-tagged sense, <span class="cs">moci</span>,
+      is S153.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Eight parts, in the order <code>main()</code> runs them.</p>
+
+    <h3>1 · The settings</h3>
+    <span class="ref">new_sense_sheets.py:72–94</span>
+    <p>Everything a teacher might change sits at the top: the seed, the quota for
+      the easy category, how many example sentences, the students, and the four
+      answers students choose from.</p>
+    <pre><code>SEED = 20261116
+QUOTA = {"word not in the wncze synset": 60}
+EXAMPLES = 3
+STUDENTS = list("ABCDEFG")
+CHOICES = ["add", "already in wncze", "wrong tag", "unsure"]</code></pre>
+
+    <h3>2 · rng(): one seeded stream per purpose</h3>
+    <span class="ref">new_sense_sheets.py:111–120</span>
+    <p>Every random step asks for its own generator, seeded with the seed and a
+      purpose name: <code>"sample"</code>, <code>"assign"</code>,
+      <code>"number"</code>, <code>"examples"</code>, and
+      <code>"order-A"</code>&hellip;<code>"order-G"</code>.
+      <a href="https://docs.python.org/3/library/random.html#random.seed">Python's
+      <code>random.seed</code></a> accepts a string and turns it into the same
+      state on every run, so <code>rng("assign")</code> always deals the same
+      way. Separate streams mean that sampling one more example sentence cannot
+      change who judges what.</p>
+    <pre><code>def rng(purpose: str) -> random.Random:
+    return random.Random(f"{SEED}-{purpose}")</code></pre>
+
+    <h3>3 · collect(): find the senses, sample the easy ones</h3>
+    <span class="ref">new_sense_sheets.py:123–150</span>
+    <p>Every annotated word goes through <code>fate()</code> from
+      <code>pdt_frequencies.py</code>, so the sheets use exactly the rule the
+      frequency counts use. Words whose fate is one of the four reasons in
+      <code>MISSING</code> are grouped by (PDT synset, lemma), keeping every
+      sentence. Then each reason is sorted (so the sample does not depend on file
+      order) and sampled to its quota; reasons without a quota keep everything.</p>
+    <pre><code>for reason in sorted(MISSING):
+    mine = sorted((i for i in items.values() if i.reason == reason),
+                  key=lambda i: (i.pdt_synset, i.lemma))
+    POPULATION[reason] = len(mine)
+    quota = QUOTA.get(reason, len(mine))
+    keep += r.sample(mine, min(quota, len(mine)))</code></pre>
+    <div class="callout">
+      <p><strong>Why uniform?</strong> Every one of the 988 senses has the same
+        chance of being among the 60. So the share the students judge right is an
+        unbiased estimate of the share right among all 988: the precision of adding
+        them in bulk. Picking the 60 most frequent would answer a different
+        question. The sample happens to hold 24 senses tagged once and 11 tagged ten
+        times or more.</p>
+    </div>
+
+    <h3>4 · assign(): deal by frequency to shuffled pairs</h3>
+    <span class="ref">new_sense_sheets.py:153–165</span>
+    <p>The items arrive most tagged first. They are dealt in rounds of 21, and
+      each round shuffles a fresh copy of the pairs. 210 items make exactly ten
+      rounds, so every pair gets ten senses and every student sixty.</p>
+    <pre><code>pairs = list(combinations(STUDENTS, 2))
+r = rng("assign")
+for start in range(0, len(items), len(pairs)):
+    order = pairs[:]
+    r.shuffle(order)
+    for item, pair in zip(items[start:start + len(pairs)], order):
+        item.judges = pair</code></pre>
+
+    <h3>5 · number() and sample_sentences()</h3>
+    <span class="ref">new_sense_sheets.py:168–189</span>
+    <p><code>number()</code> shuffles a copy of the items and numbers them S001,
+      S002, &hellip; in that random order. <code>sample_sentences()</code> keeps up
+      to three distinct sentences per sense, sampled from all of them, so the
+      commonest phrasing does not crowd out the rest; both judges of a sense see
+      the same three.</p>
+
+    <h3>6 · The row a student reads</h3>
+    <span class="ref">new_sense_sheets.py:192–245</span>
+    <p><code>pdt_sense()</code> gives the PDT synset's words, definition and
+      examples, and its English through the ILI; <code>wncze_senses()</code> lists
+      the senses the release already has for the lemma (or its reflexive forms),
+      numbered, with English glosses from <code>omw-en:2.0</code>. A real row of
+      sheet A:</p>
+    <pre class="data"><code>item       S120
+word       čokoláda
+sentences  «Čokoláda» zachránila Ježka
+PDT sense  čokoláda
+           English: chocolate candy: candy made with chocolate
+senses in the Czech WordNet
+           1. čokoláda | chocolate: a food made from roasted ground cacao beans</code></pre>
+    <p>Here the student must decide whether "a chocolate sweet" is a sense the
+      release lacks (<em>add</em>) or the same as sense 1, chocolate the food
+      (<em>already in wncze</em>). One sentence is little to go on, which is what
+      <em>unsure</em> is for.</p>
+
+    <h3>7 · write_sheet(): one workbook per student</h3>
+    <span class="ref">new_sense_sheets.py:248–278</span>
+    <p>Each workbook, written with <a href="https://openpyxl.readthedocs.io/">openpyxl</a>,
+      has an <em>instructions</em> sheet and a <em>judge</em> sheet. The decision
+      column gets a drop-down, so answers come back in exactly four spellings and
+      can be scored by a script.</p>
+    <pre><code>choice = DataValidation(type="list", formula1=f'"{",".join(CHOICES)}"', allow_blank=True)
+ws.add_data_validation(choice)
+choice.add(f"F2:F{len(rows) + 1}")</code></pre>
+
+    <h3>8 · main(): shuffle each sheet, write the key and the facts</h3>
+    <span class="ref">new_sense_sheets.py:281–323</span>
+    <p>Each sense's row is appended to both its judges' sheets, then every sheet
+      is shuffled with its own stream, so the two judges of one sense meet it at
+      different points and tiredness does not hit both judgements at once. The key,
+      <code>items.tsv</code>, holds what the sheets hide: the reason, the tag count
+      and the judges. The counts go to <code>report/facts-sheets.json</code>, which
+      the report cites.</p>
+    <pre><code>for student in STUDENTS:
+    rows = sheets[student]
+    rng(f"order-{student}").shuffle(rows)
+    write_sheet(student, rows)</code></pre>
+    <pre class="data"><code>210 senses: {'new synset (no Princeton id)': 53, 'concept not in wncze': 80, 'word not in the wncze synset': 60, 'no ILI for the 1.5 offset': 17}
+items per sheet {'A': 60, 'B': 60, 'C': 60, 'D': 60, 'E': 60, 'F': 60, 'G': 60}</code></pre>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the design. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>The code excerpts are copied from <code>new_sense_sheets.py</code> at commit
+      df27b6f, and the line references were checked against that file with
+      <code>explainer_check.py</code>. The tables and the sheet row come from the
+      run's own outputs (<code>data/sheets/items.tsv</code>,
+      <code>sheet-A.xlsx</code>, <code>report/facts-sheets.json</code>), and the
+      first-round deals were reproduced by re-seeding <code>rng("assign")</code>.
+      The claims about bias (why uniform sampling estimates precision, why
+      stratifying protects kappa) are reasoning, not measurements. If the seed,
+      quota or students change, every number here changes with them.</p>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <tbody>
+        <tr><td><strong>sense</strong></td><td>a lemma with the synset it was tagged with:
+          <span class="cs">moci</span> in <code>NAS-450034833</code>.</td></tr>
+        <tr><td><strong>pair</strong></td><td>two of the seven students; there are 21,
+          and each judges ten senses together.</td></tr>
+        <tr><td><strong>Cohen's kappa</strong></td><td>agreement between two judges,
+          corrected for the agreement chance would give; 1 is perfect, 0 is chance.</td></tr>
+        <tr><td><strong>seed</strong></td><td>the starting value of a random
+          generator; the same seed gives the same draws, so the sheets can be rebuilt.</td></tr>
+        <tr><td><strong>stratified</strong></td><td>dealt so that every group (here,
+          every pair) gets a share of each band (here, of frequency).</td></tr>
+        <tr><td><strong>blind</strong></td><td>the sheets hide the tag count and the
+          reason, so they cannot sway the judgement.</td></tr>
+        <tr><td><strong>key</strong></td><td><code>items.tsv</code>: what the sheets
+          hide, used to score them afterwards.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>new_sense_sheets.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
+      background, intuition, code, quiz.</p>
+    <p class="prov">Generated 2026-11-16 by Claude Opus 5.5 · source
+      <code>new_sense_sheets.py</code> at commit <code>df27b6f</code> · explainer v0 ·
+      regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why does each random step get its own stream, rng(\"assign\"), rng(\"examples\") and so on, instead of one shared generator?",
+     options:[{t:"So changing one step, say sampling more sentences, cannot change who judges what",ok:true},
+              {t:"Because random.Random can only be used once",ok:false},
+              {t:"To make the draws more random",ok:false},
+              {t:"So each student gets a different seed and different senses",ok:false}],
+     why:"With one shared generator, every extra draw shifts all later draws. Separate streams seeded with SEED plus a purpose keep each step's draws fixed, whatever the other steps do."},
+    {q:"Only 60 of the 988 'word not in the wncze synset' senses are judged. Why sample them uniformly rather than take the 60 most tagged?",
+     options:[{t:"A uniform sample's share judged right estimates the share right among all 988, the precision of adding them in bulk",ok:true},
+              {t:"The most-tagged senses have already been added to the release",ok:false},
+              {t:"Uniform sampling gives more frequent senses",ok:false},
+              {t:"It makes no difference to what can be concluded",ok:false}],
+     why:"The 60 most tagged would tell you about frequent senses only, which may be easier. A uniform sample gives every sense the same chance, so its precision stands for the whole category."},
+    {q:"Senses are dealt most tagged first, in rounds of 21, to the pairs in a fresh random order each round. What does that buy?",
+     options:[{t:"Every pair gets one sense from each frequency band, so no pair's kappa rests only on easy or only on rare senses",ok:true},
+              {t:"The most frequent senses always go to pair A–B",ok:false},
+              {t:"Each student sees the senses in frequency order",ok:false},
+              {t:"It lets the script skip senses tagged once",ok:false}],
+     why:"Each round gives each pair exactly one sense, and the rounds walk down the frequency list, so A–B gets counts like 67, 18, 6, … 1 and B–E 1183, 14, 9, … 1."},
+    {q:"Why is each student's sheet shuffled separately, with rng(f\"order-{student}\")?",
+     options:[{t:"So the two judges of one sense meet it at different points, and tiredness or learning do not hit both judgements together",ok:true},
+              {t:"So the students cannot find the senses in items.tsv",ok:false},
+              {t:"Because openpyxl writes rows in random order otherwise",ok:false},
+              {t:"To hide which pair a student belongs to",ok:false}],
+     why:"If both judges saw a sense in the same position, any order effect would affect both, and their agreement would look better or worse than it is."},
+    {q:"The sheets show neither how often a sense was tagged nor why the release lacks it. Where are those, and why are they hidden?",
+     options:[{t:"In items.tsv, the key; hidden so they cannot sway the judgement, e.g. 'tagged 1,183 times, so it must be real'",ok:true},
+              {t:"Nowhere; the script throws them away after sampling",ok:false},
+              {t:"In the instructions sheet, at the end",ok:false},
+              {t:"In facts-sheets.json, one line per sense",ok:false}],
+     why:"main() writes reason, tagged and the judges to items.tsv, sorted by item number. facts-sheets.json holds only totals for the report."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>
