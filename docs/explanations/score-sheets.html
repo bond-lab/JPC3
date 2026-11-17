@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scoring the Sheets — JPC3 explainer</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+</head>
+<body>
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+  .k-mlemma{color:var(--mlemma)} .k-noili{color:var(--noili)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+  .matrix{border-collapse:collapse;margin:1rem auto;font-family:var(--mono);font-size:.8rem}
+  .matrix th,.matrix td{border:1px solid var(--hair);padding:.3rem .55rem;text-align:center}
+  .matrix th{background:var(--surface);color:var(--muted);font-weight:600}
+  .matrix td.diag{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .formula{font-family:var(--mono);text-align:center;margin:1rem 0;font-size:.95rem}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 3 · Code explainer</p>
+    <h1>Scoring the Sheets</h1>
+    <p class="lede">How <code>score_sheets.py</code> reads the seven students' returned
+      workbooks, pairs the two answers for every sense, and turns them into what
+      the report needs: agreed decisions, splits to resolve, and how far the
+      judges agree beyond chance.</p>
+    <div class="meta">
+      <span>score_sheets.py</span><span>266 lines</span>
+      <span>deps: openpyxl, numpy, statsmodels</span><span>run: uv run score_sheets.py</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong: a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>score_sheets.py</code>, and run it. No sheets have come back yet, so the
+      answers in the examples are <strong>made up</strong>; the items, lemmas and
+      pairs are real. See <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background: two judges, and agreement beyond chance</a></li>
+      <li><a href="#intuition">Intuition: one pair's ten items, scored by hand</a></li>
+      <li><a href="#code">Code: from workbooks to facts</a></li>
+      <li><a href="#quiz">Quiz</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p><a href="https://bond-lab.github.io/JPC3/explanations/new-sense-sheets.html"><code>new_sense_sheets.py</code></a>
+      dealt 210 PDT senses that the Czech WordNet 2.2 lacks to seven students, A
+      to G. Every sense went to two of them, and every pair of students shares
+      about ten. Each student chose one of four answers per sense:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Answer</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><b>add</b></td><td>a real sense of the word that the wordnet is missing</td></tr>
+        <tr><td><b>already in wncze</b></td><td>the wordnet has it; the student gives its number</td></tr>
+        <tr><td><b>wrong tag</b></td><td>the sentences do not use the word in the PDT sense</td></tr>
+        <tr><td><b>unsure</b></td><td>cannot decide; the comment says why</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two judges per item give two things. Where they agree, the answer is
+      better founded than one person's. Where they disagree, the item goes back
+      for discussion. Across many items, how often they agree measures how
+      reliable the whole exercise is.</p>
+    <p>Raw agreement flatters, though. If both students answered <b>add</b> to
+      four items in five without reading them, they would agree on about two
+      thirds of the items by chance alone. <strong>Kappa</strong> corrects for
+      that: it is the share of the possible agreement beyond chance that the
+      judges actually reach.</p>
+    <p class="formula">&kappa; = (p<sub>o</sub> &minus; p<sub>e</sub>) / (1 &minus; p<sub>e</sub>)</p>
+    <p><i>p<sub>o</sub></i> is the share of items the judges agree on;
+      <i>p<sub>e</sub></i> the share they would agree on by chance, given how often
+      each of them uses each answer. 1 is perfect agreement, 0 is chance, and below
+      0 is worse than chance. Two versions matter here:</p>
+    <ul>
+      <li><strong>Cohen's kappa</strong> is for the same two judges throughout. It
+        fits one pair of students, A and B, on the ten items they share.</li>
+      <li><strong>Fleiss' kappa</strong> allows the judges to change from item to item,
+        as long as each item has the same number of them. It fits the whole set:
+        every item has two judges, but a different two.</li>
+    </ul>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Take the pair A&ndash;B. These are their ten real items from
+      <code>items.tsv</code>, with <strong>made-up</strong> answers:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>item</th><th>lemma</th><th>why the release lacks it</th><th>A</th><th>B</th><th>outcome</th></tr></thead>
+      <tbody>
+        <tr><td>S022</td><td class="cs">heslo</td><td>word not in the synset</td><td>add</td><td>add</td><td><span class="chip k-present">add</span></td></tr>
+        <tr><td>S034</td><td class="cs">marxismus</td><td>concept not in wncze</td><td>add</td><td>add</td><td><span class="chip k-present">add</span></td></tr>
+        <tr><td>S046</td><td class="cs">podtitul</td><td>concept not in wncze</td><td>add</td><td>add</td><td><span class="chip k-present">add</span></td></tr>
+        <tr><td>S066</td><td class="cs">bezvýznamný</td><td>word not in the synset</td><td>add</td><td>add</td><td><span class="chip k-present">add</span></td></tr>
+        <tr><td>S087</td><td class="cs">přímořský</td><td>no ILI for the 1.5 offset</td><td>add</td><td>add</td><td><span class="chip k-present">add</span></td></tr>
+        <tr><td>S115</td><td class="cs">kombinovat</td><td>word not in the synset</td><td>wrong tag</td><td>wrong tag</td><td><span class="chip k-present">wrong tag</span></td></tr>
+        <tr><td>S131</td><td class="cs">dostat</td><td>new synset</td><td>already in wncze</td><td>already in wncze</td><td><span class="chip k-present">already in wncze</span></td></tr>
+        <tr><td>S168</td><td class="cs">dohodnout</td><td>concept not in wncze</td><td>add</td><td>wrong tag</td><td><span class="chip k-msynset">split</span></td></tr>
+        <tr><td>S173</td><td class="cs">mít</td><td>new synset</td><td>unsure</td><td>add</td><td><span class="chip k-msynset">split</span></td></tr>
+        <tr><td>S182</td><td class="cs">výuka</td><td>word not in the synset</td><td>wrong tag</td><td>add</td><td><span class="chip k-msynset">split</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Count the pairs of answers in a table, A down the side and B across.
+      Agreement is on the diagonal:</p>
+    <div class="wrap-x">
+    <table class="matrix" aria-label="A's answers against B's">
+      <tr><th>A \ B</th><th>add</th><th>already</th><th>wrong</th><th>unsure</th><th>A total</th></tr>
+      <tr><th>add</th><td class="diag">5</td><td>0</td><td>1</td><td>0</td><td>6</td></tr>
+      <tr><th>already</th><td>0</td><td class="diag">1</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><th>wrong</th><td>1</td><td>0</td><td class="diag">1</td><td>0</td><td>2</td></tr>
+      <tr><th>unsure</th><td>1</td><td>0</td><td>0</td><td class="diag">0</td><td>1</td></tr>
+      <tr><th>B total</th><td>7</td><td>1</td><td>2</td><td>0</td><td>10</td></tr>
+    </table>
+    </div>
+    <p>They agree on 7 of 10, so <i>p<sub>o</sub></i> = 0.70. By chance, they would
+      both say <b>add</b> with probability 6/10 &times; 7/10, both <b>already</b>
+      1/10 &times; 1/10, both <b>wrong</b> 2/10 &times; 2/10, and both <b>unsure</b>
+      1/10 &times; 0/10. Together that is <i>p<sub>e</sub></i> = 0.47. So:</p>
+    <p class="formula">&kappa; = (0.70 &minus; 0.47) / (1 &minus; 0.47) = 0.43</p>
+    <p>That is the value statsmodels returns for this table (computed with the
+      same call the script makes). 70% agreement sounds good. Kappa says
+      it is less than half of the way from chance to perfect, because
+      <b>add</b> is so common that the two would often agree on it anyway.</p>
+    <div class="callout">
+      <p><strong>Ten items is a small sample.</strong> One changed answer moves this
+        kappa by more than 0.1. A pair's kappa is for spotting a pair that reads the
+        task differently (a kappa near 0, or below), not for ranking students.
+        The figure to report is Fleiss' kappa over all items.</p>
+    </div>
+    <p>Each item ends with one <strong>outcome</strong>: the agreed answer, <em>split</em>
+      if the two differ, or <em>pending</em> while a sheet is still out. The report
+      counts outcomes for each reason the release lacks a sense; the splits go to
+      <code>data/scores/split.tsv</code> to be resolved.</p>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Seven parts, in the order they run.</p>
+
+    <h3>1 · Answer and Item: what is stored</h3>
+    <span class="ref">score_sheets.py:55–80</span>
+    <p>An <code>Answer</code> is one student's decision, the sense number for
+      <em>already in wncze</em>, and a comment. An <code>Item</code> is one sense from
+      the key, its two judges, and the answers returned so far. Its
+      <code>outcome</code> is a property, worked out when asked, so it is always up
+      to date with the answers.</p>
+    <pre><code>@property
+def outcome(self) -> str:
+    if len(self.answers) < 2:
+        return PENDING
+    first, second = (self.answers[j].decision for j in self.judges)
+    return first if first == second else SPLIT</code></pre>
+
+    <h3>2 · read_key(): the answer key</h3>
+    <span class="ref">score_sheets.py:83–94</span>
+    <p>Reads <code>items.tsv</code>, which <code>new_sense_sheets.py</code> wrote and the
+      students never saw. It says, for every item number, the lemma, why the
+      release lacks the sense, and its two judges.</p>
+    <pre class="data">item  lemma           reason                         judge1  judge2
+S001  spolupracovník  concept not in wncze           C       D
+S002  povolat         word not in the wncze synset   F       G</pre>
+
+    <h3>3 · clean() and read_sheet(): one returned workbook</h3>
+    <span class="ref">score_sheets.py:97–133</span>
+    <p>Students rename files (<code>sheet-C-novak.xlsx</code>), so the student is not
+      taken from the file name but from the first line of the instructions sheet,
+      <code>Sheet C: 60 items</code>. Each row of the <em>judge</em> sheet gives the item
+      number (column A), the decision (F), the sense number (G) and the comment
+      (H). <code>clean()</code> forgives stray spaces and capitals, so
+      <code> Add </code> counts as <b>add</b>. Rows with no decision are skipped.</p>
+    <pre><code>found = re.match(r"Sheet ([A-Z]):", str(wb["instructions"]["A1"].value))
+...
+item, decision, number, comment = row[0], clean(row[5]), clean(row[6]), row[7]</code></pre>
+
+    <h3>4 · collect(): all the workbooks, and what is wrong with them</h3>
+    <span class="ref">score_sheets.py:136–161</span>
+    <p>Reads every <code>sheet-*.xlsx</code> in <code>data/returned/</code> and files each
+      answer under its item. It never stops on a bad answer; it lists it, so one
+      typo does not block the rest. Four kinds of problem are reported:</p>
+    <ul>
+      <li>a decision that is not one of the four (<code>maybe</code>);</li>
+      <li>an item that is not on that student's sheet (a copied row);</li>
+      <li>an item on the sheet with no answer;</li>
+      <li>a student whose sheet has not come back.</li>
+    </ul>
+    <pre class="data">1 problems
+  G: sheet not returned</pre>
+
+    <h3>5 · fleiss() and cohen(): agreement beyond chance</h3>
+    <span class="ref">score_sheets.py:164–203</span>
+    <p>Both turn answers into numbers (the index of the answer in
+      <code>CHOICES</code>) and hand the counting to statsmodels, which implements
+      both kappas. <code>fleiss()</code> builds one row per item, the two judges'
+      answers, and <code>aggregate_raters()</code> turns that into how many judges
+      chose each answer. <code>cohen()</code> builds the 4&times;4 table of the
+      Intuition section for one pair.</p>
+    <pre><code>table, _ = aggregate_raters(np.array(rated), n_cat=len(CHOICES))
+return round(float(fleiss_kappa(table)), 2)</code></pre>
+    <p>Kappa is undefined when chance agreement is already 1, for instance when
+      both students answered <b>add</b> to every item they share: then
+      1 &minus; <i>p<sub>e</sub></i> is 0. <code>cohen()</code> checks for that and
+      returns <code>None</code>; the pair is left out of the facts rather than
+      reported as a misleading 0.</p>
+    <pre><code>chance = (table.sum(axis=1) @ table.sum(axis=0)) / n**2
+if chance == 1:
+    return None</code></pre>
+
+    <h3>6 · summarise(): one group of items</h3>
+    <span class="ref">score_sheets.py:206–222</span>
+    <p>For a group (all items, or one reason), counts the outcomes and adds
+      Fleiss' kappa. The keys are the first word of each answer, which is what
+      the report cites: <code>\fact{score.word.add}</code>,
+      <code>\fact{score.all.kappa}</code>.</p>
+    <pre class="data">{"judged": 150, "split": 80, "pending": 60, "add": 67,
+ "already": 1, "wrong": 0, "unsure": 2, "kappa": -0.01}</pre>
+    <p>That is a dry run with six sheets filled at random and sheet G held back:
+      G's 60 items are pending, and random answers give a kappa near 0, as they
+      should.</p>
+
+    <h3>7 · main(): the report's figures and the files to act on</h3>
+    <span class="ref">score_sheets.py:225–262</span>
+    <p>Summarises all items and each of the four reasons, computes a kappa for
+      each of the 21 pairs, and for the senses where only the word was missing
+      the share judged <b>add</b>. That sample of 60 was drawn uniformly from
+      988, so this share estimates how often adding all 988 would be right.
+      It writes the facts for the report, and three files for the teacher:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>File</th><th>What it is for</th></tr></thead>
+      <tbody>
+        <tr><td><code>data/scores/judgements.tsv</code></td><td>every item with both answers, numbers and comments</td></tr>
+        <tr><td><code>data/scores/split.tsv</code></td><td>the items to resolve by discussion</td></tr>
+        <tr><td><code>data/scores/pairs.tsv</code></td><td>Cohen's kappa for each of the 21 pairs</td></tr>
+        <tr><td><code>report/facts-scores.json</code></td><td>the figures the report cites as <code>score.*</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>It also prints items where both judges said <b>already in wncze</b> but named
+      different senses. They count as agreed, since the decision is the same,
+      but someone should look at them.</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Five questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file, and checked by
+      <code>explainer_check.py</code> for identifiers, line references and links.
+      Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference: open it.</li>
+      <li>No sheets have come back. The answers for A&ndash;B and the dry-run
+        figures are made up; the items, lemmas, reasons and pairs are real, from
+        <code>items.tsv</code>.</li>
+      <li>The kappa of 0.43 was computed with statsmodels'
+        <code>cohens_kappa</code>, the function <code>cohen()</code> calls, and by
+        hand from the formula; they agree.</li>
+      <li>The tests in <code>test_score_sheets.py</code> build small workbooks and
+        check reading, problem reports, outcomes and kappa.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <section id="glossary">
+    <h2>Glossary</h2>
+    <div class="wrap-x">
+    <table class="toy">
+      <tbody>
+        <tr><td><strong>key</strong></td><td><code>items.tsv</code>: each item's lemma,
+          sense, reason and two judges; hidden from the students.</td></tr>
+        <tr><td><strong>outcome</strong></td><td>an item's agreed answer, <em>split</em>,
+          or <em>pending</em>.</td></tr>
+        <tr><td><strong>observed agreement</strong></td><td><i>p<sub>o</sub></i>: the share
+          of items the judges agree on.</td></tr>
+        <tr><td><strong>chance agreement</strong></td><td><i>p<sub>e</sub></i>: the share
+          they would agree on if each answered at random, at their own rates.</td></tr>
+        <tr><td><strong>Cohen's kappa</strong></td><td>agreement beyond chance for one
+          fixed pair of judges.</td></tr>
+        <tr><td><strong>Fleiss' kappa</strong></td><td>agreement beyond chance when each
+          item has the same number of judges, but not the same judges.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>score_sheets.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
+      background, intuition, code, quiz.</p>
+    <p class="prov">Generated 2026-11-17 by Claude Opus 5.5 · source
+      <code>score_sheets.py</code> at commit <code>5bb34f7</code> · explainer v0 ·
+      regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Two students agree on 7 of their 10 items. Why might their kappa be only 0.43?",
+     options:[{t:"Both answer 'add' most of the time, so they would agree on many items by chance; kappa counts only agreement beyond that",ok:true},
+              {t:"Kappa ignores the items they agree on",ok:false},
+              {t:"Kappa is always about half the raw agreement",ok:false},
+              {t:"Because 'already in wncze' answers count double",ok:false}],
+     why:"p_e = 0.6×0.7 + 0.1×0.1 + 0.2×0.2 + 0.1×0 = 0.47, so κ = (0.70 − 0.47)/(1 − 0.47) = 0.43."},
+    {q:"Why does the script report Fleiss' kappa over all items, not Cohen's?",
+     options:[{t:"Every item has two judges, but not the same two; Cohen's kappa assumes one fixed pair",ok:true},
+              {t:"Fleiss' kappa is always higher",ok:false},
+              {t:"Cohen's kappa cannot handle four answers",ok:false},
+              {t:"statsmodels has no Cohen's kappa",ok:false}],
+     why:"Cohen's kappa compares rater 1 with rater 2. Across all items, 'judge1' is A on some and F on others; Fleiss' kappa treats the two judges of each item as interchangeable."},
+    {q:"A student renames the file to 'my answers.xlsx' and puts it in data/returned/. What happens?",
+     options:[{t:"It is not read: collect() only reads files matching sheet-*.xlsx",ok:true},
+              {t:"It is read, and the student is taken from the file name",ok:false},
+              {t:"It is read, and the student is taken from the instructions sheet",ok:false},
+              {t:"The script stops with an error",ok:false}],
+     why:"collect() globs sheet-*.xlsx. Any name starting sheet- works, because the student comes from 'Sheet C: …' on the instructions sheet, not from the name; G would then be reported as 'sheet not returned'."},
+    {q:"Students C and D both answer 'add' to all ten items they share. What does cohen() return for C–D?",
+     options:[{t:"None: chance agreement is 1, so kappa is undefined, and the pair is left out of the facts",ok:true},
+              {t:"1.0, since they agree on everything",ok:false},
+              {t:"0.0",ok:false},
+              {t:"It raises an error",ok:false}],
+     why:"With one answer throughout, p_e = 1 and κ = (1 − 1)/(1 − 1) is 0/0. cohen() checks chance == 1 and returns None."},
+    {q:"Both judges of an item answer 'already in wncze', one giving sense 1 and the other sense 3. How is the item scored?",
+     options:[{t:"As agreed 'already in wncze', and listed separately for someone to look at",ok:true},
+              {t:"As split",ok:false},
+              {t:"As pending",ok:false},
+              {t:"It is dropped",ok:false}],
+     why:"Agreement is on the decision only (Item.outcome compares decisions). main() then prints the items where the two numbers differ."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>
+
+</body>
+</html>

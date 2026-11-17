@@ -33,6 +33,7 @@ EXPLAINERS = [
     (ROOT / "sensebank" / "pdt_wordnet_vs_wncze_explainer.html", "pdt-vs-wncze.html"),
     (ROOT / "sensebank" / "pdt_frequencies_explainer.html", "pdt-frequencies.html"),
     (ROOT / "sensebank" / "new_sense_sheets_explainer.html", "new-sense-sheets.html"),
+    (ROOT / "sensebank" / "score_sheets_explainer.html", "score-sheets.html"),
     (ROOT / "images" / "arasaac_explainer.html", "arasaac.html"),
     (ROOT / "images" / "swatch_explainer.html", "swatch.html"),
     (ROOT / "LLM" / "llm_explainer.html", "llm.html"),
