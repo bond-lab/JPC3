@@ -261,21 +261,21 @@ new synset, not in wncze              71 synsets      319 tags    0.3%</pre>
       <code>STATUSES</code> the eight fates, with short <code>SLUGS</code> for the facts
       file.</p>
 
-    <h3>2 · load_wncze()</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:91–104</span>
+    <h3>2 · open_wncze() and load_wncze()</h3>
+    <span class="ref">pdt_wordnet_vs_wncze.py:92–116</span>
     <p>Load <code>wncze:2.2</code> (downloading it once) and build the two lookups the
       rest needs: the release synset for each ILI, and the synsets each lemma is in,
-      by part of speech. <code>pos()</code> folds the PDT copy's <code>b</code> (adverb)
+      by part of speech; it keeps the Wordnet too, for the scripts that need it. <code>pos()</code> folds the PDT copy's <code>b</code> (adverb)
       and satellites to <code>n v a r</code>.</p>
-    <pre><code>cs = wn.Wordnet(lexicon=CES)
+    <pre><code>cs = open_wncze()
 by_lemma: dict[tuple[str, str], set[str]] = defaultdict(set)
 for sense in cs.senses():
     ss = sense.synset()
     by_lemma[(sense.word().lemma(), pos(ss.pos))].add(ss.id)
-return Wncze({ss.ili: ss for ss in cs.synsets() if ss.ili}, by_lemma)</code></pre>
+return Wncze({ss.ili: ss for ss in cs.synsets() if ss.ili}, by_lemma, cs)</code></pre>
 
     <h3>3 · classify()</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:148–183</span>
+    <span class="ref">pdt_wordnet_vs_wncze.py:176–211</span>
     <p>The heart of the script: one PDT synset in, one <code>Row</code> out. A new
       synset (no Princeton id) is looked up by its words: the release synsets that hold
       <em>every</em> one of them. Otherwise the 1.5 offset goes to an ILI, the ILI to a
@@ -295,7 +295,7 @@ else:
       <span class="cs">dobrý</span>. "Gone" means the release has no such word at all.</p>
 
     <h3>4 · norm() and carried(): definitions and examples</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:119–145</span>
+    <span class="ref">pdt_wordnet_vs_wncze.py:147–173</span>
     <p>The PDT copy often starts a definition with its lemma
       (<code>fax: zpráva přenesená zařízením Fax-1</code>). <code>norm()</code> drops that
       prefix, quotes and final punctuation, and lower-cases, giving
@@ -316,7 +316,7 @@ return sum(1 for t in texts if norm(t) and any(norm(t) in x for x in targets))</
     </div>
 
     <h3>5 · hypernyms_kept()</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:186–209</span>
+    <span class="ref">pdt_wordnet_vs_wncze.py:214–237</span>
     <p>For each PDT hypernym link whose two ends both reached the release, is the
       link there too? Of 19,441 such links, 13,155 are. Of the rest, 1,727 start from a
       release synset with no hypernym at all: <span class="cs">ampér</span> has
@@ -331,7 +331,7 @@ for target in row.nas.hypernyms:
         orphans += not parents</code></pre>
 
     <h3>6 · id_check() and facts()</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:263–334</span>
+    <span class="ref">pdt_wordnet_vs_wncze.py:291–362</span>
     <p><code>id_check()</code> reads each 1.5 offset as if it were a 2.0 id
       (<code>f"wncze-{row.nas.id}"</code>) and counts the hits and the shared words: 33
       and 0. <code>facts()</code> gathers every figure the report cites, keyed by slug
@@ -345,7 +345,7 @@ mít         4      2,803     1           9
 dobrý       1        469     0           7</pre>
 
     <h3>7 · main() and the TSV</h3>
-    <span class="ref">pdt_wordnet_vs_wncze.py:355–368</span>
+    <span class="ref">pdt_wordnet_vs_wncze.py:383–396</span>
     <p>Classify every synset, count the tags on each with <code>read_tags()</code> (each
       tag normalised by <code>tag_key()</code>, so a tag written with its zeros still finds
       its synset), print

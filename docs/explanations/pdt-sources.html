@@ -256,7 +256,7 @@
     <p>Eight parts, from the constants to the stream of tokens.</p>
 
     <h3>1 · Where the data comes from</h3>
-    <span class="ref">pdt_sources.py:30–41</span>
+    <span class="ref">pdt_sources.py:31–42</span>
     <p>Each source is a LINDAT bitstream URL and the file name to cache it under in
       <code>./data</code>. The CILI table from WordNet 1.5 is cached beside the
       script. <code>fetch()</code> downloads a source once and returns the cached path
@@ -266,10 +266,10 @@
     "ann": (LINDAT + "57842d3d-246b-45bb-a2ea-7c0123cb2605/content", "pdt-wsd-annotation.zip"),
     "pdt": (LINDAT + "d0a1771e-816a-4475-8a23-54f0ebafce3c/content", "PDT_3.0.zip"),
 }</code></pre>
-    <span class="ref">pdt_sources.py:100–123 (fetch)</span>
+    <span class="ref">pdt_sources.py:101–124 (fetch)</span>
 
     <h3>2 · The exception codes</h3>
-    <span class="ref">pdt_sources.py:43–61</span>
+    <span class="ref">pdt_sources.py:44–62</span>
     <p>The comment says how each meaning was found. Code 4 is the clearest test:
       PDT lemmatises a negated word to its positive form, so a word whose sense the
       wordnet has only in the positive should be negated, and 99.7% of code-4 words
@@ -285,7 +285,7 @@
 UNTAGGED = "-"</code></pre>
 
     <h3>3 · Reading the annotation wordnet</h3>
-    <span class="ref">pdt_sources.py:126–163</span>
+    <span class="ref">pdt_sources.py:127–164</span>
     <p>The XML is ISO-8859-2 and has no root element, just one
       <code>&lt;SYNSET&gt;</code> after another, so <code>read_nas()</code> strips the
       declaration and wraps the body in <code>&lt;wn&gt;</code> before parsing.
@@ -298,13 +298,13 @@ root = ET.fromstring(f"&lt;wn&gt;{body}&lt;/wn&gt;")</code></pre>
             stamp "bejce9am 2006/03/14"  pwn15 -&gt; 01307561-v
 NAS-430683854  mít  "mít povinnost"  e.g. "Mám připravit večeři? [z Vallexu]"
             stamp "bejce9am 2006/03/14"  pwn15 -&gt; None</code></pre>
-    <span class="ref">pdt_sources.py:64–84 (NasSynset, pwn15)</span>
+    <span class="ref">pdt_sources.py:65–85 (NasSynset, pwn15)</span>
     <p>The <code>pwn15</code> property returns the 1.5 offset for an id like
       <code>01307561-v</code>, writing adverbs (<code>b</code> in the file) as
       <code>r</code>, and <code>None</code> for a synset with no Princeton id.</p>
 
     <h3>4 · From a tag to a synset id</h3>
-    <span class="ref">pdt_sources.py:166–183</span>
+    <span class="ref">pdt_sources.py:167–184</span>
     <p>Tags drop the zeros and the part of speech, so <code>tag_index()</code>
       builds the reverse map: <code>1307561</code> →
       <code>01307561-v</code>. Ids with no Princeton offset map to themselves.</p>
@@ -314,7 +314,7 @@ NAS-430683854  mít  "mít povinnost"  e.g. "Mám připravit večeři? [z Vallex
       parts of speech, and <code>setdefault</code> keeps the first one in the file.</p>
 
     <h3>5 · Normalising a tag</h3>
-    <span class="ref">pdt_sources.py:186–199</span>
+    <span class="ref">pdt_sources.py:187–200</span>
     <p>Most tags drop the offset's zeros, but a few keep them, so a lookup of the
       raw tag misses. <code>tag_key()</code> strips the zeros from any tag that looks
       like an offset, and leaves exception codes and ids of new synsets alone.</p>
@@ -329,7 +329,7 @@ NAS-450034833  -&gt; NAS-450034833 -&gt; NAS-450034833  moci</code></pre>
       codes: without it, <code>"0"</code> would become the empty string.</p>
 
     <h3>6 · From a synset to an ILI</h3>
-    <span class="ref">pdt_sources.py:202–231</span>
+    <span class="ref">pdt_sources.py:203–232</span>
     <p><code>pwn15_ili()</code> reads the
       <a href="https://github.com/globalwordnet/cili">CILI</a> table
       <code>ili-map-pwn15.tab</code> (90,030 entries), keeping the third column, the
@@ -346,7 +346,7 @@ NAS-430683854 -&gt; None</code></pre>
       confidence 1.</p>
 
     <h3>7 · Reading the tags, then joining PDT</h3>
-    <span class="ref">pdt_sources.py:234–267</span>
+    <span class="ref">pdt_sources.py:235–268</span>
     <p><code>read_tags()</code> walks the <code>.s</code> files in sorted order and
       yields one <code>Token</code> per <code>&lt;st&gt;</code>, with the document, the
       m-id and the tag. <code>read_tokens()</code> wraps it: when the document
@@ -364,7 +364,7 @@ if tok.mid in morph:
       three words come back with an empty lemma.</p>
 
     <h3>8 · Sentences and lemmas</h3>
-    <span class="ref">pdt_sources.py:270–313</span>
+    <span class="ref">pdt_sources.py:271–314</span>
     <p><code>read_morph()</code> maps every m-id in a document to its lemma, tag,
       form, the forms of its sentence, and its position. <code>detokenise()</code>
       joins tokens without a space before punctuation:

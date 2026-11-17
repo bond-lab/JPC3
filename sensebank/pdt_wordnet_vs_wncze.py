@@ -86,22 +86,50 @@ class Wncze:
 
     by_ili: dict[str, wn.Synset]
     by_lemma: dict[tuple[str, str], set[str]]
+    lexicon: wn.Wordnet
 
 
-def load_wncze() -> Wncze:
-    """Load wncze 2.2, downloading it once, and index it.
+def open_wncze() -> wn.Wordnet:
+    """Open wncze 2.2, downloading it the first time.
 
     Returns:
-        Its synsets by ILI, and (lemma, part of speech) -> synset ids
+        The Czech WordNet 2.2
     """
     if "wncze" not in {lx.id for lx in wn.lexicons()}:
         wn.download(CES_URL, progress_handler=None)
-    cs = wn.Wordnet(lexicon=CES)
+    return wn.Wordnet(lexicon=CES)
+
+
+def load_wncze() -> Wncze:
+    """Load wncze 2.2 and index it.
+
+    Returns:
+        Its synsets by ILI, (lemma, part of speech) -> synset ids, and the
+        Wordnet itself
+    """
+    cs = open_wncze()
     by_lemma: dict[tuple[str, str], set[str]] = defaultdict(set)
     for sense in cs.senses():
         ss = sense.synset()
         by_lemma[(sense.word().lemma(), pos(ss.pos))].add(ss.id)
-    return Wncze({ss.ili: ss for ss in cs.synsets() if ss.ili}, by_lemma)
+    return Wncze({ss.ili: ss for ss in cs.synsets() if ss.ili}, by_lemma, cs)
+
+
+def ntumc_counts(cs: wn.Wordnet) -> dict[tuple[str, str], int]:
+    """The NTU-MC counts stored in wncze 2.2.
+
+    Args:
+        cs: the Czech WordNet
+
+    Returns:
+        (synset id, lemma) -> tokens, for the senses that have a count
+    """
+    counts = {}
+    for sense in cs.senses():
+        n = sum(sense.counts())
+        if n:
+            counts[(sense.synset().id, sense.word().lemma())] = n
+    return counts
 
 
 def pos(p: str) -> str:

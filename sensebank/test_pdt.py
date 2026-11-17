@@ -110,8 +110,8 @@ def test_relink_first_matching_row_wins():
     # Arrange: 1991 koruna is held back, the rest goes to the Czech koruna
     from pdt_frequencies import Relink, relink_for
     old, czech = "wncze-12631318-n", "wncze-12909458-n"
-    rows = {(old, "koruna"): [Relink(old, "koruna", "^lnd91", "", "Czechoslovak"),
-                              Relink(old, "koruna", "", czech, "Czech")]}
+    rows = {(old, "koruna"): [Relink("koruna91", old, "koruna", "^lnd91", "1991", "", "Czechoslovak"),
+                              Relink("koruna", old, "koruna", "", "1994-95", czech, "Czech")]}
     # Act
     in_1991 = relink_for("lnd91208_001", (old, "koruna"), rows)
     in_1994 = relink_for("lnd94103_052", (old, "koruna"), rows)

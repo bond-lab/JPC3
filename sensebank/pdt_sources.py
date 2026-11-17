@@ -17,6 +17,7 @@ without a Princeton counterpart, by ÚFAL or in Brno (NAS-430683854,
 1448862335). Small numbers are exceptions;
 "-" means the word has no agreed tag.
 """
+import csv
 import gzip
 import re
 import xml.etree.ElementTree as ET
@@ -311,3 +312,17 @@ def base_lemma(lemma: str) -> str:
     """
     head = re.split(r"(?<=.)[_`]", lemma, maxsplit=1)[0]
     return re.sub(r"(?<=.)-\d+$", "", head)
+
+
+def write_tsv(path: Path, header: list[str], rows: list[list]) -> None:
+    """Write a tab-separated file with a header.
+
+    Args:
+        path: where to write
+        header: the column names
+        rows: the rows
+    """
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        out = csv.writer(fh, delimiter="\t", lineterminator="\n")
+        out.writerow(header)
+        out.writerows(rows)
