@@ -126,13 +126,39 @@ fixed seed so the key never changes. The sheets hold PDT sentences
    other deliverable. Compare against the structural-mapping approach of
    Daudé et al.
 
+## Licence and permission
+
+The PDT lexico-semantic annotation and the Czech WordNet 1.9 PDT it used are
+both **CC BY-NC-SA 3.0**; the Czech wordnet is **CC BY-SA 4.0**. ÚFAL gave us
+permission (by email, 17 November 2026) to include in the wordnet, and release
+under CC BY-SA 4.0:
+
+1. the **sense frequencies** counted from the annotation, and
+2. the **senses, definitions and examples ÚFAL added** during the annotation:
+   about 200 synsets, with about 150 definitions and 240 examples.
+
+The permission covers these two things, not the treebank text or the rest of
+either dataset: those stay CC BY-NC-SA 3.0, so do not copy them into the
+release.
+
+In return, credit every addition to ÚFAL and the annotation in its change
+record, and cite Hajič et al. (2004), Bejček et al. (2006) and the two LINDAT
+records:
+
+- Bejček et al. (2011) *Lexico-Semantic Annotation of PDT using Czech
+  WordNet*, <http://hdl.handle.net/11858/00-097C-0000-0001-487A-4>
+- Pala et al. (2011) *Czech WordNet 1.9 PDT*,
+  <http://hdl.handle.net/11858/00-097C-0000-0001-4880-3>
+
 ## Feedback
 
 - The mapping table (PWN 1.5 offset → ILI → current synset) and the
   categorised residue go to the **PDT maintainers**.
 - The sense frequencies go into the **Czech wordnet** release.
 - Stretch: add the synsets the residue shows to be **missing** to the Czech
-  wordnet, so the next mapping run has nothing left to map.
+  wordnet, so the next mapping run has nothing left to map. The senses ÚFAL
+  added during the annotation can go in as they are (see *Licence and
+  permission*).
 
 ## Readings
 
