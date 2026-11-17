@@ -93,6 +93,14 @@
   .arrow{color:var(--muted);font-weight:700}
   .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
   .branch{display:flex;flex-direction:column;gap:.5rem}
+  ul.tree,ul.tree ul{list-style:none;margin:0;padding:0;font-family:var(--sans);font-size:.88rem}
+  ul.tree{margin:1.2rem 0;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:.9rem 1rem}
+  ul.tree ul{margin-left:.55rem;padding-left:1rem;border-left:2px solid var(--accent-soft)}
+  ul.tree li{margin:.45rem 0}
+  ul.tree b{color:var(--accent);font-weight:600}
+  ul.tree .n{font-family:var(--mono);font-size:.74rem;color:var(--muted);white-space:nowrap}
+  ul.tree .sibs{display:block;color:var(--muted);font-size:.82rem;margin:.15rem 0 0;line-height:1.5}
+  pre.data{background:var(--surface)}
 
   table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
   table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
@@ -166,11 +174,27 @@
     <p>A <strong>wordnet</strong> groups words into <em>synsets</em> — sets of
       synonyms that share one meaning. A <strong>role noun</strong> names a person
       by the role they fill: <span class="cs">učitel</span> "teacher",
-      <span class="cs">lékař</span> "doctor".</p>
+      <span class="cs">lékař</span> "doctor", <span class="cs">pekař</span> "baker",
+      <span class="cs">vědec</span> "scientist", <span class="cs">právník</span>
+      "lawyer", <span class="cs">knihovník</span> "librarian",
+      <span class="cs">herec</span> "actor" — all of them synsets the Czech wordnet
+      already has.</p>
     <p>Why count them? Project 1 adds feminine forms
       (<em>přechylování</em>: <span class="cs">učitel → učitelka</span>), and the
       first thing you want is the scale of the job — how many role nouns are there
-      to work on?</p>
+      to work on? The data shows what "done" looks like, and what is missing. The
+      <em>teacher</em> synset (<code>i93557</code>) already holds
+      <span class="cs">učitel, instruktor, učitelka</span>; <em>neighbor</em> holds
+      <span class="cs">soused, sousedka</span>; <em>proletarian</em> holds
+      <span class="cs">dělník, dělnice, proletář</span>. But <em>doctor</em>
+      (<code>i89560</code>) holds only <span class="cs">lékař, doktor</span>,
+      <em>scientist</em> only <span class="cs">vědec</span>, and <em>lawyer</em> has
+      five lemmas from <span class="cs">právník</span> to <span class="cs">obhájce</span>,
+      none of them feminine — no <span class="cs">lékařka</span>,
+      <span class="cs">vědkyně</span>, <span class="cs">právnička</span>. A crude
+      count (a lemma ending in <em>-ka</em>, <em>-ice</em> or <em>-yně</em> beside
+      another lemma) finds only about 70 of the 1,922 person synsets with a feminine
+      form already in place; the rest are the pool to work on.</p>
     <p>The catch: the <a href="https://github.com/bond-lab/czech-wn">Czech WordNet</a>
       (release 2.2) has no lexicographer files, and it records relations one way
       only, so a synset knows its hypernym but not its hyponyms. What it does have
@@ -182,8 +206,49 @@
     <ul>
       <li>the English <strong>lexicographer file</strong> is <code>noun.person</code>;</li>
       <li>the synset is a transitive <strong>hyponym</strong> of
-        <span class="cs">person, individual, someone</span> (ILI <code>i35562</code>).</li>
+        <span class="cs">person, individual, someone</span> (ILI <code>i35562</code>) —
+        for <em>teacher</em> the chain is <em>person → adult → professional →
+        educator → teacher</em>, four steps down.</li>
     </ul>
+    <p>What does <code>noun.person</code> actually hold? Far more than role nouns.
+      Here is what the Czech wordnet has in it, by kind:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Kind</th><th>Czech members (English)</th><th>Role noun?</th></tr></thead>
+      <tbody>
+        <tr><td>occupations and roles</td>
+          <td><span class="cs">učitel</span> (teacher), <span class="cs">pekař</span> (baker),
+            <span class="cs">zdravotní sestra</span> (nurse), <span class="cs">král</span> (king),
+            <span class="cs">lingvista</span> (linguist)</td>
+          <td><span class="chip k-present">yes</span></td></tr>
+        <tr><td>nationalities and peoples</td>
+          <td><span class="cs">Kubánec</span> (Cuban), <span class="cs">Evropan, Evropanka</span> (European),
+            <span class="cs">Žid</span> (Jew), <span class="cs">běloch</span> (White person)</td>
+          <td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>kinship and relationships</td>
+          <td><span class="cs">matka</span> (mother), <span class="cs">kamarád, přítel</span> (friend),
+            <span class="cs">milenec</span> (lover), <span class="cs">soused</span> (neighbor)</td>
+          <td><span class="chip k-msynset">no</span> (though <span class="cs">sousedka</span> exists)</td></tr>
+        <tr><td>people by trait or state</td>
+          <td><span class="cs">zbabělec</span> (coward), <span class="cs">blázen</span> (fool),
+            <span class="cs">cizinec</span> (foreigner), <span class="cs">oběť</span> (victim),
+            <span class="cs">dítě</span> (child)</td>
+          <td>borderline</td></tr>
+        <tr><td>named individuals (about 30 in Czech)</td>
+          <td><span class="cs">Adam</span>, <span class="cs">Achilles</span>, <span class="cs">Aesop</span>,
+            <span class="cs">Tantalos</span></td>
+          <td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>imaginary and supernatural beings</td>
+          <td><span class="cs">mořská panna</span> (mermaid), <span class="cs">vlkodlak</span> (werewolf),
+            <span class="cs">anděl</span> (angel), <span class="cs">obr</span> (giant),
+            <span class="cs">smrtka</span> (Death)</td>
+          <td><span class="chip k-msynset">no</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>English has <em>Einstein</em>, <em>Shakespeare</em> and <em>Comenius</em> in
+      <code>noun.person</code> too, but the Czech wordnet has no synset with their
+      ILIs, so they are not counted.</p>
     <div class="callout">
       <p><strong>Why two ways?</strong> Neither is the exact set of role nouns, so
         the script computes both and reports them side by side. When two different
@@ -213,21 +278,87 @@
       </div>
     </div>
 
-    <p>Decide a few synsets by hand. If the English side is a person, the Czech
-      synset with the same ILI is a role noun:</p>
+    <p>The second method walks <em>down</em> from <em>person</em>. Here is the
+      branch that leads to <em>teacher</em>, with the Czech lemmas at each step and
+      the size of each subtree (English synsets / of which in Czech):</p>
+
+    <ul class="tree">
+      <li><b>person</b> <span class="cs">člověk, osoba, jednotlivec, …</span>
+          <span class="n">i35562 · 10,297 / 1,850</span>
+        <span class="sibs">direct children include <span class="cs">dospělý</span> adult,
+          <span class="cs">pracovník</span> worker, <span class="cs">vůdce</span> leader,
+          <span class="cs">odborník</span> expert, <span class="cs">žena</span> female,
+          <span class="cs">zbabělec</span> coward, <span class="cs">obyvatel</span> inhabitant —
+          and <em>Aries</em>, <em>Taurus</em>, <em>Gemini</em>: in English the zodiac signs are
+          people too (the Czech wordnet skips them).</span>
+        <ul>
+          <li><b>adult</b> <span class="cs">dospělý, dospělý člověk, dospělák</span>
+              <span class="n">i87152 · 633 / 142</span>
+            <ul>
+              <li><b>professional</b> <span class="cs">profesionál, odborník, expert</span>
+                  <span class="n">i92281 · 294 / 55</span>
+                <span class="sibs">children: <span class="cs">právník</span> lawyer,
+                  <span class="cs">knihovník</span> librarian, <span class="cs">zdravotník</span> health
+                  professional, <span class="cs">vydavatel</span> publisher,
+                  <span class="cs">kariérista</span> careerist …</span>
+                <ul>
+                  <li><b>educator</b> <span class="cs">vychovatel, pedagog, učitel</span>
+                      <span class="n">i89692 · 72 / 15</span>
+                    <span class="sibs">children: <span class="cs">akademik</span> academician,
+                      <span class="cs">lektor</span> lector, <span class="cs">ředitelka</span> principal —
+                      and Comenius, Dewey, Froebel: named educators, none in Czech.</span>
+                    <ul>
+                      <li><b>teacher</b> <span class="cs">učitel, instruktor, učitelka</span>
+                          <span class="n">i93557 · 33 / 6</span>
+                        <span class="sibs">children: <span class="cs">guvernantka</span> governess,
+                          <span class="cs">misionář</span> missionary, <span class="cs">profesor,
+                          učitelka</span> schoolteacher, <span class="cs">soukromý učitel</span> coach,
+                          <span class="cs">demonstrátor</span> demonstrator.</span>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>Decide a few synsets by hand. Each row is a real English synset; if it is a
+      person, the Czech synset with the same ILI is a role noun. The two "yes/no"
+      columns are the two methods:</p>
 
     <div class="wrap-x">
     <table class="toy">
-      <thead><tr><th>English synset</th><th>lexfile</th><th>Counted?</th></tr></thead>
+      <thead><tr><th>English synset</th><th>Czech lemmas</th><th>lexfile</th>
+        <th>in <code>noun.person</code>?</th><th>under <em>person</em>?</th></tr></thead>
       <tbody>
-        <tr><td>teacher</td><td><code>noun.person</code></td>
-          <td><span class="chip k-present">yes</span></td></tr>
-        <tr><td>lioness</td><td><code>noun.animal</code></td>
-          <td><span class="chip k-msynset">no</span></td></tr>
-        <tr><td>door</td><td><code>noun.artifact</code></td>
-          <td><span class="chip k-msynset">no</span></td></tr>
-        <tr><td>mother</td><td><code>noun.person</code></td>
-          <td><span class="chip k-present">yes</span> (but a kinship term, not a role)</td></tr>
+        <tr><td>teacher <code>i93557</code></td><td><span class="cs">učitel, instruktor, učitelka</span></td>
+          <td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span></td><td><span class="chip k-present">yes</span></td></tr>
+        <tr><td>lioness <code>i46643</code></td><td>— (only <span class="cs">lev</span> "lion" exists)</td>
+          <td><code>noun.animal</code></td>
+          <td><span class="chip k-msynset">no</span></td><td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>door <code>i53050</code></td><td><span class="cs">dveře</span></td>
+          <td><code>noun.artifact</code></td>
+          <td><span class="chip k-msynset">no</span></td><td><span class="chip k-msynset">no</span></td></tr>
+        <tr><td>mother <code>i91462</code></td><td><span class="cs">matka, matička</span></td>
+          <td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span></td><td><span class="chip k-present">yes</span>
+            — counted, but kinship, not a role</td></tr>
+        <tr><td>Cuban <code>i87623</code></td><td><span class="cs">Kubánec</span></td>
+          <td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span></td><td><span class="chip k-present">yes</span>
+            — counted, but a nationality</td></tr>
+        <tr><td>queen (bee) <code>i47704</code></td><td><span class="cs">královna, matka</span></td>
+          <td><code>noun.animal</code></td>
+          <td><span class="chip k-msynset">no</span></td><td><span class="chip k-msynset">no</span>
+            — same lemma as <em>queen</em> <code>i92393</code>, which is yes/yes</td></tr>
+        <tr><td>mermaid <code>i86484</code></td><td><span class="cs">panna, mořská panna</span></td>
+          <td><code>noun.person</code></td>
+          <td><span class="chip k-present">yes</span></td><td><span class="chip k-msynset">no</span>
+            — the methods disagree</td></tr>
       </tbody>
     </table>
     </div>
@@ -242,10 +373,26 @@
       </tbody>
     </table>
     </div>
+    <p>The gap between them is small and, once you look, explainable. 1,849 Czech
+      synsets are in both sets. Of the 73 that are in <code>noun.person</code> only,
+      56 are imaginary or supernatural beings — <span class="cs">mořská panna</span>
+      "mermaid", <span class="cs">vlkodlak</span> "werewolf", <span class="cs">anděl</span>
+      "angel", <span class="cs">kentaur</span> "centaur", <span class="cs">obr</span>
+      "giant", <span class="cs">smrtka</span> "Death" — which Princeton files under
+      <code>noun.person</code> but hangs below <em>imaginary being</em> or
+      <em>spiritual being</em>, not <em>person</em>. The other 17 hang below
+      <em>causal agent</em> or <em>organism</em>: <span class="cs">šofér</span>
+      "chauffeur" (a <em>driver</em>, which is an <em>operator</em>),
+      <span class="cs">maskot</span> "mascot", <span class="cs">osud</span> "fate".
+      The one synset in the closure only is <em>person</em> itself,
+      whose lexfile is <code>noun.Tops</code>.</p>
     <p>About 1,900 role-noun synsets, against 11,087 <code>noun.person</code> synsets
       on the English side — roughly 17% coverage. <code>noun.person</code> is an
-      <em>upper bound</em>: it also holds nationalities, kinship terms, and named
-      individuals, so the motion-eligible subset is smaller.</p>
+      <em>upper bound</em>: it also holds nationalities (<span class="cs">Kubánec</span>),
+      kinship terms (<span class="cs">matka</span>), named individuals
+      (<span class="cs">Adam</span>, <span class="cs">Achilles</span>) and people by trait
+      (<span class="cs">zbabělec</span> "coward"), so the motion-eligible subset is
+      smaller.</p>
   </section>
 
   <section id="code">
@@ -284,23 +431,57 @@ while stack:
     <p>The walk runs on the English side on purpose: the Czech WordNet stores
       <code>hypernym</code> links only, so <code>hyponyms()</code> on a Czech synset
       returns nothing.</p>
+    <p>Concretely, the lexfile set has 11,087 ILIs and the closure 10,297. The
+      walk starts at <em>person</em>, pushes its direct hyponyms (<em>adult</em>,
+      <em>worker</em>, <em>leader</em>, <em>expert</em>, … about 400 of them), and
+      keeps popping until every descendant — down to <em>governess</em> under
+      <em>teacher</em> — has been seen once. Three members of each set, with the
+      Czech synset that has the same ILI:</p>
+    <pre class="data">by_lexfile   i86463  imaginary being   imaginární bytost
+             i87623  Cuban             Kubánec
+             i93557  teacher           učitel, instruktor, učitelka
+closure      i35562  person            člověk, osoba, jednotlivec, …   (root; lexfile noun.Tops)
+             i87152  adult             dospělý, dospělý člověk, dospělák
+             i93557  teacher           učitel, instruktor, učitelka</pre>
 
     <h3>3 · czech_counts()</h3>
     <span class="ref">count_role_nouns.py:67–74</span>
     <p>Given a set of target ILIs, count the Czech synsets whose <code>ili</code> is
       in it, the distinct lemmas across them, and the lemma-synset pairs (senses).</p>
     <pre><code>syns = [ss for ss in cs_nouns if ss.ili in target]</code></pre>
+    <p>The three numbers differ because a synset can hold several lemmas and a
+      lemma can sit in several synsets. Two real <em>child</em> synsets show both
+      at once:</p>
+    <pre class="data">i88964  child, kid, youngster   capart, dítě, špunt, děcko
+i88965  child, kid              prcek, dítě, děcko
+
+synsets 2 · distinct lemmas 5 (dítě and děcko appear in both) · senses 7</pre>
+    <p>On the whole wordnet that is why 1,922 synsets give 2,581 lemmas but 3,117
+      senses.</p>
 
     <h3>4 · main()</h3>
     <span class="ref">count_role_nouns.py:77–95</span>
     <p>Build both target sets once, list the Czech noun synsets once, and print the
       two-way table. Listing the Czech nouns a single time keeps it from re-querying
-      the database inside the loop.</p>
+      the database inside the loop. The output of one run (2026-11-17):</p>
+    <pre class="data">Czech synsets (all POS)     : 28977
+Czech noun synsets          : 21144
+English noun.person synsets : 11087
+
+[noun.person lexfile]
+  Czech role-noun synsets         : 1922
+  distinct Czech role-noun lemmas : 2581
+  lemma-synset pairs (senses)     : 3117
+
+[person-hyponym closure]
+  Czech role-noun synsets         : 1850
+  distinct Czech role-noun lemmas : 2486
+  lemma-synset pairs (senses)     : 2997</pre>
   </section>
 
   <section id="quiz" class="quiz">
     <h2>Quiz</h2>
-    <p>Five questions on the substance. Pick one per question; the reason appears
+    <p>Six questions on the substance. Pick one per question; the reason appears
       either way.</p>
     <div id="quizRoot"></div>
   </section>
@@ -313,6 +494,9 @@ while stack:
       <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
       <li>The counts are from one real run; they <strong>drift</strong> as the Czech
         wordnet grows. Read them as of the version below.</li>
+      <li>The example words are real synsets, pulled from the same data with a
+        short <code>wn</code> query (in <code>README.md</code> beside this file);
+        re-run it to see them, or to find your own.</li>
       <li>The surest check is to <strong>run the script</strong> and compare.</li>
       <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
     </ul>
@@ -350,11 +534,12 @@ while stack:
       <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
       <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>:
       background, intuition, code, quiz.</p>
-    <p class="prov">Generated 2026-11-03 by Claude Opus 4.8 (1M context); revised
-      2026-11-16 by Claude Fable 5.1 for Czech WordNet 2.2 (the join moved from
-      offsets to ILIs) · source <code>count_role_nouns.py</code> at commit
-      <code>155d2ef</code> (2026-11-16) · explainer v1 · regenerate when the code
-      changes.</p>
+    <p class="prov">Explainer v2, 2026-11-17, Claude Fable 5.2: v1's real examples
+      (2026-11-04, Claude Fable 5.1) merged with the 2026-11-16 revision for Czech
+      WordNet 2.2 (the join moved from offsets to ILIs), and the examples recomputed
+      on the new release (v0: 2026-11-03, Claude Opus 4.8) · source
+      <code>count_role_nouns.py</code> at commit <code>155d2ef</code> (2026-11-16) ·
+      data omw-en:2.0, wncze:2.2 · regenerate when the code changes.</p>
   </footer>
 </div>
 
@@ -409,7 +594,17 @@ while stack:
         {t:"It counts lemmas twice", ok:false},
         {t:"It includes animals as well as people", ok:false},
       ],
-      why:"noun.person is every person synset, which is broader than 'denotes a person by their role'. Čech (a nationality) and matka 'mother' (kinship) are noun.person but not role nouns, so the true set is smaller."
+      why:"noun.person is every person synset, which is broader than 'denotes a person by their role'. Kubánec 'Cuban' (a nationality), matka 'mother' (kinship) and Adam (a named individual) are noun.person but not role nouns, so the true set is smaller."
+    },
+    {
+      q: "mořská panna 'mermaid' is counted by the lexfile method but not by the hyponym closure. Why?",
+      options: [
+        {t:"Princeton files mermaid under noun.person, but in the hierarchy it hangs below imaginary being, not person", ok:true},
+        {t:"The Czech wordnet has no synset for mermaid", ok:false},
+        {t:"The closure walk stops four levels down and mermaid is deeper", ok:false},
+        {t:"mermaid is a feminine form, and the closure only counts masculine lemmas", ok:false},
+      ],
+      why:"Most of the 73 synsets in noun.person but outside the closure are imaginary or supernatural beings (mermaid, werewolf, angel, centaur, Death). The lexfile is a flat label; the closure follows hypernym links, and imaginary being is not a hyponym of person. The walk has no depth limit and knows nothing about gender."
     },
   ];
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}

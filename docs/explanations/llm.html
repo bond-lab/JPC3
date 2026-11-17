@@ -78,11 +78,13 @@
     border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
     overflow-x:auto;white-space:pre;margin:1rem 0}
   pre code{background:none;padding:0;font-size:1em}
+  pre.data{background:var(--surface)}
   .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
 
   .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
     border-radius:999px;white-space:nowrap;border:1px solid currentColor}
   .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+  .k-mlemma{color:var(--mlemma)} .k-noili{color:var(--noili)}
 
   .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
     margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
@@ -98,6 +100,7 @@
   table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
   table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
   table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  table.toy td code{white-space:nowrap}
   .wrap-x{overflow-x:auto}
 
   .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
@@ -165,6 +168,46 @@
       wrong sense, a missing synonym, a spurious member — <em>with a rationale</em>, and
       then measures how good those flags are. A model will happily flag things; the
       question is whether it is right.</p>
+
+    <h3>The pieces: synset, lemma, ILI, gloss</h3>
+    <p>A <strong>synset</strong> is one concept with the words that name it. The
+      Czech synset <code>wncze-02686317-n</code> holds three
+      <strong>lemmas</strong>, <span class="cs">propisovací tužka, propiska, kuličkové
+      pero</span>. Its <strong>ILI</strong> (interlingual index) is <code>i50413</code>,
+      and the English synset with the same ILI, <code>omw-en-02783161-n</code>, holds
+      <span class="cs">ballpoint, ballpoint pen, ballpen, Biro</span> with the
+      <strong>gloss</strong> "a pen that has a small metal ball as the point of
+      transfer of ink to paper". The ILI is what lets the script get from the Czech
+      side to the English side without looking at any word. The two ids are no
+      help: the numbers in them are offsets in different Princeton WordNet versions.
+      A few more:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Czech synset</th><th>ILI</th><th>Czech lemmas</th><th>English lemmas</th><th>gloss (start)</th></tr></thead>
+      <tbody>
+        <tr><td><code>wncze-09697447-n</code></td><td><code>i91691</code></td>
+          <td><span class="cs">porodník</span></td><td>obstetrician, accoucheur</td>
+          <td>a physician specializing in obstetrics</td></tr>
+        <tr><td><code>wncze-09908715-n</code></td><td><code>i93005</code></td>
+          <td><span class="cs">pěvec, zpěvák</span></td><td>singer, vocalist, vocalizer, vocaliser</td>
+          <td>a person who sings</td></tr>
+        <tr><td><code>wncze-14352708-n</code></td><td><code>i117174</code></td>
+          <td><span class="cs">prosinec</span></td><td>December, Dec</td>
+          <td>the last (12th) month of the year</td></tr>
+        <tr><td><code>wncze-09547980-n</code></td><td><code>i90696</code></td>
+          <td><span class="cs">denunciant, špicl, udavač, udávač, konfident, zrádce</span></td>
+          <td>informer, betrayer, rat, squealer, blabber</td>
+          <td>one who reveals confidential information in return for money</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>One thing the table hides: the Czech wordnet has few glosses of its own.
+      Of its 21,144 noun synsets, 881 carry a definition (934 of all 28,977 synsets),
+      and the script does not read them. So the gloss a model reads is always the
+      <em>English</em> one, reached through the ILI. That is why this script opens
+      both <code>wncze:2.2</code> and <code>omw-en:2.0</code>.</p>
+
+    <h3>Two decisions</h3>
     <p>Two decisions make the answers measurable, and this script makes both.
       First, <strong>ground</strong> the model: instead of letting it free-associate
       about a Czech word, hand it evidence for the same concept — the English lemmas
@@ -173,6 +216,72 @@
       label. Second, <strong>fix the output shape</strong>: a closed verdict, a closed
       problem type, one sentence of rationale, a confidence. Prose answers cannot be
       scored; a schema can.</p>
+
+    <h3>What the Wikidata label looks like</h3>
+    <p>Project 5's <code>wikidata_to_czech.py</code> writes a TSV with the columns
+      <code>kind qid wn31 ili wikidata_cs czech_lemmas</code>. There was no such file
+      on disk when this page was built, so every record in the run below has
+      <code>"wikidata_cs": null</code>. To see the other branch, one row was written
+      by hand from a live Wikidata lookup (2026-11-04): item
+      <a href="https://www.wikidata.org/wiki/Q160137">Q160137</a> <em>ballpoint pen</em>
+      has the Czech label <span class="cs">propiska</span> and the ILI property
+      P5063 = <code>i50413</code> — the same ILI as the <span class="cs">propiska</span> synset above.</p>
+    <pre class="data">kind	qid	wn31	ili	wikidata_cs	czech_lemmas
+present	Q160137	02786184-n	i50413	propiska	propisovací tužka|propiska|kuličkové pero</pre>
+    <p>With that one-row file, the record for the <span class="cs">propiska</span>
+      synset gains <code>"wikidata_cs": "propiska"</code>. That synset is not among
+      the 200 that seed 1 draws from release 2.2, so a run with the file as the third
+      argument still reports <code>0 with a Wikidata label</code>: a label only shows
+      up for a synset that is sampled. Note that the label agrees with one Czech lemma but not with the others — this
+      is the kind of independent evidence the model is meant to cite.</p>
+
+    <h3>The problem types, with faces</h3>
+    <p>The schema's <code>problem</code> field has five values. Here is what each
+      looks like in the wordnet, as a reader's first impression — the gold label is
+      the project's job, not this page's:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>problem</th><th>a real record that fits</th><th>why</th></tr></thead>
+      <tbody>
+        <tr><td><code>wrong-sense</code></td>
+          <td><code>i110701</code> <span class="cs">postavení</span> ↔ <em>erection,
+            hard-on</em> "an erect penis"</td>
+          <td><span class="cs">postavení</span> is "position, standing" or "the act of
+            erecting" — and it already sits, correctly, in <code>i40197</code>
+            <em>erecting, erection</em>. The sexual sense of the same English word was
+            translated as if it were the same thing.</td></tr>
+        <tr><td><code>missing-lemma</code></td>
+          <td><code>i85697</code> <span class="cs">váha</span> ↔ <em>Libra</em> "a
+            small faint zodiacal constellation"</td>
+          <td>The Czech name of the constellation is <span class="cs">Váhy</span>
+            (plural); it is not in the wordnet at all. <span class="cs">váha</span>
+            "weight, scales" is in three other synsets (<em>scale</em> and two
+            senses of <em>weight</em>) where it belongs — so this is also
+            arguably <code>wrong-sense</code>. The taxonomy is not always clean, which
+            is why two annotators and a κ are in the brief.</td></tr>
+        <tr><td><code>spurious-lemma</code></td>
+          <td><code>i91861</code> <span class="cs">osadník, farník</span> ↔
+            <em>parishioner</em> "a member of a parish"</td>
+          <td><span class="cs">farník</span> is right. <span class="cs">osadník</span>
+            is "settler, colonist" and is correctly in <code>i92895</code>
+            <em>settler, colonist</em> too; here it is an extra member that does not
+            belong.</td></tr>
+        <tr><td><code>bad-gloss</code></td>
+          <td><code>i94197</code> <span class="cs">ubožák</span> ↔ <em>wretch</em>
+            "performs some wicked deed"; <code>i59030</code>
+            <span class="cs">raketa</span> ↔ <em>skyrocket, rocket</em> "sends a
+            firework display high into the sky"</td>
+          <td>Both glosses are verb phrases inherited from Princeton WordNet, not
+            definitions of a noun; and <span class="cs">ubožák</span> is a pitiable
+            wretch, not a wicked one. The evidence itself can be the problem.</td></tr>
+        <tr><td><code>none</code></td>
+          <td><code>i91691</code> <span class="cs">porodník</span> ↔
+            <em>obstetrician, accoucheur</em></td>
+          <td>Lemma, English lemmas and gloss all point at the same concept. Most of
+            the 200 look like this.</td></tr>
+      </tbody>
+    </table>
+    </div>
     <div class="callout">
       <p><strong>No API call here.</strong> This is the half you can run offline and
         read with your own eyes before spending a token. The call itself — and the
@@ -182,16 +291,87 @@
 
   <section id="intuition">
     <h2>Intuition</h2>
-    <p>One record per synset, with everything the model may cite. From a real run:</p>
+    <p>One record per synset, with everything the model may cite. The first three
+      lines of a real run (seed 1, no Wikidata TSV):</p>
     <pre class="data"><code>{"synset": "wncze-02902747-n", "ili": "i51802",
  "czech_lemmas": ["mešní roucho", "kasule"],
  "english_lemmas": ["chasuble"],
  "gloss": "a long sleeveless vestment worn by a priest when celebrating Mass",
+ "wikidata_cs": null}
+{"synset": "wncze-13318208-n", "ili": "i111148",
+ "czech_lemmas": ["spalničky"], "english_lemmas": ["measles", "rubeola", "morbilli"],
+ "gloss": "an acute and highly contagious viral disease marked by distinct red spots followed by a rash; occurs primarily in children",
+ "wikidata_cs": null}
+{"synset": "wncze-01046774-n", "ili": "i41217",
+ "czech_lemmas": ["obchod"], "english_lemmas": ["deal", "trade", "business deal"],
+ "gloss": "a particular instance of buying or selling",
  "wikidata_cs": null}</code></pre>
-    <p>And the answer the model must return, the same shape every time:</p>
+    <p>(Each record is one line in the file; they are wrapped here to fit.)</p>
+
+    <h3>Reading the records like a human</h3>
+    <p>Before any model sees them, scroll through the 200 yourself. Most are dull in
+      the good sense. A few make you stop. Each row below is a real synset of release
+      2.2, shown as the record the script writes for it. They turned up in a sample
+      from the previous release, not in the 200 that seed 1 draws now. The last
+      column is one reader's first impression, not a gold label:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>ILI</th><th>Czech lemmas</th><th>English lemmas · gloss</th><th>first impression</th></tr></thead>
+      <tbody>
+        <tr><td><code>i50413</code></td><td><span class="cs">propisovací tužka, propiska, kuličkové pero</span></td>
+          <td>ballpoint, ballpoint pen, ballpen, Biro · a pen that has a small metal ball…</td>
+          <td><span class="chip k-present">ok</span></td></tr>
+        <tr><td><code>i93005</code></td><td><span class="cs">pěvec, zpěvák</span></td>
+          <td>singer, vocalist, vocalizer, vocaliser · a person who sings</td>
+          <td><span class="chip k-present">ok</span></td></tr>
+        <tr><td><code>i110701</code></td><td><span class="cs">postavení</span></td>
+          <td>erection, hard-on · an erect penis</td>
+          <td><span class="chip k-msynset">suspect</span> wrong sense of <em>erection</em></td></tr>
+        <tr><td><code>i89776</code></td><td><span class="cs">památkář</span></td>
+          <td>environmentalist, conservationist · someone who works to protect the environment from destruction or pollution</td>
+          <td><span class="chip k-msynset">suspect</span> a <span class="cs">památkář</span>
+            conserves historic monuments, not the environment — wrong sense of
+            <em>conservationist</em></td></tr>
+        <tr><td><code>i91861</code></td><td><span class="cs">osadník, farník</span></td>
+          <td>parishioner · a member of a parish</td>
+          <td><span class="chip k-msynset">suspect</span> <span class="cs">osadník</span>
+            "settler" is spurious</td></tr>
+        <tr><td><code>i73609</code></td><td><span class="cs">hloubka</span></td>
+          <td>bass, bass part · the lowest part in polyphonic music</td>
+          <td><span class="chip k-msynset">suspect</span> <span class="cs">hloubka</span>
+            is "depth" (it is in two <em>depth</em> synsets); the bass part is
+            <span class="cs">bas</span></td></tr>
+        <tr><td><code>i77732</code></td><td><span class="cs">Lane 's Prince Albert</span></td>
+          <td>Lane's Prince Albert · apple used primarily in cooking</td>
+          <td><span class="chip k-mlemma">odd</span> a tokeniser's space before
+            <em>'s</em>; not a sense error, but a lemma no Czech speaker would type —
+            the schema has no slot for it</td></tr>
+        <tr><td><code>i80263</code></td><td><span class="cs">regiment, pluk, oddíl, jednotka</span></td>
+          <td>regiment · army unit smaller than a division</td>
+          <td><span class="chip k-mlemma">borderline</span> <span class="cs">jednotka</span>
+            "unit" and <span class="cs">oddíl</span> "detachment" are broader than
+            <em>regiment</em></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Notice what the evidence does for you in these rows. For
+      <span class="cs">postavení</span> the gloss alone settles it. For
+      <span class="cs">osadník</span> you need to know Czech, or to see that the same
+      lemma sits in <em>settler, colonist</em> — which the record does <em>not</em>
+      contain. That is a design choice worth questioning in the project: should the
+      evidence also list the other synsets a lemma belongs to?</p>
+
+    <h3>The answer, same shape every time</h3>
+    <p>And the answer the model must return:</p>
     <pre class="data"><code>{"synset": "...", "verdict": "ok | suspect",
  "problem": "wrong-sense | missing-lemma | spurious-lemma | bad-gloss | none",
  "rationale": "one sentence, citing the evidence", "confidence": 0.0}</code></pre>
+    <p>Filled in for the <span class="cs">postavení</span> record it might look like
+      this. <strong>This is a hand-written illustration of the schema, not the
+      output of any model</strong> — the script makes no API call:</p>
+    <pre class="data"><code>{"synset": "wncze-13237963-n", "verdict": "suspect", "problem": "wrong-sense",
+ "rationale": "'postavení' means position or the act of erecting; the gloss 'an erect penis' and lemma 'hard-on' are a different sense of 'erection'.",
+ "confidence": 0.9}</code></pre>
     <p>With the shape fixed, the evaluation is ordinary: a human labels a blind
       sample with the same schema, and you report precision and recall for
       <code>suspect</code>, a confusion matrix over <code>problem</code>, and whether
@@ -208,13 +388,24 @@
     <span class="ref">build_evidence.py:31–37</span>
     <p>A constant that documents the contract: closed vocabularies for
       <code>verdict</code> and <code>problem</code>, a free-text rationale, a numeric
-      confidence. The script prints it so it travels with the data.</p>
+      confidence. The script prints it so it travels with the data. The example
+      synset in it, <code>wncze-02001223-n</code>, is just a placeholder id.</p>
 
     <h3>2 · wikidata_labels()</h3>
     <span class="ref">build_evidence.py:40–45</span>
     <p>Optionally read the TSV that <code>wikidata_to_czech.py</code> writes and keep
-      one Czech label per ILI. If no file is given, the Wikidata field is simply
-      <code>null</code> — which is what the ablation compares against.</p>
+      one Czech label per ILI. If no file is given, or the path does not exist, the
+      result is an empty dict and the Wikidata field is simply <code>null</code> —
+      which is what the ablation compares against.</p>
+    <pre><code>return {row["ili"]: row["wikidata_cs"] for row in csv.DictReader(fh, delimiter="\t") if row["ili"]}</code></pre>
+    <p>Real calls and what they return (the one-row TSV is the hand-written one from
+      the Background):</p>
+    <pre class="data">wikidata_labels(Path("candidates_1row.tsv"))  →  {'i50413': 'propiska'}
+wikidata_labels(None)                         →  {}
+wikidata_labels(Path("/nonexistent.tsv"))     →  {}</pre>
+    <p>The <code>if row["ili"]</code> matters: the project-5 TSV also contains rows of
+      kind <code>no-ili</code> whose <code>ili</code> column is empty, and without the
+      filter they would all collapse onto the key <code>""</code>.</p>
 
     <h3>3 · evidence()</h3>
     <span class="ref">build_evidence.py:48–58</span>
@@ -224,6 +415,27 @@
     <pre><code>en_syn = en.synsets(ili=ss.ili) if ss.ili else []
 "english_lemmas": [w.lemma() for s in en_syn for w in s.words()],
 "gloss": next((d for s in en_syn for d in s.definitions()), None),</code></pre>
+    <p>Traced for the <span class="cs">propiska</span> synset:</p>
+    <pre class="data">ss.id                         →  'wncze-02686317-n'
+ss.ili                        →  'i50413'
+[w.lemma() for w in ss.words()]
+                              →  ['propisovací tužka', 'propiska', 'kuličkové pero']
+en.synsets(ili='i50413')      →  [omw-en-02783161-n]
+english_lemmas                →  ['ballpoint', 'ballpoint pen', 'ballpen', 'Biro']
+gloss                         →  'a pen that has a small metal ball as the point of transfer of ink to paper'
+labels.get('i50413')          →  None        (no TSV)   /   'propiska'  (one-row TSV)</pre>
+    <p>The <code>next(…, None)</code> on line 56 is written for the general case —
+      several English synsets, several definitions each — and returns the first
+      definition of the first synset, or <code>None</code> if there is nothing. In this
+      data the general case never arises: every one of the 20,840 ILIs resolves to
+      exactly one <code>omw-en</code> synset, and every <code>omw-en</code> noun
+      synset has exactly one definition (0 have more, 0 have none). So in the run,
+      <code>gloss</code> is never <code>null</code> and never a second-best choice.
+      To see the fallback you have to feed it something else:</p>
+    <pre class="data">next((d for s in [] for d in s.definitions()), None)                       →  None
+next((d for s in [S(['first gloss','second gloss']), S(['third gloss'])]
+          for d in s.definitions()), None)                                →  'first gloss'
+   (S is a two-line stand-in class with a definitions() method — a toy, not wordnet data)</pre>
 
     <h3>4 · main()</h3>
     <span class="ref">build_evidence.py:61–76</span>
@@ -232,11 +444,74 @@
       print the schema. Czech is preserved with <code>ensure_ascii=False</code>.</p>
     <pre><code>random.seed(1)                                   # a reproducible sample
 sample = random.sample([s for s in cs.synsets(pos="n") if s.ili], n)</code></pre>
+    <p>What is being sampled? Every Czech noun synset that has an ILI. The filter on
+      line 71 removes very little, but what it removes is interesting:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Czech noun synsets</th><th class="num">count</th><th>examples</th></tr></thead>
+      <tbody>
+        <tr><td>all (<code>cs.synsets(pos="n")</code>)</td><td class="num">21,144</td>
+          <td><span class="cs">propiska</span>, <span class="cs">porodník</span>, <span class="cs">prosinec</span>, … and the 304 below</td></tr>
+        <tr><td>with an ILI — <span class="chip k-present">sampled</span></td><td class="num">20,840</td>
+          <td><span class="cs">propiska</span> (<code>i50413</code>),
+            <span class="cs">porodník</span> (<code>i91691</code>),
+            <span class="cs">prosinec</span> (<code>i117174</code>)</td></tr>
+        <tr><td>without an ILI — <span class="chip k-noili">skipped</span></td><td class="num">304</td>
+          <td>228 Czech-only synsets with ids <code>wncze-CZE-…</code>, mostly weapons,
+            buildings and sports: <span class="cs">chladná zbraň</span>,
+            <span class="cs">katana</span>, <span class="cs">palcát</span>,
+            <span class="cs">kotelna</span>, <span class="cs">školní jídelna</span>,
+            <span class="cs">skok vysoký</span>;<br>
+            47 synsets added from NTU-MC with ids <code>wncze-NTUMC-…</code>: 19 pronouns
+            and question words (<code>77…</code>: <span class="cs">já</span>,
+            <span class="cs">ty</span>, <span class="cs">on</span>,
+            <span class="cs">ona, oni, ony</span>, <span class="cs">my</span>,
+            <span class="cs">kdo</span>, <span class="cs">nikdo</span>,
+            <span class="cs">kde, kam</span>, <span class="cs">kdy</span>,
+            <span class="cs">proč</span>), 26 other additions (<code>80…</code>:
+            <span class="cs">Čech</span>, <span class="cs">Holanďan</span>,
+            <span class="cs">Batak</span>, <span class="cs">čert</span>,
+            <span class="cs">prales</span>, <span class="cs">horko, vedro</span>,
+            <span class="cs">malinovka</span>, <span class="cs">chudáček</span>,
+            <span class="cs">Veličenstvo</span>), and <span class="cs">druhý</span> and
+            <span class="cs">cokoliv</span>;<br>
+            29 synsets with ordinary offset ids but no ILI:
+            <span class="cs">portrét</span>, <span class="cs">andezit</span>,
+            <span class="cs">pasterizované mléko</span>,
+            <span class="cs">zubní korunka</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>So the model will never be asked about <span class="cs">Čech</span> or
+      <span class="cs">prales</span>: with no ILI there is no English evidence to show
+      it. Those 304 are exactly the synsets that need a different kind of check (a
+      Czech-only one), which is worth saying in the report.</p>
+    <p>With <code>random.seed(1)</code> the first five of the 200 are always
+      <code>wncze-02902747-n</code>, <code>wncze-13318208-n</code>,
+      <code>wncze-01046774-n</code>, <code>wncze-04711682-n</code> and
+      <code>wncze-02686723-n</code> (<span class="cs">kasule</span>,
+      <span class="cs">spalničky</span>, <span class="cs">obchod</span>,
+      <span class="cs">ocelová modř</span>, <span class="cs">skotská čapka</span>).
+      Line 75 counts how many sampled synsets found a label; the output of one run
+      (2026-11-17, no TSV):</p>
+    <pre class="data">wrote 200 records to evidence.jsonl (0 with a Wikidata label)
+answer schema the model must fill:
+{
+  "synset": "wncze-02001223-n",
+  "verdict": "ok | suspect",
+  "problem": "wrong-sense | missing-lemma | spurious-lemma | bad-gloss | none",
+  "rationale": "one sentence, citing the evidence",
+  "confidence": 0.0
+}</pre>
+    <p>In those 200 records, 126 synsets have a single Czech lemma, 48 have two,
+      and the rest three to five; 85 have a single English lemma and one
+      (<span class="cs">výlet</span>, <em>excursion</em>) has seven. None has an
+      empty <code>english_lemmas</code> list and none has a <code>null</code> gloss.</p>
   </section>
 
   <section id="quiz" class="quiz">
     <h2>Quiz</h2>
-    <p>Five questions on the substance. Pick one per question; the reason appears
+    <p>Six questions on the substance. Pick one per question; the reason appears
       either way.</p>
     <div id="quizRoot"></div>
   </section>
@@ -247,7 +522,14 @@ sample = random.sample([s for s in cs.synsets(pos="n") if s.ili], n)</code></pre
       easy to refine, and fallible. Treat the code as the source of truth:</p>
     <ul>
       <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
-      <li>The example record is from one real run of the script.</li>
+      <li>The records shown are the real output of one run of the script (seed 1,
+        200 records, no Wikidata TSV) on <code>wncze:2.2</code> and
+        <code>omw-en:2.0</code>; the counts (21,144 / 20,840 / 304) come from the same
+        data. Both are reproducible with the snippet in <code>README.md</code> beside
+        this file.</li>
+      <li>The "first impression" and "problem type" columns are one reader's
+        judgement of what looks off, offered to show what the project is after. They
+        are not gold labels; the schema example is hand-written, not model output.</li>
       <li>The surest check is to <strong>run the script</strong> and read the JSONL.</li>
       <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
     </ul>
@@ -258,10 +540,12 @@ sample = random.sample([s for s in cs.synsets(pos="n") if s.ili], n)</code></pre
       <code>build_evidence.py</code>. Format after
       <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
       <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
-    <p class="prov">Generated 2026-11-03 by Claude Fable 5.1; revised 2026-11-16 for
-      Czech WordNet 2.2 (lexicon <code>wncze:2.2</code>, new example record) · source
-      <code>build_evidence.py</code> at commit <code>155d2ef</code> (2026-11-16) ·
-      explainer v1 · regenerate when the code changes.</p>
+    <p class="prov">Explainer v2, 2026-11-17, Claude Fable 5.2: v1's real examples
+      (2026-11-04, Claude Fable 5.1) merged with the 2026-11-16 revision for Czech
+      WordNet 2.2, and the examples recomputed on the new release (v0: 2026-11-03,
+      Claude Fable 5.1) · source <code>build_evidence.py</code> at commit
+      <code>155d2ef</code> (2026-11-16) · data wncze:2.2, omw-en:2.0 · regenerate
+      when the code changes.</p>
   </footer>
 </div>
 
@@ -279,25 +563,31 @@ sample = random.sample([s for s in cs.synsets(pos="n") if s.ili], n)</code></pre
               {t:"The Czech lemma translated to English",ok:false},
               {t:"The synset's position in the file",ok:false},
               {t:"The gloss text",ok:false}],
-     why:"Both wordnets are keyed to ILIs, so the English synset for the same concept is a direct lookup. Matching on words would reintroduce the very ambiguity the model is supposed to judge."},
-    {q:"Why is random.seed(1) there?",
+     why:"Both wordnets are keyed to ILIs, so the English synset for the same concept is a direct lookup: i50413 takes propiska to ballpoint pen. Matching on words would reintroduce the very ambiguity the model is supposed to judge."},
+    {q:"Why does random.seed(1) matter?",
      options:[{t:"So the sample of synsets is the same on every run, and two people's gold labels cover the same items",ok:true},
               {t:"To make the sample random",ok:false},
               {t:"Because random.sample needs a seed to work",ok:false},
               {t:"To shuffle the schema fields",ok:false}],
-     why:"A reproducible sample is what lets you compare annotators, re-run after a code change, and compute agreement on identical items."},
+     why:"A reproducible sample is what lets you compare annotators, re-run after a code change, and compute agreement on identical items. With seed 1 the first record is always wncze-02902747-n, kasule."},
     {q:"What does the Wikidata field enable that nothing else in the record does?",
      options:[{t:"An ablation: run with and without it and measure whether grounding reduces the model's false flags",ok:true},
               {t:"It replaces the English gloss",ok:false},
               {t:"It tells the model the correct answer",ok:false},
               {t:"It is required for the script to run",ok:false}],
-     why:"wikidata_cs is optional (null without the TSV). That makes 'grounded vs ungrounded' a one-flag experiment, which the project brief names as the headline comparison."},
+     why:"wikidata_cs is optional (null without the TSV; 'propiska' for the ballpoint synset with one). That makes 'grounded vs ungrounded' a one-flag experiment, which the project brief names as the headline comparison."},
+    {q:"The pronoun synsets já, ty, kdo and the Czech-only Čech never appear in evidence.jsonl, however large N is. Why?",
+     options:[{t:"They have no ILI, so the filter on line 71 drops them before sampling — and without an ILI there would be no English evidence to show anyway",ok:true},
+              {t:"They are not nouns, so cs.synsets(pos=\"n\") excludes them",ok:false},
+              {t:"random.sample skips synsets with a single lemma",ok:false},
+              {t:"The JSON writer cannot encode their ids",ok:false}],
+     why:"304 of the 21,144 Czech noun synsets lack an ILI: 228 Czech-only synsets with CZE ids, 47 added from NTU-MC (19 pronouns and question words, and additions such as Čech, Holanďan, prales) and 29 others. They are nouns by POS, random.sample does not look at lemmas, and ids are plain strings. The filter `if s.ili` is what removes them."},
     {q:"Why is there deliberately no API call in this script?",
      options:[{t:"So the evidence can be run and read offline before any model is involved; the call and its validation are the project",ok:true},
               {t:"Because the API is too expensive",ok:false},
               {t:"Because the model cannot read JSON",ok:false},
               {t:"It is a bug; the call was forgotten",ok:false}],
-     why:"Separating evidence-building from judgement lets you inspect inputs, fix them cheaply, and keep the expensive, fallible step — and its human validation — as the deliverable."}
+     why:"Separating evidence-building from judgement lets you inspect inputs, fix them cheaply, and keep the expensive, fallible step — and its human validation — as the deliverable. Reading the 200 records by eye already turns up postavení ↔ 'erection, hard-on' and osadník in parishioner."}
 
   ];
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}

@@ -1,0 +1,507 @@
+<style>
+  :root{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+    --serif: "Palatino Linotype","Palatino","Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+      --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+      --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+      --code-bg:#121b1f;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#f6f8f6; --surface:#ffffff; --ink:#18242a; --muted:#566568;
+    --accent:#15756e; --accent-soft:#e3efed; --hair:#e2e7e3;
+    --present:#2f7d4f; --mlemma:#a9711a; --msynset:#b0453f; --noili:#7a8a8c;
+    --code-bg:#f1f4f1;
+  }
+  :root[data-theme="dark"]{
+    --ground:#0f1518; --surface:#161e22; --ink:#e7ece9; --muted:#93a3a2;
+    --accent:#54bcb1; --accent-soft:#17312f; --hair:#263036;
+    --present:#5bbd82; --mlemma:#d7a24e; --msynset:#e07a72; --noili:#8ba0a1;
+    --code-bg:#121b1f;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:var(--serif);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:46rem;margin:0 auto;padding:3.5rem 1.25rem 5rem}
+
+  .eyebrow{font-family:var(--sans);font-size:.72rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+  h1{font-size:2.15rem;line-height:1.15;margin:0 0 .4rem;text-wrap:balance;font-weight:600}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;text-wrap:balance}
+  .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+    padding:.6rem 0;display:flex;gap:1.2rem;flex-wrap:wrap}
+
+  nav.toc{margin:2rem 0 2.5rem;font-family:var(--sans);font-size:.9rem}
+  nav.toc ol{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:.35rem}
+  nav.toc li{counter-increment:s}
+  nav.toc a{color:var(--ink);text-decoration:none;display:flex;gap:.6rem;
+    padding:.35rem .5rem;border-radius:6px}
+  nav.toc a::before{content:counter(s,decimal-leading-zero);color:var(--accent);
+    font-variant-numeric:tabular-nums;font-weight:600}
+  nav.toc a:hover{background:var(--accent-soft)}
+
+  section{margin:3rem 0}
+  h2{font-size:1.5rem;margin:0 0 .8rem;font-weight:600;
+    padding-bottom:.3rem;border-bottom:2px solid var(--accent-soft)}
+  h3{font-size:1.08rem;font-family:var(--sans);font-weight:600;margin:1.6rem 0 .4rem}
+  p{margin:.8rem 0}
+  a{color:var(--accent)}
+  strong{font-weight:600}
+  .cs{font-style:italic}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);
+    padding:.1em .35em;border-radius:4px}
+  pre{font-family:var(--mono);font-size:.82rem;line-height:1.5;background:var(--code-bg);
+    border:1px solid var(--hair);border-radius:10px;padding:1rem 1.1rem;
+    overflow-x:auto;white-space:pre;margin:1rem 0}
+  pre code{background:none;padding:0;font-size:1em}
+  .ref{font-family:var(--mono);font-size:.76rem;color:var(--muted);display:block;margin:-.4rem 0 .9rem}
+
+  .chip{font-family:var(--mono);font-size:.74rem;font-weight:600;padding:.12em .5em;
+    border-radius:999px;white-space:nowrap;border:1px solid currentColor}
+  .k-present{color:var(--present)} .k-msynset{color:var(--msynset)}
+
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;justify-content:center;
+    margin:1.4rem 0;font-family:var(--sans);font-size:.82rem}
+  .node{background:var(--surface);border:1px solid var(--hair);border-radius:8px;
+    padding:.5rem .7rem;text-align:center;box-shadow:0 1px 0 var(--hair)}
+  .node b{display:block;color:var(--accent);font-size:.9rem}
+  .node small{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+  .arrow{color:var(--muted);font-weight:700}
+  .arrow small{display:block;font-size:.66rem;font-family:var(--mono);font-weight:400;color:var(--accent)}
+  .branch{display:flex;flex-direction:column;gap:.5rem}
+
+  table.toy{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.86rem;font-family:var(--sans)}
+  table.toy th,table.toy td{text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--hair);vertical-align:top}
+  table.toy th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  table.toy td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .wrap-x{overflow-x:auto}
+  pre.data{background:var(--surface)}
+  .k-cross{color:var(--mlemma)}
+
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:.8rem 1rem;margin:1.2rem 0}
+  .callout p{margin:.3rem 0}
+  .caveat{font-family:var(--sans);font-size:.86rem;line-height:1.45;color:var(--ink);
+    background:color-mix(in srgb,var(--mlemma) 12%,transparent);
+    border:1px solid color-mix(in srgb,var(--mlemma) 45%,transparent);
+    border-radius:8px;padding:.7rem .9rem;margin:1.2rem 0}
+  .caveat b{color:var(--mlemma)}
+
+  .quiz .q{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+  .quiz .qhead{font-weight:600;margin:0 0 .7rem;font-family:var(--sans);font-size:1rem}
+  .quiz .qhead span{color:var(--accent);font-family:var(--mono);margin-right:.5rem}
+  .quiz ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .quiz button.opt{width:100%;text-align:left;font:inherit;font-family:var(--sans);font-size:.92rem;
+    background:var(--ground);color:var(--ink);cursor:pointer;border:1px solid var(--hair);
+    border-radius:8px;padding:.6rem .8rem;transition:border-color .15s,background .15s}
+  .quiz button.opt:hover{border-color:var(--accent)}
+  .quiz button.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--present);background:color-mix(in srgb,var(--present) 14%,transparent)}
+  .quiz button.opt.wrong{border-color:var(--msynset);background:color-mix(in srgb,var(--msynset) 12%,transparent)}
+  .quiz button.opt[disabled]{cursor:default}
+  .quiz .why{font-size:.88rem;color:var(--muted);margin:.7rem 0 0;padding-left:.6rem;
+    border-left:2px solid var(--hair);display:none}
+  .quiz .q.answered .why{display:block}
+
+  footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--hair);
+    font-family:var(--sans);font-size:.82rem;color:var(--muted)}
+  .prov{font-family:var(--mono);font-size:.75rem;line-height:1.55;margin-top:.7rem}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JPC3 · Project 2 · Code explainer</p>
+    <h1>Feminine Candidates by Suffix</h1>
+    <p class="lede">How <code>feminine_candidates.py</code> lists every Czech noun
+      pair that <em>looks</em> like a feminine derivation — on purpose, including the
+      ones that aren't.</p>
+    <div class="meta">
+      <span>feminine_candidates.py</span><span>49 lines</span>
+      <span>deps: wn</span><span>run: uv run feminine_candidates.py 40</span>
+    </div>
+    <p class="caveat"><b>Generated by an AI.</b> This page was written from the code
+      and can be wrong — a misread line, an invented detail, a stale number. Trust
+      the code, not this page: check anything that matters against
+      <code>feminine_candidates.py</code>, and run it. See
+      <a href="#trust">How much to trust this</a>.</p>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#background">Background — cheap candidates, costly judgement</a></li>
+      <li><a href="#intuition">Intuition — real pairs and false friends</a></li>
+      <li><a href="#code">Code — how the script runs</a></li>
+      <li><a href="#quiz">Quiz — check yourself</a></li>
+      <li><a href="#trust">How much to trust this</a></li>
+    </ol>
+  </nav>
+
+  <section id="background">
+    <h2>Background</h2>
+    <p>Czech derives a feminine personal noun from a masculine one with a handful of
+      suffixes — <span class="cs">učitel → učitelka</span> "teacher",
+      <span class="cs">přítel → přítelkyně</span> "friend",
+      <span class="cs">lev → lvice</span> "lion → lioness". This is
+      <em>přechylování</em> (motion), and project 2 adds these
+      <strong>derivational relations</strong> to the wordnet.</p>
+    <p>The Czech wordnet (<code>ntumc-cs:2026.08</code>) already holds some of each
+      kind. <span class="cs">učitel, učitelka</span> sit together in the
+      <em>teacher</em> synset <code>10694258-n</code>; <span class="cs">soused,
+      sousedka</span> share <em>neighbor</em>; <span class="cs">dělník, dělnice,
+      proletář</span> share <em>proletarian</em>. Others are split the way English
+      splits them: <span class="cs">herec</span> is in <em>actor</em>
+      (<code>09765278-n</code>) and <span class="cs">herečka</span> alone in
+      <em>actress</em> (<code>09767700-n</code>); <span class="cs">žák</span> in
+      <em>schoolboy</em>, <span class="cs">žákyně</span> in <em>schoolgirl</em>. And
+      many are simply missing: <span class="cs">lékař</span> "doctor",
+      <span class="cs">lev</span> "lion" and <span class="cs">student</span> are lemmas,
+      but <span class="cs">lékařka</span>, <span class="cs">lvice</span> and
+      <span class="cs">studentka</span> are not in the wordnet at all.</p>
+    <p>The four suffixes the script tries, with the lemmas that actually end in them
+      (of the 25,093 noun lemmas; 10,045 of those are multi-word, like
+      <span class="cs">zdravotní sestra</span>):</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Suffix</th><th>Lemmas ending in it</th><th>Feminines among them</th><th>Not feminines</th></tr></thead>
+      <tbody>
+        <tr><td><code>-ka</code></td><td class="num">1,707</td>
+          <td><span class="cs">učitelka, kuchařka, sousedka, manželka, Evropanka</span></td>
+          <td><span class="cs">Afrika, Amerika, matka</span> "mother", <span class="cs">kočka</span> "cat",
+            <span class="cs">ruka</span> "hand", <span class="cs">otázka</span> "question"</td></tr>
+        <tr><td><code>-kyně</code></td><td class="num">5</td>
+          <td><span class="cs">přítelkyně, obchodní zástupkyně, žákyně</span></td>
+          <td><span class="cs">jeskyně</span> "cave"</td></tr>
+        <tr><td><code>-ice</code></td><td class="num">392</td>
+          <td><span class="cs">dělnice</span> "working woman"</td>
+          <td><span class="cs">abolice, Hromnice, krabice</span> "box", <span class="cs">stanice</span> "station",
+            <span class="cs">Celsiova stupnice</span></td></tr>
+        <tr><td><code>-yně</code></td><td class="num">13</td>
+          <td><span class="cs">bohyně</span> "goddess", <span class="cs">hospodyně</span> "housewife"</td>
+          <td><span class="cs">kuchyně</span> "kitchen", <span class="cs">mochyně</span> "physalis"</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>So most <em>-ka</em> and <em>-ice</em> words are not feminines at all; the
+      ending alone proves nothing. The script therefore asks a second question:
+      is the string <em>before</em> the suffix also a lemma? <span class="cs">kočka</span>
+      is dropped (no lemma <span class="cs">koč</span>) and <span class="cs">Afrika</span>
+      is dropped (no <span class="cs">Afri</span>) — but <span class="cs">matka</span>
+      survives, because <span class="cs">mat</span> "checkmate" is a lemma.</p>
+    <p>The serious candidate source is
+      <a href="https://ufal.mff.cuni.cz/derinet">DeriNet</a>, which already encodes
+      Czech word-formation families. Before wiring that in, this script shows the
+      <em>shape</em> of the problem with the crudest possible heuristic: if a lemma
+      plus a feminine suffix is <em>also</em> a lemma, propose the pair.</p>
+    <div class="callout">
+      <p><strong>It over-generates on purpose.</strong> A string match cannot tell
+        derivation from coincidence. That is the point: the candidate list is nearly
+        free, so the deliverable is how well you can tell the real pairs from the
+        false friends — the validation, not the list.</p>
+    </div>
+  </section>
+
+  <section id="intuition">
+    <h2>Intuition</h2>
+    <p>Take every noun lemma in the Czech wordnet. For each, try appending each
+      suffix; if the result is itself a lemma, report the pair. A full run
+      (2026-11-04) gives <strong>112 candidates</strong> from 108 distinct bases
+      (<span class="cs">kost, mat, čep, část</span> each fire twice). Here are the
+      first six, plus a few from further down, each judged by looking up both
+      members' synsets — a hand decision, not the script's:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Base</th><th>Candidate</th><th>Base means</th><th>Candidate means</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="cs">Evropan</td><td class="cs">Evropanka</td><td>European</td><td>European (same synset)</td>
+          <td><span class="chip k-present">real</span></td></tr>
+        <tr><td class="cs">adresát</td><td class="cs">adresátka</td><td>addressee, recipient</td><td>the same two synsets</td>
+          <td><span class="chip k-present">real</span></td></tr>
+        <tr><td class="cs">balet</td><td class="cs">baletka</td><td>ballet</td><td>dancer</td>
+          <td><span class="chip k-msynset">false</span> derived, but the base is not a person</td></tr>
+        <tr><td class="cs">bit</td><td class="cs">bitka</td><td>bit (unit of information)</td><td>brawl, affray</td>
+          <td><span class="chip k-msynset">false</span> coincidental suffix</td></tr>
+        <tr><td class="cs">brož</td><td class="cs">brožka</td><td>brooch</td><td>brooch (same synset), pin</td>
+          <td><span class="chip k-msynset">false</span> diminutive, same referent</td></tr>
+        <tr><td class="cs">chrup</td><td class="cs">chrupka</td><td>dentition</td><td>bing cherry</td>
+          <td><span class="chip k-msynset">false</span> coincidental suffix</td></tr>
+        <tr><td class="cs">učitel</td><td class="cs">učitelka</td><td>teacher, educator, mentor</td><td>teacher (same synset), schoolteacher</td>
+          <td><span class="chip k-present">real</span></td></tr>
+        <tr><td class="cs">ředitel</td><td class="cs">ředitelka</td><td>director, head, headmaster</td><td>principal</td>
+          <td><span class="chip k-present">real</span> but no shared synset</td></tr>
+        <tr><td class="cs">kandidát</td><td class="cs">kandidátka</td><td>candidate, campaigner</td><td>ballot (list of candidates)</td>
+          <td><span class="chip k-cross">cross-sense</span> the feminine exists in Czech; the wordnet has only the other sense</td></tr>
+        <tr><td class="cs">dým</td><td class="cs">dýmka</td><td>smoke</td><td>pipe</td>
+          <td><span class="chip k-msynset">false</span> derived, but an instrument, not a feminine</td></tr>
+        <tr><td class="cs">lev</td><td class="cs">levice</td><td>lion</td><td>the left (hand, politics)</td>
+          <td><span class="chip k-msynset">false</span> coincidence — the real feminine <span class="cs">lvice</span> is not a lemma</td></tr>
+        <tr><td class="cs">sto</td><td class="cs">stoka</td><td>hundred</td><td>sewer</td>
+          <td><span class="chip k-msynset">false</span> coincidental suffix</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Only two of the first six are right, and the wrong ones are wrong in
+      <em>different ways</em> — a coincidental suffix, a diminutive, a derivation
+      that is not a feminine. Those are the error types your taxonomy will name and
+      count. (The docstring's own example, <span class="cs">past → pastka</span>
+      "mousetrap", never fires: <span class="cs">pastka</span> is not a lemma in this
+      wordnet.)</p>
+
+    <h3>What the 112 really hold</h3>
+    <p>Judging all 112 the same way (lookup of both members' synsets; one reader's
+      call, so treat the numbers as approximate):</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Kind</th><th>Count</th><th>Members</th></tr></thead>
+      <tbody>
+        <tr><td>feminine of a person noun</td><td class="num">14</td>
+          <td><span class="cs">Evropan, adresát, kuchař, ladič, manžel, model, palič, promítač,
+            soused, učitel, česač, ředitel, přítel, žák</span> (+ their feminines)</td></tr>
+        <tr><td>feminine exists in Czech, wordnet has only another sense</td><td class="num">~6</td>
+          <td><span class="cs">kandidátka</span> ballot, <span class="cs">generálka</span> overhaul,
+            <span class="cs">sultánka</span> sultana grape, <span class="cs">detektivka</span> mystery novel,
+            <span class="cs">pohanka</span> buckwheat, <span class="cs">travička</span> grass</td></tr>
+        <tr><td>diminutive or synonym of the base</td><td class="num">~15</td>
+          <td><span class="cs">brož → brožka, hůl → hůlka</span> "stick", <span class="cs">hrob → hrobka</span> "grave",
+            <span class="cs">loď → loďka</span> "ship → boat", <span class="cs">skříň → skříňka</span>,
+            <span class="cs">pastel → pastelka</span> "crayon"</td></tr>
+        <tr><td>derived, but a thing, not a person</td><td class="num">~20</td>
+          <td><span class="cs">dým → dýmka</span> "smoke → pipe", <span class="cs">motor → motorka</span> "motorcycle",
+            <span class="cs">ponor → ponorka</span> "submarine", <span class="cs">počítač → počítačka</span> "calculator",
+            <span class="cs">sběrač → sběračka</span> "picker → ladle", <span class="cs">zkrat → zkratka</span> "abbreviation"</td></tr>
+        <tr><td>unrelated words that happen to nest</td><td class="num">rest</td>
+          <td><span class="cs">bit → bitka</span>, <span class="cs">sto → stoka</span>, <span class="cs">pí → píka</span> "pike",
+            <span class="cs">srst → srstka</span> "fur → gooseberry", <span class="cs">smeč → smečka</span> "smash → pack",
+            <span class="cs">had → hadice</span> "snake → hose", <span class="cs">krab → krabice</span> "crab → box",
+            <span class="cs">mat → matka</span> "checkmate → mother"</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Precision is about 14 / 112 ≈ 12 %. Per suffix it is very uneven:</p>
+    <div class="wrap-x">
+    <table class="toy">
+      <thead><tr><th>Suffix</th><th>Candidates</th><th>Real feminines</th><th>First candidates</th></tr></thead>
+      <tbody>
+        <tr><td><code>-ka</code></td><td class="num">99</td><td class="num">12</td>
+          <td><span class="cs">Evropan → Evropanka, adresát → adresátka, balet → baletka, bit → bitka</span></td></tr>
+        <tr><td><code>-ice</code></td><td class="num">11</td><td class="num">0</td>
+          <td><span class="cs">had → hadice, jelen → jelenice</span> "deerskin", <span class="cs">kost → kostice</span> "whalebone",
+            <span class="cs">krab → krabice, lev → levice</span></td></tr>
+        <tr><td><code>-kyně</code></td><td class="num">1</td><td class="num">1</td>
+          <td><span class="cs">přítel → přítelkyně</span></td></tr>
+        <tr><td><code>-yně</code></td><td class="num">1</td><td class="num">1</td>
+          <td><span class="cs">žák → žákyně</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Two more things the data shows. First, <strong>sharing a synset is neither
+      necessary nor sufficient</strong>: 20 of the 112 pairs share a synset, but nine
+      of those are diminutives or synonyms (<span class="cs">brožka, hůlka, hrobka,
+      pastelka, směsice, součástka, sušička, vysílačka, čtvrtka</span>), while three
+      real feminines share none (<span class="cs">ředitelka</span> is only in
+      <em>principal</em>, <span class="cs">přítelkyně</span> only in
+      <em>girlfriend</em>, <span class="cs">žákyně</span> only in <em>schoolgirl</em>)
+      because English keeps those apart. Second, the heuristic <strong>misses
+      pairs that are right there</strong> whenever the base changes form:
+      <span class="cs">herec → herečka</span> (c → č), <span class="cs">dělník →
+      dělnice</span> (the <em>-ík</em> goes), <span class="cs">bůh → bohyně</span>
+      (ů → o), <span class="cs">král → královna</span> (a suffix not on the list).
+      All eight lemmas are in the wordnet; none appears in the output.</p>
+    <div class="callout">
+      <p><strong>This is a first example, not the method.</strong> Once you have
+        judged a sample, refine the code to match what you found: restrict bases
+        to person synsets (project 1's role-noun list is ready-made), drop
+        diminutives like <span class="cs">-ka</span> on inanimates, or swap the
+        heuristic for DeriNet's families. Expect the next version of
+        <code>feminine_candidates.py</code> to look different — then re-judge the
+        <em>same</em> sample and see whether precision went up.</p>
+    </div>
+  </section>
+
+  <section id="code">
+    <h2>Code</h2>
+    <p>Three parts, in the order they run.</p>
+
+    <h3>1 · Share the database, name the suffixes</h3>
+    <span class="ref">feminine_candidates.py:23–24</span>
+    <p>Reuse the <code>wn</code> database the other projects built under
+      <code>patterns/.wn_data</code>, and list the suffixes to try.</p>
+    <pre><code>SUFFIXES = ("ka", "kyně", "ice", "yně")</code></pre>
+    <p>The tuple is tried in this order for every base, so a base can fire more
+      than once: <span class="cs">kost</span> "bone" yields both
+      <span class="cs">kostka</span> "cube" and <span class="cs">kostice</span>
+      "whalebone", one line each. Note what is <em>not</em> on the list:
+      <em>-ovna</em> (<span class="cs">král → královna</span>), and no stem
+      alternation at all: <span class="cs">herečka</span> is <em>-ka</em> after
+      c → č, <span class="cs">dělnice</span> is <em>-ice</em> after dropping
+      <em>-ík</em>, so neither is ever proposed even though both are lemmas.</p>
+
+    <h3>2 · candidates()</h3>
+    <span class="ref">feminine_candidates.py:27–33</span>
+    <p>Collect the set of all noun lemmas once, then for each lemma and each suffix
+      test membership. Yielding tuples keeps it lazy, so a limit stops early.</p>
+    <pre><code>lemmas = {w.lemma() for w in cs.words(pos="n")}
+for base in sorted(lemmas):
+    for suf in SUFFIXES:
+        if base + suf in lemmas:
+            yield base, base + suf, suf</code></pre>
+    <p><code>cs.words(pos="n")</code> returns 25,093 word entries, and the set has
+      25,093 distinct lemmas — one entry per lemma in this lexicon. For the base
+      <span class="cs">učitel</span> the inner loop tests four strings:</p>
+    <pre class="data">"učitel" + "ka"   = "učitelka"    in lemmas  -> yield ("učitel", "učitelka", "ka")
+"učitel" + "kyně" = "učitelkyně"  not a lemma
+"učitel" + "ice"  = "učitelice"   not a lemma
+"učitel" + "yně"  = "učitelyně"   not a lemma</pre>
+    <p>For <span class="cs">lékař</span> all four fail (<span class="cs">lékařka</span>
+      is not in the wordnet), so a genuine derivation goes unproposed; for
+      <span class="cs">sto</span> "hundred" the first test succeeds on
+      <span class="cs">stoka</span> "sewer", so a coincidence is proposed. The
+      function knows nothing about meaning — only string membership.
+      <code>sorted(lemmas)</code> explains the first line of every run: Python
+      sorts capitals before lower case, so <span class="cs">Evropan</span> precedes
+      <span class="cs">adresát</span>.</p>
+
+    <h3>3 · main()</h3>
+    <span class="ref">feminine_candidates.py:36–45</span>
+    <p>Print each pair, stop at an optional limit, and send the count to stderr so
+      the pairs themselves stay clean on stdout — pipe them into a file to annotate.
+      The output of <code>uv run feminine_candidates.py 40</code> on 2026-11-04 (first
+      twelve lines of stdout, then the stderr line):</p>
+    <pre class="data">Evropan -> Evropanka  (ka)
+adresát -> adresátka  (ka)
+balet -> baletka  (ka)
+bit -> bitka  (ka)
+brož -> brožka  (ka)
+chrup -> chrupka  (ka)
+detektiv -> detektivka  (ka)
+dým -> dýmka  (ka)
+elektron -> elektronka  (ka)
+generál -> generálka  (ka)
+had -> hadice  (ice)
+hokej -> hokejka  (ka)
+…
+40 candidates printed -- judge a sample by hand</pre>
+    <p>Without the argument, <code>limit</code> is <code>None</code> and the loop runs
+      to the end: <code>112 candidates printed</code>. (An explicit <code>0</code>
+      behaves the same way, because <code>if limit and …</code> treats zero as "no
+      limit".)</p>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>Quiz</h2>
+    <p>Six questions on the substance. Pick one per question; the reason appears
+      either way.</p>
+    <div id="quizRoot"></div>
+  </section>
+
+  <section id="trust">
+    <h2>How much to trust this</h2>
+    <p>This page was written by an AI from the source file — fast to produce,
+      easy to refine, and fallible. Treat the code as the source of truth:</p>
+    <ul>
+      <li>Every code claim carries a <code>file:line</code> reference — open it.</li>
+      <li>The example pairs are from one real run (112 candidates, 2026-11-04); the
+        full list changes as the wordnet grows.</li>
+      <li>The example words and their glosses are real, pulled from the same data
+        with a short <code>wn</code> query (in <code>README.md</code> beside this
+        file); re-run it to see them, or to find your own. The verdicts
+        (real / false / cross-sense) and the per-kind counts are one reader's
+        judgement — re-judge before quoting them.</li>
+      <li>The surest check is to <strong>run the script</strong> and judge a sample.</li>
+      <li>The quiz answers follow from the code; where one disagrees, the code wins.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Explainer for the JPC3 Czech-wordnet course · generated from
+      <code>feminine_candidates.py</code>. Format after
+      <a href="https://www.geoffreylitt.com/">Geoffrey Litt</a>'s
+      <a href="https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524"><em>explain-diff</em></a>.</p>
+    <p class="prov">Explainer v2, 2026-11-04, Claude Fable 5.1: real examples from the
+      data (v1: 2026-11-03, Claude Fable 5.1) · source
+      <code>feminine_candidates.py</code> at commit <code>d1b24c4</code> (2026-11-03) ·
+      data ntumc-cs:2026.08 · regenerate when the code changes.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {q:"Why does the script deliberately over-generate?",
+     options:[{t:"Because the candidate list is nearly free, so the real work is judging it — the list exists to be validated",ok:true},
+              {t:"Because more candidates always means more true derivations",ok:false},
+              {t:"Because DeriNet is unavailable offline",ok:false},
+              {t:"Because the wordnet lacks feminine nouns entirely",ok:false}],
+     why:"A string heuristic cannot distinguish derivation from coincidence. The script makes the cheap part cheap and leaves the expensive part — telling real pairs from false friends — as the project's deliverable."},
+    {q:"The run proposes bit → bitka. What is wrong with it?",
+     options:[{t:"bitka means a brawl: the -ka is coincidental, not a feminine of bit",ok:true},
+              {t:"bit is not a Czech word",ok:false},
+              {t:"The suffix should have been -kyně",ok:false},
+              {t:"Nothing — bitka is the feminine of bit",ok:false}],
+     why:"Both strings are lemmas, so the heuristic fires, but bitka is an unrelated noun. This is the classic coincidental-suffix error type."},
+    {q:"Where does candidates() get its set of lemmas?",
+     options:[{t:"From every noun word in the Czech wordnet, collected once into a set",ok:true},
+              {t:"From DeriNet",ok:false},
+              {t:"From the English wordnet via ILI",ok:false},
+              {t:"From a hand-written list of masculine nouns",ok:false}],
+     why:"lemmas = {w.lemma() for w in cs.words(pos='n')} builds one set up front; membership tests against it are then O(1) per candidate."},
+    {q:"Why is the count printed to stderr and the pairs to stdout?",
+     options:[{t:"So you can redirect the pairs to a file for annotation without the summary line mixed in",ok:true},
+              {t:"Because stdout is faster",ok:false},
+              {t:"Because uv requires it",ok:false},
+              {t:"To hide the count from the user",ok:false}],
+     why:"Keeping data on stdout and chatter on stderr is the Unix convention: `uv run feminine_candidates.py > pairs.tsv` gives a clean file to judge."},
+    {q:"What should you do with the candidate list, per the project brief?",
+     options:[{t:"Judge a random sample by hand, report precision and agreement, and group the errors into types",ok:true},
+              {t:"Add every pair to the wordnet immediately",ok:false},
+              {t:"Keep only pairs ending in -ka",ok:false},
+              {t:"Sort it alphabetically and submit it",ok:false}],
+     why:"The validation is the deliverable: a judged sample with an error taxonomy (coincidental suffix, diminutive, wrong sense) is the result, not the raw list."},
+    {q:"ředitel → ředitelka is a genuine feminine, yet the two lemmas share no synset in the wordnet. Does that make 'base and feminine share a synset' a good test for a real derivation?",
+     options:[{t:"No — English splits headmaster, headmistress and principal into separate synsets, and brož → brožka shares one while being a diminutive, so the test fails in both directions",ok:true},
+              {t:"Yes — every real feminine in the run shares a synset with its base",ok:false},
+              {t:"Yes, but only for the -ka suffix",ok:false},
+              {t:"No, because the script never looks at synsets at all, so they cannot matter",ok:false}],
+     why:"Of the 112 pairs, 20 share a synset; nine of those are diminutives or synonyms (brožka, hůlka, pastelka …) and three real feminines (ředitelka, přítelkyně, žákyně) share none, because the English synsets they map to are gendered. Synset overlap is evidence, not a verdict — and the script itself ignores it, which is why you have to look."}
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  const root = document.getElementById('quizRoot');
+  QUESTIONS.forEach((item, qi)=>{
+    const q=document.createElement('div'); q.className='q';
+    const h=document.createElement('p'); h.className='qhead';
+    h.innerHTML='<span>Q'+(qi+1)+'</span>'+item.q; q.appendChild(h);
+    const ul=document.createElement('ul');
+    shuffle(item.options.slice()).forEach(opt=>{
+      const li=document.createElement('li');
+      const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=opt.t;
+      b.addEventListener('click',()=>{
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        b.classList.add(opt.ok?'correct':'wrong');
+        ul.querySelectorAll('button').forEach(x=>{
+          x.disabled=true;
+          if(x.textContent===item.options.find(o=>o.ok).t) x.classList.add('correct');
+        });
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    q.appendChild(ul);
+    const why=document.createElement('p'); why.className='why';
+    why.innerHTML='<strong>Why:</strong> '+item.why; q.appendChild(why);
+    root.appendChild(q);
+  });
+})();
+</script>

@@ -23,15 +23,42 @@ Worked example in this repo: `wikidata/wikidata_explainer.html` (and its
 One continuous page with a table of contents:
 
 1. **Background** — the domain, from beginner overview to the specifics this code
-   needs. Define the terms.
-2. **Intuition** — the core idea on concrete toy data, with a diagram (semantic
-   HTML/CSS, never ASCII) and a small worked table.
+   needs. Define the terms, each with real examples (see *Show examples*).
+2. **Intuition** — the core idea on concrete data, with a diagram (semantic
+   HTML/CSS, never ASCII) and a small worked table of real rows.
 3. **Code** — a walkthrough grouped by execution flow, each part with a
    `file:line` reference and the few lines that matter.
 4. **Quiz** — ~5 medium multiple-choice questions on the substance (not wording).
    Shuffle the options on load; vary their length; show the reason either way.
 
 Add appendices as asked (a SPARQL primer, a glossary, …).
+
+## Show examples
+
+Readers learn a category from its members, not its name. Every set, class,
+filter, hierarchy or transformation the code relies on gets concrete examples,
+**pulled from the data the script actually uses** — never made up.
+
+- **Sets and filters** — list several members, and several near-misses the
+  filter excludes (and why). A filter such as `lexfile == "noun.person"` is
+  explained by *teacher, nurse, Czech, mother* being in it and *lioness, door*
+  not — and by noting that *Czech* and *mother* pass the filter but are not what
+  the project is after.
+- **Hierarchies** — show a path from the root to a leaf
+  (*person → adult → professional → educator → teacher*) and a few siblings at
+  each level, so "transitive hyponym of X" has faces. Include a branch that
+  surprises (a hyponym of *person* that is not a role).
+- **Transformations** — one real input and its output per function
+  (`offset("ntumc-cs-03395514-n")` → `03395514-n`), not just the rule.
+- **Counts** — put the first few items behind each number in a table, in both
+  languages when the data is bilingual.
+- **Output** — a real run's first lines, in `<pre class="data">`.
+
+Get them by querying the data with a few lines of the same library the script
+uses (keep the snippet in the page or the version note, so the reader can
+re-run it). Say which version of the data they came from. Rule of thumb: no
+abstract noun in the Background or Intuition without three concrete instances
+beside it.
 
 ## Build it
 
@@ -86,5 +113,6 @@ detail, a stale number. Guard against it, in the page and in the process:
 
 ## The recipe, in one line
 
-Point at a script → ask for background/intuition/code/quiz → read it → ask for
-the next fix → keep each version → link the latest.
+Point at a script → ask for background/intuition/code/quiz, with real examples
+from the data → read it → ask for the next fix → keep each version → link the
+latest.
