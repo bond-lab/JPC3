@@ -61,6 +61,7 @@ uv run pdt_frequencies.py        # sense counts from the tags, and the residue
 uv run pdt_vs_ntumc.py           # check the top senses against NTU-MC (appendix)
 uv run report/facts_tex.py       # the figures the report cites
 uv run new_sense_sheets.py       # validation sheets for the missing senses
+uv run score_sheets.py           # score the returned sheets (put them in data/returned/)
 uv run --with pytest pytest test_pdt.py
 ```
 
