@@ -1,0 +1,101 @@
+rank	lemma	synset	PDT count	verdict	better_synset	note
+1	rok	wncze-14343019-n	2219	OK		Calendar years and dates (r. 1995, roku 1993); fits.
+2	mít	wncze-02231793-v	1792	WRONG	wncze-02139918-v	Uses are have/possess (nemám komentář, mít trpělivost), not market; ÚFAL def says vlastnit, so the offset-to-ILI step (CILI or old offset) is the likely error.
+3	firma	wncze-07570097-n	940	OK		Business firm in all samples.
+4	velký	wncze-01335840-a	685	OK		Size and magnitude (velké úpravy, větší počet, velký zájem); def covers magnitude.
+5	člověk	wncze-00006026-n	593	OK		Person/people incl. suppletive lidé.
+6	cena	wncze-04856818-n	590	OK		Price of goods/services; monetary value fits.
+7	zákon	wncze-06129345-n	552	OK		Statutes (návrh zákona, ústavní zákon); fits legal document though ÚFAL synset is about právo.
+8	koruna	wncze-12631318-n	500	WRONG	wncze-12909458-n	All uses are Czech currency, not the English 5-shilling coin; old Czech WN linked koruna to the English crown coin.
+9	společnost	wncze-07568361-n	472	OK		Business company in all samples (incl. s. r. o.).
+10	podnik	wncze-07566541-n	464	OK		Business enterprises in all samples.
+11	chtít	wncze-01772101-v	437	OK		Want/want to; some uses lean to intend (chce reinvestovat) but desire is fine.
+12	procento	wncze-13035999-n	433	OK		Percent in all samples.
+13	vláda	wncze-07561622-n	423	OK		Government as governing body.
+14	vysoký	wncze-01169722-a	410	WRONG	wncze-01166932-a	Uses are high in degree/amount (nejvyšší teplota, vyšší cena, nejvyšší kvalita), not high-pitched; ÚFAL redefined the high-pitched synset as non-height highness.
+15	případ	wncze-13151745-n	394	OK		v tomto případě = in this case; special set of circumstances fits.
+16	strana	wncze-07758173-n	393	OK		Political party in all four samples.
+17	ministr	wncze-09653889-n	392	OK		Government minister.
+18	celý	wncze-00487961-a	378	OK		Entire/whole (celý svět, celá firma); whole sibling equally good.
+19	jiný	wncze-01999889-a	373	OK		Other in all samples.
+20	doba	wncze-14265546-n	364	OK		Indefinite period (v současné době, v poslední době).
+21	den	wncze-14297391-n	363	OK		Days as time units/dates; one idiom (na pořadu dne).
+22	trh	wncze-01034340-n	356	OK		Market as commercial world (český trh).
+23	země	wncze-08023668-n	353	OK		Country/nation in all samples.
+24	banka	wncze-07565826-n	335	WRONG		Uses are banks as financial institutions, not clearing house; no listed wncze sense fits (depository financial institution missing for banka); likely mapping/linking slip to a neighbouring concept.
+25	jít	wncze-02279267-v	334	WRONG		All samples are jít o = be about/concern, not adopt/follow; no listed sense fits; wncze synset words (jít, následovat, hájit) already odd, so old linking.
+26	malý	wncze-01343705-a	330	OK		Small in size/number.
+27	podnikatel	wncze-09416459-n	323	OK		Entrepreneur/businessman; Czech podnikatel covers both.
+28	prezident	wncze-09786238-n	310	OK		Head of state.
+29	počet	wncze-04836174-n	290	OK		Number/count.
+30	ministerstvo	wncze-07623219-n	286	OK		Government ministry.
+31	informace	wncze-06225142-n	282	OK		Information.
+32	hlavní	wncze-01231260-a	281	OK		Main/chief (incl. hlavní město).
+33	návrh	wncze-06720880-n	277	OK		Proposals (incl. government proposals).
+34	začít	wncze-00334609-v	262	OK		Begin an action; one intransitive use (začalo vysílání) fits begin 02531337.
+35	uvést	wncze-00983009-v	262	WRONG		All samples are reporting verb uvedl = said/stated, not adduce/cite; no listed sense fits (state/say missing); ÚFAL def (říci, sdělit) disagrees with English concept.
+36	část	wncze-03746082-n	258	CLOSE	wncze-13028617-n	Parts of property, shares, a year, a sum; English restricts to artifacts, generic part fits better.
+37	bývalý	wncze-01675339-a	257	OK		Former.
+38	předseda	wncze-09787690-n	254	OK		Chairman/president of a body.
+39	fax	wncze-03195882-n	253	OK		Mostly tel./FAX in addresses (really fax number); machine is a defensible metonymy.
+40	stát se	wncze-00144029-v	236	OK		Become.
+41	daň	wncze-12552755-n	226	OK		Tax.
+42	měsíc	wncze-14348156-n	225	CLOSE	wncze-14345123-n	3 of 4 samples are durations (za měsíc, na tři měsíce), better as the ~30-day time unit; calendar month defensible.
+43	člen	wncze-09641340-n	224	OK		Member of a group/body.
+44	pracovník	wncze-09025575-n	223	OK		Worker/employee.
+45	město	wncze-08135936-n	222	CLOSE		Czech město covers town and city; English town (smaller than city) is narrow; urban-area city sense not listed.
+46	situace	wncze-13137195-n	219	OK		Situation/state of affairs.
+47	zákazník	wncze-09255462-n	219	OK		Customer/buyer.
+48	volba	wncze-00173378-n	219	CLOSE	wncze-00170871-n	Mostly plural volby = elections (vote is near); one sample is volba biskupů = election as act of selecting; evidence thin.
+49	systém	wncze-04207742-n	216	MIXED	wncze-07924048-n	Samples mix procedure (systém hodnocení), scheme and technical system; only one fits the artifact sense; ÚFAL def broadened to uspořádání objektů.
+50	parlament	wncze-07813090-n	213	OK		Parliament.
+51	smlouva	wncze-06118498-n	209	OK		Contracts in 3/4 sentences; one is an EU enlargement treaty (06357547).
+52	ekonomický	wncze-02606626-a	206	OK		All uses are 'relating to the economy'.
+53	dítě	wncze-09284669-n	205	OK		Young people; some uses are closer to 'offspring' (09285271), but the tag is fine.
+54	stát	wncze-07682724-n	203	OK		The state as governing body (care, veto, subsidies), matching the ÚFAL definition.
+55	ředitel	wncze-09374434-n	201	OK		Company and office directors.
+56	Evropa	wncze-08697132-n	200	OK		Continent; some uses mean Europe as a political union, which is still defensible.
+57	stát	wncze-08023668-n	199	CLOSE	wncze-07673557-n	Uses are the political entity (member state, successor states, states that fought), not the territory.
+58	názor	wncze-05599484-n	197	OK		Opinion or view throughout.
+59	místo	wncze-08113406-n	197	WRONG	wncze-08134869-n	Uses mean spot or location (crime scene, destination, on site; one is 'seats'), not vicinity. The ÚFAL def describes 'place', and the Czech synset oddly groups místo with okolí/sousedství.
+60	poslanec	wncze-09366129-n	194	OK		Members of parliament (Czech, Bavarian, Russian).
+61	problém	wncze-05358791-n	191	OK		Source of difficulty.
+62	zaměstnanec	wncze-09410258-n	191	OK		Employees.
+63	nízký	wncze-01168903-a	189	OK		Low in amount (prices, value, fee).
+64	činnost	wncze-00389883-n	188	OK		Activity.
+65	zápas	wncze-07014432-n	188	OK		Sports matches.
+66	americký	wncze-02785615-a	184	OK		US-related.
+67	rada	wncze-07816627-n	181	OK		Boards or councils (state council, broadcasting council); council 07809840 also defensible.
+68	právo	wncze-04617988-n	181	WRONG	wncze-04881053-n	Uses mean entitlement (TV rights, right to start, asylum right). The ÚFAL def 'nárok, oprávnění' matches that, not 'rightfulness'; PDT words (právo, nárok) vs wncze (zákonnost, legitimnost) suggest a mapping or relink error.
+69	dolar	wncze-12889447-n	177	OK		Monetary unit.
+70	osoba	wncze-00006026-n	175	OK		Persons (casualties, members, natural persons).
+71	jednání	wncze-06707567-n	175	MIXED		Coalition talks fit, but other uses are meetings or sessions (disciplinary hearing, parliamentary session); no meeting sense is listed.
+72	byt	wncze-02632257-n	174	OK		Apartment. The PDT synset oddly includes komnata, but the uses fit.
+73	výstava	wncze-07896635-n	166	OK		Exhibitions, including trade shows.
+74	sociální	wncze-02674439-a	165	OK		Social insurance, housing and spending (welfare sense) fit 'relating to society' loosely.
+75	obchod	wncze-01046774-n	164	WRONG	wncze-01029674-n	Uses are trade in general (trade volume, diamond trade, trade conditions), not one deal. Single-word synset with no def, so likely the old CzWN linking.
+76	vědět	wncze-00575656-v	163	OK		Know a fact.
+77	trenér	wncze-10023149-n	160	OK		Sports coaches; 'trainer' is defensible (no coach sense listed).
+78	výrobek	wncze-03856368-n	159	OK		Products.
+79	týden	wncze-14279247-n	157	OK		Calendar weeks (last week, week of the betting round).
+80	lékař	wncze-09380179-n	155	OK		Physicians.
+81	platit	wncze-02186811-v	153	OK		Pay money.
+82	majitel	wncze-09715867-n	153	OK		Owner.
+83	prodej	wncze-01051312-n	152	CLOSE	wncze-01053744-n	2/4 are single sales (a stake, Breda); 2/4 are general selling ('výroba a prodej'). Fine-grained.
+84	komise	wncze-07818156-n	152	OK		Committees or commissions.
+85	konec	wncze-14403070-n	151	OK		Temporal end (end of the year or decade).
+86	soud	wncze-07822581-n	149	OK		Courts.
+87	pracovat	wncze-02340529-v	144	OK		Work; some uses lean towards 'be employed' (02338081).
+88	částka	wncze-12574523-n	142	OK		Sum of money.
+89	získat	wncze-02175411-v	142	WRONG	wncze-02173228-v	Uses are obtain or gain (money, information, funds, trust), never recruit. wncze words are the recruit set (přijmout, najmout, rekrutovat), while the PDT synset holds only získat, which points to the mapping or relink.
+90	vlastní	wncze-01712989-a	140	OK		Own.
+91	minuta	wncze-14373571-n	138	OK		Time unit (includes match-minute points).
+92	akcie	wncze-12657878-n	137	CLOSE	wncze-12585263-n	Uses are shares (price, dividend per share, issue), not the paper certificate.
+93	výroba	wncze-00858588-n	135	OK		Production or manufacturing.
+94	leden	wncze-14348770-n	133	OK		January.
+95	březen	wncze-14349633-n	129	OK		March.
+96	tým	wncze-07711285-n	128	OK		Teams (sports and work).
+97	domácí	wncze-00995385-a	127	CLOSE		Uses mean home-country or home-side (domestic films, funds, soloists, peloton), not 'internal affairs'; no better sense is listed.
+98	polovina	wncze-12962873-n	127	OK		Half.
+99	růst	wncze-00349267-n	126	OK		Growth or increase (exports, prices); 'expansion' is defensible.
+100	hrát	wncze-01038634-v	125	OK		Play sport.

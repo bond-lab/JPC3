@@ -6,6 +6,9 @@
 # downloaded mapping tables and generated candidate dumps
 *.tab
 *.tsv
+# hand-made inputs, not dumps
+!sensebank/relink.tsv
+!sensebank/top100_review.tsv
 
 # literate-programming weave intermediates (figures are embedded in the output)
 *.weave.md
@@ -48,3 +51,6 @@ sensebank/papers/bejcek-etal-2006-tsd.pdf
 # Python caches
 __pycache__/
 .pytest_cache/
+
+# AUCTeX style cache
+auto/

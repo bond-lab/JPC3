@@ -1,0 +1,101 @@
+{
+ "pdt": {
+  "senses": 7076,
+  "tokens": 87880
+ },
+ "ntumc": {
+  "senses": 1736,
+  "tokens": 5744
+ },
+ "shared": {
+  "senses": 414,
+  "pdt": 17930,
+  "ntumc": 1193
+ },
+ "lemmas": {
+  "compared": 59,
+  "same": 32,
+  "differ": 27,
+  "minpdt": 10,
+  "minntumc": 3
+ },
+ "top": {
+  "n": 20,
+  "pdtinntumc": 10,
+  "ntumcinpdt": 2
+ },
+ "before": {
+  "compared": 59,
+  "same": 29
+ },
+ "review": {
+  "senses": 100,
+  "tokens": 29189,
+  "ok": {
+   "senses": 80,
+   "tokens": 22942,
+   "share": 78.6
+  },
+  "close": {
+   "senses": 8,
+   "tokens": 1539,
+   "share": 5.3
+  },
+  "mixed": {
+   "senses": 2,
+   "tokens": 391,
+   "share": 1.3
+  },
+  "wrong": {
+   "senses": 10,
+   "tokens": 4317,
+   "share": 14.8
+  }
+ },
+ "relinked": {
+  "mit": {
+   "tokens": 1792,
+   "all": 1792
+  },
+  "vysoky": {
+   "tokens": 410,
+   "all": 410
+  },
+  "banka": {
+   "tokens": 335,
+   "all": 335
+  },
+  "misto": {
+   "tokens": 197,
+   "all": 197
+  },
+  "uvest": {
+   "tokens": 262,
+   "all": 262
+  },
+  "pravo": {
+   "tokens": 181,
+   "all": 181
+  },
+  "jit": {
+   "tokens": 334,
+   "all": 334
+  },
+  "obchod": {
+   "tokens": 164,
+   "all": 164
+  },
+  "ziskat": {
+   "tokens": 142,
+   "all": 142
+  },
+  "koruna": {
+   "tokens": 457,
+   "all": 500
+  },
+  "koruna91": {
+   "tokens": 43,
+   "all": 500
+  }
+ }
+}

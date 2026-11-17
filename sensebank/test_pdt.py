@@ -104,3 +104,19 @@ def test_tag_key_strips_zeros_from_offsets_only():
     from pdt_sources import tag_key
     assert [tag_key(t) for t in ["00600945", "1307561", "0", "10", "NAS-1", "-"]] == \
         ["600945", "1307561", "0", "10", "NAS-1", "-"]
+
+
+def test_relink_first_matching_row_wins():
+    # Arrange: 1991 koruna is held back, the rest goes to the Czech koruna
+    from pdt_frequencies import Relink, relink_for
+    old, czech = "wncze-12631318-n", "wncze-12909458-n"
+    rows = {(old, "koruna"): [Relink(old, "koruna", "^lnd91", "", "Czechoslovak"),
+                              Relink(old, "koruna", "", czech, "Czech")]}
+    # Act
+    in_1991 = relink_for("lnd91208_001", (old, "koruna"), rows)
+    in_1994 = relink_for("lnd94103_052", (old, "koruna"), rows)
+    other = relink_for("ln95049_101", ("wncze-14343019-n", "rok"), rows)
+    # Assert
+    assert in_1991.to_synset == ""
+    assert in_1994.to_synset == czech
+    assert other is None

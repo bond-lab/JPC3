@@ -17,6 +17,13 @@ verb is lemmatised without se/si in PDT, and a negated word without ne-, so
 those forms are tried too. Only CILI links of confidence 1 are used: the
 lower ones are often wrong (dobrý 'good' maps to výborný 'excellent').
 
+Some links of confidence 1 are wrong too: a check of the 100 most frequent
+senses (top100_review.tsv) found ten whose concept the word does not have,
+such as mít 'have' on the synset for 'market'. relink.tsv moves their
+tokens to the right sense, or holds them back when the release lacks it;
+a row can be limited to some documents by a regular expression on the
+document id (koruna in 1991 is the Czechoslovak currency).
+
 Run:  uv run pdt_frequencies.py
 Writes, under data/:
   pdt_counts.tsv          wncze synset, lemma, PDT count, NTU-MC count
@@ -24,13 +31,15 @@ Writes, under data/:
   pdt_missing_words.tsv   tagged words the wncze synset lacks: add_sense candidates
   pdt_new_synsets.tsv    tags on synsets with no Princeton id: new-synset candidates
   pdt_exceptions.tsv      words tagged with an exception, by type and lemma
+  pdt_relinked.tsv        the tokens each row of relink.tsv moved or held back
 It downloads PDT 3.0 (128 MB) and the annotation from LINDAT on first use.
 """
 import csv
 import datetime
 import json
+import re
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import wn
@@ -58,7 +67,8 @@ FATES = {"counted": "counted", "no agreed tag": "untagged", "exception": "except
          "new synset (no Princeton id)": "newsynset",
          "CILI link below confidence 1": "lowconf", "concept not in wncze": "absent",
          "no ILI for the 1.5 offset": "noili", "tag names no synset": "badtag",
-         "document not in PDT 3.0": "nodoc"}
+         "document not in PDT 3.0": "nodoc", "held back (wrong link)": "held"}
+RELINK = HERE / "relink.tsv"
 CORPUS = "PDT"
 SOURCE = ("Lexico-Semantic Annotation of PDT using Czech WordNet "
           "(hdl:11858/00-097C-0000-0001-487A-4), lemmas from PDT 3.0 "
@@ -84,6 +94,61 @@ def candidates(tok: Token) -> list[str]:
 
 
 @dataclass
+class Relink:
+    """A row of relink.tsv: where the tokens of a wrongly linked sense go."""
+
+    from_synset: str
+    lemma: str
+    docs: str
+    to_synset: str
+    reason: str
+
+    def applies(self, doc: str) -> bool:
+        """Whether the row covers a document.
+
+        Args:
+            doc: the PDT document id, e.g. lnd94103_052
+
+        Returns:
+            True if the row names no documents, or its pattern matches
+        """
+        return not self.docs or re.search(self.docs, doc) is not None
+
+
+def read_relinks(path: Path = RELINK) -> dict[tuple[str, str], list[Relink]]:
+    """Read the relink table.
+
+    Args:
+        path: the TSV, with columns from_synset, lemma, docs, to_synset,
+            status and reason
+
+    Returns:
+        (synset, lemma) -> its rows, in file order (the first that applies wins)
+    """
+    rows: dict[tuple[str, str], list[Relink]] = {}
+    with path.open(encoding="utf-8") as fh:
+        for r in csv.DictReader(fh, delimiter="\t"):
+            row = Relink(r["from_synset"], r["lemma"], r["docs"], r["to_synset"], r["reason"])
+            rows.setdefault((row.from_synset, row.lemma), []).append(row)
+    return rows
+
+
+def relink_for(doc: str, key: tuple[str, str],
+               relinks: dict[tuple[str, str], list[Relink]]) -> Relink | None:
+    """The relink row for one token, if any.
+
+    Args:
+        doc: the token's document id
+        key: the (synset, lemma) the bridge counted it on
+        relinks: the relink table
+
+    Returns:
+        The first row for the sense that applies to the document, or None
+    """
+    return next((r for r in relinks.get(key, []) if r.applies(doc)), None)
+
+
+@dataclass
 class Bridge:
     """Everything needed to decide what becomes of a tagged word."""
 
@@ -92,6 +157,8 @@ class Bridge:
     cili: dict[str, tuple[str, float]]
     cs: Wncze
     words: dict[str, dict[str, wn.Sense]]
+    relinks: dict[tuple[str, str], list[Relink]] = field(default_factory=dict)
+    targets: dict[tuple[str, str], wn.Sense] = field(default_factory=dict)
 
 
 @dataclass
@@ -102,6 +169,7 @@ class Fate:
     synset: NasSynset | None = None
     ili: str = ""
     sense: wn.Sense | None = None
+    relink: Relink | None = None
 
 
 def load_bridge() -> Bridge:
@@ -113,7 +181,12 @@ def load_bridge() -> Bridge:
     nas = read_nas()
     cs = load_wncze()
     words = {ili: {s.word().lemma(): s for s in ss.senses()} for ili, ss in cs.by_ili.items()}
-    return Bridge(nas, tag_index(nas), pwn15_ili(), cs, words)
+    relinks = read_relinks()
+    lexicon = wn.Wordnet(lexicon=CES)
+    targets = {(r.to_synset, r.lemma): next(s for s in lexicon.synset(r.to_synset).senses()
+                                            if s.word().lemma() == r.lemma)
+               for rows in relinks.values() for r in rows if r.to_synset}
+    return Bridge(nas, tag_index(nas), pwn15_ili(), cs, words, relinks, targets)
 
 
 def fate(tok: Token, b: Bridge) -> Fate:
@@ -149,7 +222,13 @@ def fate(tok: Token, b: Bridge) -> Fate:
     lemma = next((c for c in candidates(tok) if c in senses), None)
     if lemma is None:
         return Fate("word not in the wncze synset", syn, hit[0])
-    return Fate("counted", syn, hit[0], senses[lemma])
+    sense = senses[lemma]
+    row = relink_for(tok.doc, (sense.synset().id, lemma), b.relinks)
+    if row is None:
+        return Fate("counted", syn, hit[0], sense)
+    if not row.to_synset:
+        return Fate("held back (wrong link)", syn, hit[0], sense, row)
+    return Fate("counted", syn, hit[0], b.targets[(row.to_synset, lemma)], row)
 
 
 def write_tsv(path: Path, header: list[str], rows: list[list]) -> None:
@@ -179,6 +258,7 @@ def main() -> None:
     missing: Counter[tuple[str, str]] = Counter()
     new: Counter[tuple[str, str]] = Counter()
     exceptions: Counter[tuple[str, str]] = Counter()
+    relinked: Counter[tuple[str, str, str, str]] = Counter()
     for tok in read_tokens():
         fates["all annotated words"] += 1
         fates["tagged with a synset"] += tok.tag not in EXCEPTIONS and tok.tag != UNTAGGED
@@ -187,6 +267,9 @@ def main() -> None:
         negated[kind] += tok.mtag[10:11] == "N"
         f = fate(tok, b)
         fates[f.label] += 1
+        if f.relink:
+            r = f.relink
+            relinked[(r.from_synset, r.lemma, r.docs, r.to_synset)] += 1
         if f.label == "exception":
             exceptions[(tok.tag, base_lemma(tok.lemma))] += 1
         elif f.label == "new synset (no Princeton id)":
@@ -209,6 +292,8 @@ def main() -> None:
     write_tsv(DATA / "pdt_new_synsets.tsv", ["pdt_synset", "lemma", "tagged", "words", "definition"],
               [[sid, lem, n, "|".join(nas[sid].literals), " / ".join(nas[sid].definitions)]
                for (sid, lem), n in new.most_common()])
+    write_tsv(DATA / "pdt_relinked.tsv", ["from_synset", "lemma", "docs", "to_synset", "tokens"],
+              [[*key, n] for key, n in relinked.items()])
     write_tsv(DATA / "pdt_exceptions.tsv", ["code", "exception", "lemma", "tagged"],
               [[code, EXCEPTIONS[code], lem, n] for (code, lem), n in exceptions.most_common()])
     both = sum(1 for key in found if key in ntumc)
@@ -223,6 +308,9 @@ def main() -> None:
         "exc": dict(sum_by_code(exceptions)),
         "missing": {"pairs": len(missing), "words": sum(missing.values())},
         "new": {"pairs": len(new), "words": sum(new.values())},
+        "relink": {"rows": sum(len(v) for v in b.relinks.values()),
+                   "moved": sum(n for k, n in relinked.items() if k[3]),
+                   "held": sum(n for k, n in relinked.items() if not k[3])},
         "negated": {("untagged" if k == UNTAGGED else k): round(100 * negated[k] / n, 1)
                     for k, n in by_tag.items() if n},
     }, indent=1) + "\n")

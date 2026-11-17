@@ -2,7 +2,7 @@
  "words": 148865,
  "synsettags": 102696,
  "fate": {
-  "counted": 88854,
+  "counted": 87880,
   "untagged": 33189,
   "exception": 12980,
   "notinsynset": 7716,
@@ -11,13 +11,14 @@
   "absent": 715,
   "noili": 64,
   "badtag": 0,
-  "nodoc": 3
+  "nodoc": 3,
+  "held": 974
  },
  "counted": {
-  "share": 86.5
+  "share": 85.6
  },
  "senses": {
-  "pdt": 7080,
+  "pdt": 7076,
   "ntumc": 1736,
   "both": 414
  },
@@ -39,6 +40,11 @@
  "new": {
   "pairs": 53,
   "words": 3704
+ },
+ "relink": {
+  "rows": 11,
+  "moved": 3343,
+  "held": 974
  },
  "negated": {
   "synset": 0.7,

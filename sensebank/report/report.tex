@@ -6,7 +6,8 @@
 %%% facts.tex.  To rebuild them:
 %%%     cd sensebank
 %%%     uv run pdt_wordnet_vs_wncze.py
-%%%     uv run pdt_frequencies.py
+%%%     uv run pdt_frequencies.py      # applies relink.tsv
+%%%     uv run pdt_vs_ntumc.py         # appendix tables
 %%%     uv run report/facts_tex.py
 %%% then compile:
 %%%     pdflatex report; bibtex report; pdflatex report; pdflatex report
@@ -23,7 +24,7 @@
 \usepackage[round]{natbib}
 \bibliographystyle{plainnat}
 
-\usepackage{booktabs}
+\usepackage{booktabs,array}
 \usepackage{graphicx}
 
 \usepackage[svgnames]{xcolor}
@@ -43,6 +44,15 @@
 
 \usepackage{langsci-avm}
 \avmsetup{attributes=\scshape, values=\normalfont}
+
+%% \aside{title}{text}: a note to the students; \fixme{text}: a note to the author
+\usepackage[most]{tcolorbox}
+\newtcolorbox{asidebox}[1]{colback=DarkBlue!4, colframe=DarkBlue!60,
+  fonttitle=\bfseries\small, title={#1}, breakable, before skip=8pt, after skip=8pt}
+\newcommand{\aside}[2]{\begin{asidebox}{#1}\small #2\end{asidebox}}
+\newtcolorbox{fixmebox}{colback=DarkRed!5, colframe=DarkRed!70,
+  fonttitle=\bfseries\small, title={FIXME}, breakable, before skip=8pt, after skip=8pt}
+\newcommand{\fixme}[1]{\begin{fixmebox}\small #1\end{fixmebox}}
 
 \input{facts}
 
@@ -67,7 +77,14 @@
   \fact{cmp.ufal.defs} definitions ÚFAL wrote, only
   \fact{cmp.ufal.defskept} did.
   The tags give counts for \fact{freq.senses.pdt} senses, from
-  \fact{freq.counted.share}\% of the words tagged with a synset.
+  \fact{freq.counted.share}\% of the words tagged with a synset.  Reading
+  the \fact{ntu.review.senses} most frequent senses against their
+  sentences shows that coverage is not correctness:
+  \fact{ntu.review.wrong.senses} of them, with
+  \fact{ntu.review.wrong.share}\% of their tokens, are linked to a concept
+  the word does not have, such as \textit{mít} ``have'' to
+  \textbf{market}.  A relink table moves those tokens to the right sense,
+  or holds them back where the release lacks it.
 \end{abstract}
 
 %%% ------------------------------------------------------------------
@@ -91,7 +108,7 @@ as~(\ref{ex:moci}).  The Czech WordNet 2.2 has
 \factw{cmp.lemma.l11.now} synset for \textit{moci}, with no definition or
 example, and none of the \factw{cmp.lemma.l11.pdt} (Figure~\ref{fig:moci}).  Princeton wordnet does not include auxilliary verbs, so probably the Czech wordnet project is following this, but the NTU-MC wordnets have been adding them, and I think it would be good to have them in the wordnet.  In any case NAS-450034833 is synonymous with 00001740-a (i1) \textit{able} ``(usually followed by `to') having the necessary means or skill or know-how or authority to do something'': “able to swim”, “she was able to program her computer”, “we were at last able to buy a car”, “able to get a grant for the project”, even though it is a different POS.
 
-FIXME:  wncze-NTUMC-80001788-v, with the words \textit{dát se, moci, moct} has no definition, no example and no ILI.  I thought it had a definition in the DB, I should check.  
+\fixme{wncze-NTUMC-80001788-v, with the words \textit{dát se, moci, moct} has no definition, no example and no ILI.  I thought it had a definition in the DB, I should check.}
 
 \begin{figure}[ht]
   \centering\footnotesize
@@ -178,7 +195,8 @@ the tags that do not map. Section~\ref{sec:previous} introduces
 previous work, Section~\ref{sec:data} describes the data, and
 Section~\ref{sec:method} what reached the release and the frequencies.
 Section~\ref{sec:validation} reports the checks done so far and the
-hand validation still to do.
+hand validation still to do, and Appendix~\ref{app:ntumc} the check of
+the most frequent senses that found the wrong links.
 
 %%% ------------------------------------------------------------------
 \section{Previous work}
@@ -428,6 +446,14 @@ giving counts for \fact{freq.senses.pdt} senses.  The release already has
 counts from the NTU-MC Czech corpus for \fact{freq.senses.ntumc} senses;
 \fact{freq.senses.both} senses have both.
 
+A link of confidence~1 can still be wrong.  Appendix~\ref{app:ntumc}
+reads the \fact{ntu.review.senses} most frequent senses against their
+sentences, and finds \factw{ntu.review.wrong.senses} whose concept the
+word does not have.  A relink table (\texttt{relink.tsv},
+Table~\ref{tab:relink}) moves \fact{freq.relink.moved} of their tokens to
+the right sense, and holds back \fact{freq.relink.held} where the release
+has no right sense yet; the counts in this section are after relinking.
+
 \begin{table}[ht]
   \centering\small
   \begin{tabular}{@{}lr@{}}
@@ -444,6 +470,7 @@ counts from the NTU-MC Czech corpus for \fact{freq.senses.ntumc} senses;
     no ILI for the 1.5 offset                  & \fact{freq.fate.noili} \\
     the tag names no synset                    & \fact{freq.fate.badtag} \\
     the document is not in PDT 3.0             & \fact{freq.fate.nodoc} \\
+    held back: a wrong link (Table~\ref{tab:relink}) & \fact{freq.fate.held} \\
     \midrule
     annotated words                            & \fact{freq.words} \\
     \bottomrule
@@ -479,11 +506,18 @@ the release, which is the stretch goal.
 \label{sec:validation}
 %%% ------------------------------------------------------------------
 
-Four checks are done.  The id check and the negation test of
+Five checks are done.  The id check and the negation test of
 Section~\ref{sec:data} confirm the WordNet 1.5 ids and code~4.  The
 definitions said to have reached the release are identical strings, not
-near matches, in a random sample of six we read.  And the total of annotated words
-agrees with \citet{bejcek-etal2006} to within 0.1\%.
+near matches, in a random sample of six we read.  The total of annotated words
+agrees with \citet{bejcek-etal2006} to within 0.1\%.  And the
+\fact{ntu.review.senses} most frequent senses, read against four
+sentences each and against the NTU-MC counts (Appendix~\ref{app:ntumc}),
+are right for \fact{ntu.review.ok.senses}, and wrong for
+\fact{ntu.review.wrong.senses}, which hold
+\fact{ntu.review.wrong.share}\% of their tokens.  The first four checks
+test the pipeline; only the last tests whether its output means what it
+should.
 
 The hand validation asks whether the senses the release lacks should be
 added.  The author does not speak Czech, so \factw{sheet.students}
@@ -553,14 +587,18 @@ in the judged senses.
     Cause & Count & Example \\
     \midrule
     wrong CILI link        & TODO & \textit{dobrý} ``good'' $\rightarrow$ \textit{výborný} ``excellent'' \\
+    nearest sense tagged   & \fact{ntu.review.wrong.senses}/\fact{ntu.review.senses} & \textit{mít} ``have'' $\rightarrow$ \textbf{market} \\
     word dropped from the synset & TODO & \textit{práce} ``work'' not in \textit{robota, dřina, lopota} \\
     ÚFAL sense not in the release & TODO & \textit{moci} ``possibility'' \\
     senses split differently & TODO & \textit{mít}: \fact{cmp.lemma.l10.pdt} senses in PDT, \fact{cmp.lemma.l10.now} in the release \\
     hypernym missing in the release & TODO & \textit{ampér} has none \\
     \bottomrule
   \end{tabular}
-  \caption{Why the release lacks a PDT sense: the causes seen so far, to
-    count in the \fact{sheet.items} judged senses.}
+  \caption{Why the release lacks a PDT sense, or has it under the wrong
+    concept: the causes seen so far, to count in the \fact{sheet.items}
+    judged senses.  \emph{Nearest sense tagged}: the right sense was not in
+    the annotation wordnet (Appendix~\ref{app:ntumc}), counted in the top
+    \fact{ntu.review.senses}.}
   \label{tab:errors}
 \end{table}
 
@@ -611,9 +649,17 @@ CC BY-NC-SA and the release CC BY-SA.  A count is a fact about the corpus,
 but the senses and definitions ÚFAL wrote are their text, so we will ask
 ÚFAL for permission, as Masaryk University gave it for the wordnet itself.
 
+The relinks change which senses the \texttt{set\_count} records name:
+\textit{mít} ``have'' gets the \fact{ntu.relinked.mit.tokens} tokens that
+would have gone to \textbf{market}.  The tokens held back get no record
+until the release has their sense.  Two of those senses are new concepts,
+proposed in Appendix~\ref{app:koruna}: the Czechoslovak koruna, and a
+general \textbf{crown} as a unit of currency.  They go to the release
+as \texttt{add\_synset} records once they have an identifier, and to
+CILI as new concepts.
+
 We will send ÚFAL the exception codes as we inferred them, for the
-documentation of the data, and send CILI the WordNet 1.5 links the
-validation finds wrong.
+documentation of the data, and the redefined synsets the check found.
 
 %%% ------------------------------------------------------------------
 \section{Conclusion}
@@ -626,7 +672,11 @@ did the definitions written in Brno.  The senses, definitions and
 examples ÚFAL wrote for the hard lemmas did not:
 \fact{cmp.ufal.defskept} of \fact{cmp.ufal.defs} definitions are in the
 release, and those senses are among the most tagged.  The tags give the
-release counts for \fact{freq.senses.pdt} senses from a second corpus.
+release counts for \fact{freq.senses.pdt} senses from a second corpus, but
+only after reading the most frequent of them showed that a link of
+confidence~1 can still be wrong: \fact{ntu.review.wrong.share}\% of the
+tokens of the top \fact{ntu.review.senses} went to a concept the word
+does not have.
 The scripts are in the \texttt{sensebank} directory of the JPC3
 repository, and the counts go to the release as change records once ÚFAL
 agrees to the licence.  Next, the students' judgements decide which of
@@ -638,13 +688,169 @@ the missing senses to add, starting with \textit{mít} and \textit{moci}.
 
 Claude Opus 5.5 (Anthropic) wrote the analysis scripts, inferred the
 exception codes, and drafted this report, including the discussion of
-the papers.  TODO: the author checks every result against the source data
+the papers.  Two Claude Opus 5.5 agents judged the
+\fact{ntu.review.senses} most frequent senses in Appendix~\ref{app:ntumc};
+their verdicts are not yet confirmed by a Czech speaker.  TODO: the author checks every result against the source data
 and the papers before the report is final, and is responsible for the
 content.
 
 %%% ------------------------------------------------------------------
 
 \bibliography{report}
+
+\appendix
+
+%%% ------------------------------------------------------------------
+\section{The most frequent senses in PDT and NTU-MC}
+\label{app:ntumc}
+%%% ------------------------------------------------------------------
+
+\paragraph{Why look.}  This course is about evaluation and trust, and
+this appendix is the example.  Every summary figure in this report can be
+right while the counts are wrong.  \fact{freq.counted.share}\% of the synset
+tags are counted, and the bridge uses only links of confidence~1, but
+neither figure says whether a tag lands on the sense the annotator meant.
+The only way to find out is to look at real items, and the most frequent
+ones first.  Frequent words have the most senses: Zipf's law of meaning
+puts a word's number of senses at about the square root of its frequency
+\citep{zipf1945}.  So the most frequent words are the most ambiguous, the
+likeliest to be linked to the wrong sense, and the ones where a wrong
+link moves the most tokens.  They are also the words a reader knows, so
+an error there is easy to see.  It is always worth checking them.  A
+second corpus tagged independently gives something to look against.  A
+word's most frequent sense should usually be the same in both; where it
+is not, either the texts differ or the tags went to the wrong synset, and
+reading the pair tells which.  Here it found errors that no figure in
+Section~\ref{sec:method} shows.
+
+\aside{Note for students: where the check came from}{The model that wrote
+the scripts reported the coverage figures, \fact{freq.counted.share}\% of
+the tags mapped by links of confidence~1, and did not think to check what
+the tags were mapped \emph{to}.  The comparison with NTU-MC was the
+author's idea, from experience of earlier mappings: frequent words have
+the most senses, so that is where links go wrong, and an independent
+corpus is the cheapest thing to compare against.  This is where human
+experience counts.  A model will check what you ask it to check; knowing
+what to ask is your job.  For your own project, ask: what would I expect
+to see if the output were right, and where can I look at it?}
+
+\subsection{The two corpora}
+
+The release has counts from the Czech part of
+NTU-MC for \fact{ntu.ntumc.senses} senses (\fact{ntu.ntumc.tokens}
+tokens); the PDT gives \fact{ntu.pdt.senses} (\fact{ntu.pdt.tokens}
+tokens).  \fact{ntu.shared.senses} senses have both.  The corpora differ
+in kind: PDT is newspaper text, so its top senses are \textit{rok}
+``year'', \textit{firma} ``firm'' and \textit{cena} ``price''
+(Table~\ref{tab:ntumc-pdttop}); the NTU-MC text is Karel Čapek's novel
+\textit{Válka s mloky} ``The War with the Newts'' (1936), with
+\textit{kapitán} ``captain'', \textit{čert} ``devil'' and \textit{škeble}
+``clam'' in its top \fact{ntu.top.n} (Table~\ref{tab:ntumc-ntutop}).
+NTU-MC also tags pronouns and function words, which PDT does not, so only
+\fact{ntu.top.ntumcinpdt} of its top \fact{ntu.top.n} senses has a PDT
+count, against \fact{ntu.top.pdtinntumc} of PDT's top \fact{ntu.top.n}
+with an NTU-MC count.  The tables give each sense the English lemma and
+definition of its ILI in OMW (\texttt{pdt\_vs\_ntumc.py}), and show the
+PDT counts after relinking.
+
+\fact{ntu.lemmas.compared} lemmas have at least \fact{ntu.lemmas.minpdt}
+PDT tokens, at least \fact{ntu.lemmas.minntumc} NTU-MC tokens, and more
+than one sense between them.  Before relinking, their most frequent sense
+was the same in both corpora for \fact{ntu.before.same}; after it, for
+\fact{ntu.lemmas.same}.  Table~\ref{tab:ntumc-differ} lists the most
+frequent that still differ.  Most differ because the texts do:
+\textit{země} is ``country'' in the news and ``land'' in the novel, and
+\textit{prezident} is the head of state in one and of a firm in the
+other.  Others are close senses split differently: \textit{velký}
+``large'' against ``significant'', \textit{celý} ``entire'' against
+``whole''.  These need human judgements more than a fix.
+
+\subsection{The most frequent senses, read}
+
+The comparison points at suspects; reading the sentences decides.  For
+each of the \fact{ntu.review.senses} most frequent PDT senses, which
+carry \fact{ntu.review.tokens} tokens, a reader saw the sense's English
+concept, the other senses the release has for the lemma, and four PDT
+sentences drawn at random, and judged whether the concept fits
+(Table~\ref{tab:review}; the verdicts are in \texttt{top100\_review.tsv}).
+\fact{ntu.review.ok.senses} fit.  \fact{ntu.review.wrong.senses} do not:
+the word never has that concept, and they hold
+\fact{ntu.review.wrong.share}\% of the tokens.
+
+The wrong senses have one cause.  In eight of the ten the right sense was
+not in the annotation wordnet at all, so the annotators chose the nearest
+synset that had the word.  \textit{koruna}, the currency, went to the
+English five-shilling \textbf{crown}; \textit{jít o} ``be about'' to
+\textbf{adopt, follow}; \textit{uvést} ``state'' to \textbf{adduce,
+cite}.  For five of them ÚFAL then edited the synset to fit, keeping its
+Princeton id: the synset of \textit{mít} whose ILI is \textbf{market}
+got the definition \textit{vlastnit, získat} ``own, get'' and examples
+such as \textit{Mám spoustu peněz} ``I have a lot of money'', and
+\fact{ntu.relinked.mit.tokens} uses of \textit{mít} ``have'' were tagged
+with it.  The release's synset is right: it holds \textit{mít,
+obchodovat, prodávat}, and \textit{mít} does mean ``stock, sell'' (a shop
+\textit{má} ``has'' bananas).  The error is only in the annotation's
+copy, which is why nothing in Section~\ref{sec:method} could see it.
+
+Table~\ref{tab:relink} is the fix: each wrong sense, where its tokens go,
+and how many.  Where the release has the right sense the tokens move to
+it; where it does not (\textit{banka} ``bank'', \textit{jít o},
+\textit{uvést} ``state''), they are held back.  The rows are proposals
+until a Czech speaker confirms them.
+
+\aside{Note for students: four sentences is a sample}{A wrong verdict is
+firm when all four sentences disagree with the concept.  An ``OK'' is
+weaker: a sense the word has only sometimes can hide in four sentences
+(all four of \textit{strana} were ``political party'', none ``side'').
+The \emph{close} and \emph{mixed} verdicts, such as \textit{systém}, which
+mixes ``procedure'' and ``device'', go to the students.}
+
+TODO: confirm the ten relinks with a Czech speaker; read the next 100
+senses the same way; and add the senses held back.
+
+\subsection{A worked case: \textit{koruna}}
+\label{app:koruna}
+
+One tag, three senses.  The PDT annotators tagged \textit{koruna} with
+the only currency sense their wordnet had, the English five-shilling
+\textbf{crown} coin (i107084), \fact{ntu.relinked.koruna.all} times.  The PDT
+document ids carry the paper and year: \fact{ntu.relinked.koruna91.tokens}
+of the tokens are from \textit{Lidové noviny} in 1991, when the currency
+was the Czechoslovak koruna, and \fact{ntu.relinked.koruna.tokens} from
+1994--95, after the split of 1993, when it was the Czech koruna.  The
+release has the Czech koruna (\texttt{wncze-12909458-n}, i108648), but no
+Czechoslovak one, and nor does Princeton WordNet.  NTU-MC tags its two
+uses in \textit{Válka s mloky} with the Czech koruna, although in 1936 the
+currency was the Czechoslovak one.  So the relink table splits the tag by
+date: the tokens from 1994--95 go to the Czech koruna, and those from
+1991 are held back.
+
+We propose two new concepts.
+\begin{itemize}
+\item \textbf{Czechoslovak koruna}: the basic unit of money in
+  Czechoslovakia (1919--1939, 1945--1993); hypernym \textbf{monetary
+  unit} (i108184).  It takes the 1991 tokens and NTU-MC's two.
+\item \textbf{crown}, as a kind of currency: ``any currency (originally)
+  issued by the crown (regal power) and often bearing a crown
+  (headdress); (translation) various currencies known by similar names in
+  their native languages, such as the korona, koruna, krona, króna,
+  krone'' \citep{wiktionary-crown}.  English uses \textit{crown} for the
+  koruna (``the Czech crown''), and Princeton WordNet has no concept for
+  it.  It would be a second hypernym, beside each country's monetary
+  unit, of the Czech koruna (i108648), the Slovak koruna (i108651), the
+  Swedish krona (i108657), the Icelandic krona (i108654), the Norwegian
+  krone (i108662), the Danish krone (i108660), the Estonian kroon
+  (i108803) and the Czechoslovak koruna.  The English coin stays a coin.
+\end{itemize}
+
+\aside{Note for students: read the metadata}{The tag was the same for all
+\fact{ntu.relinked.koruna.all} tokens, and the sentences look alike; what
+separates the two currencies is the date of the text, which is in the
+document id, not in the sentence.  Corpus metadata (date, source, genre)
+is evidence about meaning.  The same check explains why NTU-MC's
+\textit{koruna} is wrong: the novel is from 1936.}
+
+\input{ntumc-tables}
 
 \end{document}
 
