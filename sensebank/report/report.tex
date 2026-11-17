@@ -41,6 +41,9 @@
 \noautomath
 \newcommand{\gm}[1]{\textsc{\MakeLowercase{#1}}}
 
+\usepackage{langsci-avm}
+\avmsetup{attributes=\scshape, values=\normalfont}
+
 \input{facts}
 
 \title{Merging the PDT Sense Annotation into the Czech WordNet 2.2\\
@@ -71,14 +74,90 @@
 \section{Introduction}
 %%% ------------------------------------------------------------------
 
-The PDT annotators tagged the Czech modal verb \textbf{\textit{moci}} \fact{cmp.lemma.l11.tagged}
+In order to investigate meaning in the Prague Dependency Treebank,
+there was a large scale annotation effort
+\citep{hajic-etal2004,bejcek-etal2006,pdt-wsd2011} that assigned senses
+to words int he treebank and also created/revised many synsets to make
+appropriate meanings \cite{cwn19pdt2011}.  However, not all of this
+information appears to have been kept in the main wordnet
+\citep{rambousek-etal2017}.
+
+For example, the PDT annotators tagged the Czech modal verb \textbf{\textit{moci}} \fact{cmp.lemma.l11.tagged}
 times.  The two annotators disagreed on 1,435 of them, so ÚFAL rewrote
 its senses \citep{bejcek-etal2006}: \factw{cmp.lemma.l11.pdt} new synsets
 (possibility, permission, suitability, futility, estimate,
 responsibility), each with a definition and examples such
 as~(\ref{ex:moci}).  The Czech WordNet 2.2 has
-\factw{cmp.lemma.l11.now} synset for \textit{moci}, and none of the
-\factw{cmp.lemma.l11.pdt}.
+\factw{cmp.lemma.l11.now} synset for \textit{moci}, with no definition or
+example, and none of the \factw{cmp.lemma.l11.pdt} (Figure~\ref{fig:moci}).  Princeton wordnet does not include auxilliary verbs, so probably the Czech wordnet project is following this, but the NTU-MC wordnets have been adding them, and I think it would be good to have them in the wordnet.  In any case NAS-450034833 is synonymous with 00001740-a (i1) \textit{able} ``(usually followed by `to') having the necessary means or skill or know-how or authority to do something'': “able to swim”, “she was able to program her computer”, “we were at last able to buy a car”, “able to get a grant for the project”, even though it is a different POS.
+
+FIXME:  wncze-NTUMC-80001788-v, with the words \textit{dát se, moci, moct} has no definition, no example and no ILI.  I thought it had a definition in the DB, I should check.  
+
+\begin{figure}[ht]
+  \centering\footnotesize
+  \textbf{Czech WordNet 2.2}\par\medskip
+  \avm{[ id & wncze-NTUMC-80001788-v \\
+          lemmas & \textit{dát se}, \textit{moci}, \textit{moct} \\
+          definition & --- \\
+          source & NTU-MC \\
+          example & --- \\
+          frequency & 27 (NTU-MC) ]}
+  \par\bigskip
+  \textbf{PDT annotation wordnet}\par\medskip
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-450034833 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{možnost, uskutečnitelnost} \\ & ``possibility, feasibility'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Každý se může zmýlit.} \\ & ``Anyone can make a mistake.'' \\
+          frequency & 1,183 tags ]}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-753964023 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{smět, dovolení} \\ & ``may, permission'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Může se tu kouřit?} \\ & ``Can one smoke here?'' \\
+          frequency & 240 tags ]}
+  \end{minipage}\par\medskip
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-1585073893 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{odpovědnost} \\ & ``responsibility'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Já za to nemůžu} \\ & ``It's not my fault'' \\
+          frequency & 9 tags ]}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-792515163 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{vhodnost} \\ & ``suitability'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Mohl bys také pomoci.} \\ & ``You could help too.'' \\
+          frequency & 6 tags ]}
+  \end{minipage}\par\medskip
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-1493102466 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{přibližný odhad (hovor.)} \\ & ``rough estimate (coll.)'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Může být tak pět hodin.} \\ & ``It may be about five o'clock.'' \\
+          frequency & 4 tags ]}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.49\linewidth}
+  \avm{[ id & NAS-919753068 \\
+          lemmas & \textit{moci} \\
+          definition & \textit{marnost} \\ & ``futility'' \\
+          source & PDT, ÚFAL 2006 \\
+          example & \textit{Můžeš se třeba upracovat, \dots} \\ & ``Work as hard as you like, \dots'' \\
+          frequency & 0 tags ]}
+  \end{minipage}
+  \caption{The senses of \textit{moci} in the Czech WordNet 2.2 (top) and
+    in the PDT annotation wordnet (below), with the first example of each
+    PDT synset.  PDT frequencies are the tags in the annotation; the
+    release's is its NTU-MC count.  The release synset has no ILI.}
+  \label{fig:moci}
+\end{figure}
 
 \begin{exe}
   \ex \label{ex:moci} Czech [ces] \\
@@ -94,12 +173,61 @@ sense frequencies, beside the NTU-MC corpus.
 
 The project brief sets three goals.  Map the PDT tags to the current
 synsets, aiming for at least 95\% automatically; use them to add
-\emph{corpus frequencies} to the wordnet; and hand-categorise 500 of the
-tags that do not map.  Section~\ref{sec:data} describes the data,
-Section~\ref{sec:previous} the four papers on it, and
+\emph{corpus frequencies} to the wordnet; and hand-categorise 500 of
+the tags that do not map. Section~\ref{sec:previous} introduces
+previous work, Section~\ref{sec:data} describes the data, and
 Section~\ref{sec:method} what reached the release and the frequencies.
-Section~\ref{sec:validation} reports the checks done so far and the hand
-validation still to do.
+Section~\ref{sec:validation} reports the checks done so far and the
+hand validation still to do.
+
+%%% ------------------------------------------------------------------
+\section{Previous work}
+\label{sec:previous}
+%%% ------------------------------------------------------------------
+
+\citet{hajic-etal2004} describe the first year of the annotation.  The
+Czech WordNet is the sense inventory; for each lemma the annotator sees
+the synsets containing it and chooses one, preferring synsets where the
+lemma is a single word, or one of eleven exceptions.  Two annotators tag
+every word independently.  After a year they had 125,129 words, about
+15\% of PDT, and report three findings.  Coverage was poor:
+only 34\% of the words were in the wordnet, no adverbs at all, as the
+version they used (1.2a) had none.  Agreement was low, 61.4\% on synsets
+and 69.9\% counting exceptions, and did not fall as ambiguity rose.  The annotation also fed back into the wordnet: only 12\% of its synsets were
+used, and very common senses of frequent words were missing.  They
+present that feedback as the second purpose of the project, beside
+training data for word sense disambiguation, and note that only SemCor
+\citep{landes-etal1998} had done this before.
+
+\citet{bejcek-etal2006} report the annotation at scale: 431,447 words read,
+148,774 annotated, over 20\% of PDT 2.0.  Agreement counting exceptions
+rose to 74.6\%.  They argue against letting annotators assign several
+synsets: the exceptions for that case were agreed only 20 and 0 times.
+Their main contribution is a correction procedure.  A third annotator
+judges disagreements, and the 25 lemmas with at least 200 disagreements,
+\textit{mít} with 2,853 and \textit{moci} with 1,435 among them, get
+their senses rewritten in the wordnet, each with a definition and an
+example, and are re-annotated.  Correcting 0.5\% of the problem lemmas
+raised the words tagged with a single-word synset by 7.4 points and the
+fully disambiguated sentences from 5,111 to 6,941, for 320 hours of a
+corrector's time and 215 of a programmer's.  The data and the edited
+wordnet were released in 2011 \citep{pdt-wsd2011,cwn19pdt2011}.  The released data agree: they have \fact{freq.words} annotated words,
+against the 148,774 reported.
+
+\citet{rambousek-etal2017} and \citet{rambousek-etal2018} tell the
+wordnet's side.  The original Czech WordNet \citep{palasmrz2004} has
+28,201 synsets linked to Princeton WordNet 2.0, and was published by ELRA
+under a closed licence.  Later versions were never merged: a 2009 edit of
+2,400 base-concept synsets, a 2011 extension from a bilingual dictionary
+(40,621 synsets, 30\% of a checked sample with wrong synonyms), VerbaLex,
+and 5,676 definitions written by students but kept in text files.  The
+2017 roadmap is an open licence and links to CILI; the 2018 paper adds
+derivational relations and a crowdsourcing tool for suggested fixes.
+Neither mentions folding the PDT edits back in, though the 2018 paper
+points to the PDT version on LINDAT as a ``slightly modified (corrected)''
+copy of the original.  This project measures how much of them arrived.  The copies
+had also drifted apart in their identifiers: the release's ids are
+WordNet 2.0 offsets, the PDT copy's are 1.5 offsets.
 
 %%% ------------------------------------------------------------------
 \section{Data and resources}
@@ -179,54 +307,7 @@ they number 8 and 10.
   \label{tab:exc}
 \end{table}
 
-%%% ------------------------------------------------------------------
-\section{Previous work}
-\label{sec:previous}
-%%% ------------------------------------------------------------------
 
-\citet{hajic-etal2004} describe the first year of the annotation.  The
-Czech WordNet is the sense inventory; for each lemma the annotator sees
-the synsets containing it and chooses one, preferring synsets where the
-lemma is a single word, or one of eleven exceptions.  Two annotators tag
-every word independently.  After a year they had 125,129 words, about
-15\% of PDT, and report three findings.  Coverage was poor:
-only 34\% of the words were in the wordnet, no adverbs at all, as the
-version they used (1.2a) had none.  Agreement was low, 61.4\% on synsets
-and 69.9\% counting exceptions, and did not fall as ambiguity rose.  The annotation also fed back into the wordnet: only 12\% of its synsets were
-used, and very common senses of frequent words were missing.  They
-present that feedback as the second purpose of the project, beside
-training data for word sense disambiguation, and note that only SemCor
-\citep{landes-etal1998} had done this before.
-
-\citet{bejcek-etal2006} report the annotation at scale: 431,447 words read,
-148,774 annotated, over 20\% of PDT 2.0.  Agreement counting exceptions
-rose to 74.6\%.  They argue against letting annotators assign several
-synsets: the exceptions for that case were agreed only 20 and 0 times.
-Their main contribution is a correction procedure.  A third annotator
-judges disagreements, and the 25 lemmas with at least 200 disagreements,
-\textit{mít} with 2,853 and \textit{moci} with 1,435 among them, get
-their senses rewritten in the wordnet, each with a definition and an
-example, and are re-annotated.  Correcting 0.5\% of the problem lemmas
-raised the words tagged with a single-word synset by 7.4 points and the
-fully disambiguated sentences from 5,111 to 6,941, for 320 hours of a
-corrector's time and 215 of a programmer's.  The data and the edited
-wordnet were released in 2011 \citep{pdt-wsd2011,cwn19pdt2011}.  The released data agree: they have \fact{freq.words} annotated words,
-against the 148,774 reported.
-
-\citet{rambousek-etal2017} and \citet{rambousek-etal2018} tell the
-wordnet's side.  The original Czech WordNet \citep{palasmrz2004} has
-28,201 synsets linked to Princeton WordNet 2.0, and was published by ELRA
-under a closed licence.  Later versions were never merged: a 2009 edit of
-2,400 base-concept synsets, a 2011 extension from a bilingual dictionary
-(40,621 synsets, 30\% of a checked sample with wrong synonyms), VerbaLex,
-and 5,676 definitions written by students but kept in text files.  The
-2017 roadmap is an open licence and links to CILI; the 2018 paper adds
-derivational relations and a crowdsourcing tool for suggested fixes.
-Neither mentions folding the PDT edits back in, though the 2018 paper
-points to the PDT version on LINDAT as a ``slightly modified (corrected)''
-copy of the original.  This project measures how much of them arrived.  The copies
-had also drifted apart in their identifiers: the release's ids are
-WordNet 2.0 offsets, the PDT copy's are 1.5 offsets.
 
 %%% ------------------------------------------------------------------
 \section{Method and results}
