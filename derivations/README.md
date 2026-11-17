@@ -46,5 +46,7 @@ move to DeriNet — and re-judge the *same* sample to see whether precision impr
 
 ## Readings
 
-Stoyanova et al. (2025); Pala & Hlaváčková (2007); DeriNet 2.3. Keys in the
-top-level `README.md`.
+Stoyanova et al. (2025) [*Expanding and Enhancing Derivational and
+Morphosemantic Relations in Princeton WordNet*](https://aclanthology.org/2025.gwc-1.14/); Pala &
+Hlaváčková (2007) [*Derivational Relations in Czech WordNet*](https://aclanthology.org/W07-1710/);
+[DeriNet 2.3](https://ufal.mff.cuni.cz/derinet). Keys in the top-level `README.md`.

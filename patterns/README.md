@@ -51,5 +51,6 @@ the English ones 3.0, and only 124 of them coincide.
 
 ## Readings
 
-McCrae et al. (2025) *Remedying Gender Bias in Open English Wordnet*; Pala &
-Smrž (2004) *Building Czech WordNet*. Keys in the top-level `README.md`.
+McCrae et al. (2025) [*Remedying Gender Bias in Open English
+Wordnet*](https://aclanthology.org/2025.gwc-1.16/); Pala & Smrž (2004) [*Building Czech
+WordNet*](https://nlp.fi.muni.cz/publications/romjist2004_pala_smrz/romjist2004_pala_smrz.pdf). Keys in the top-level `README.md`.

@@ -53,5 +53,7 @@ An LLM will happily flag things; the question is whether it is *right*.
 
 ## Readings
 
-As for project 5 (`vrandecic-krotzsch2014`, `bond-etal2016cili`), plus a paper
+As for project 5: Vrandečić & Krötzsch (2014) [*Wikidata*](https://doi.org/10.1145/2629489)
+(`vrandecic-krotzsch2014`) and Bond et al. (2016) [*CILI*](https://aclanthology.org/2016.gwc-1.9/)
+(`bond-etal2016cili`), plus a paper
 you find on LLMs for lexical-resource curation.

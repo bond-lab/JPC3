@@ -134,5 +134,6 @@ fixed seed so the key never changes. The sheets hold PDT sentences
 
 ## Readings
 
-Daudé, Padró & Rigau (2000) *Mapping WordNets Using Structural Information*;
-Bond et al. (2016) *CILI*. See the top-level `README.md` for keys.
+Daudé, Padró & Rigau (2000) [*Mapping WordNets Using Structural
+Information*](https://aclanthology.org/P00-1064/); Bond et al. (2016) [*CILI: the Collaborative
+Interlingual Index*](https://aclanthology.org/2016.gwc-1.9/). See the top-level `README.md` for keys.

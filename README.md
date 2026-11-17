@@ -103,9 +103,9 @@ work on Open English Wordnet is the obvious comparison point.
 - **Feedback:** the validated feminine forms go into the next Czech wordnet
   release; concepts the English side turns out to lack go to Open English
   Wordnet / OMW.
-- **Readings:** McCrae et al. (2025) *Remedying Gender Bias in Open English
-  Wordnet* `[mccrae-etal2025gender]`; Pala & Smrž (2004) *Building Czech
-  WordNet* `[palasmrz2004]`.
+- **Readings:** McCrae et al. (2025) [*Remedying Gender Bias in Open English
+  Wordnet*](https://aclanthology.org/2025.gwc-1.16/) `[mccrae-etal2025gender]`; Pala & Smrž (2004)
+  [*Building Czech WordNet*](https://nlp.fi.muni.cz/publications/romjist2004_pala_smrz/romjist2004_pala_smrz.pdf) `[palasmrz2004]`.
 - **Code:** [`patterns/`](patterns/) · explainer: [`patterns_explainer.html`](patterns/patterns_explainer.html)
 
 **Scale of the task.** Counting *role nouns* (nouns denoting a person by their
@@ -135,10 +135,10 @@ validating a sample.
 - **Stretch:** add a different language as well, ...
 - **Feedback:** validated derivational links go into the Czech wordnet; any
   DeriNet error you catch while judging goes back to DeriNet.
-- **Readings:** Stoyanova et al. (2025) *Expanding and Enhancing Derivational
-  and Morphosemantic Relations in Princeton WordNet* `[stoyanova-etal2025derivational]`;
-  Pala & Hlaváčková (2007) *Derivational Relations in Czech WordNet*
-  `[pala-hlavackova2007]`. (See also DeriNet 2.3 <https://ufal.mff.cuni.cz/derinet>)
+- **Readings:** Stoyanova et al. (2025) [*Expanding and Enhancing Derivational
+  and Morphosemantic Relations in Princeton WordNet*](https://aclanthology.org/2025.gwc-1.14/)
+  `[stoyanova-etal2025derivational]`; Pala & Hlaváčková (2007)
+  [*Derivational Relations in Czech WordNet*](https://aclanthology.org/W07-1710/) `[pala-hlavackova2007]`. (See also DeriNet 2.3 <https://ufal.mff.cuni.cz/derinet>)
 - **Code:** [`derivations/`](derivations/) · explainer: [`derivations_explainer.html`](derivations/derivations_explainer.html)
 
 ### 3. Merging the PDT wordnet sense tags
@@ -160,9 +160,10 @@ split / merged / renumbered / deleted / genuinely missing).
   made by its `scripts/corpus_counts.py`; PDT would be the second corpus).
   Stretch: add the synsets the residue shows to be missing to the Czech
   wordnet.
-- **Readings:** Daudé, Padró & Rigau (2000) *Mapping WordNets Using Structural
-  Information* `[daude-etal2000]`; Bond et al. (2016) *CILI: the Collaborative
-  Interlingual Index* `[bond-etal2016cili]`. (PDT 3.0: `[bejcek-etal2013pdt]`.)
+- **Readings:** Daudé, Padró & Rigau (2000) [*Mapping WordNets Using Structural
+  Information*](https://aclanthology.org/P00-1064/) `[daude-etal2000]`; Bond et al. (2016) [*CILI: the
+  Collaborative Interlingual Index*](https://aclanthology.org/2016.gwc-1.9/) `[bond-etal2016cili]`.
+  ([PDT 3.0](http://hdl.handle.net/11858/00-097C-0000-0023-1AAF-3): `[bejcek-etal2013pdt]`.)
 - **Code:** [`sensebank/`](sensebank/) · explainer: [`sensebank_explainer.html`](sensebank/sensebank_explainer.html)
 - **Worked example:** no one chose this project, so it is done in full as an
   example: [`sensebank/report/`](sensebank/report/) (report and the scripts
@@ -181,9 +182,10 @@ they differ — and report them.
 - **Feedback:** wrong synset tags and missing Czech keywords go back to
   ARASAAC; validated matches — and generated colour pictograms, which inherit
   ARASAAC's CC BY-NC-SA — go into ARAWN; record each symbol set's licence.
-- **Readings:** Sevens (2018) *Words Divide, Pictographs Unite* `[sevens2018]`;
-  Bond & Foster (2013) *Linking and Extending an Open Multilingual Wordnet*
-  `[bond-foster2013]`. Resources: ARASAAC `[arasaac]`, Global Symbols
+- **Readings:** Sevens (2018) [*Words Divide, Pictographs Unite*](https://www.lotpublications.nl/words-divide-pictographs-unite-pictograph-communication-technologies-for-people-with-an-intellectual-disability)
+  `[sevens2018]`; Bond & Foster (2013) [*Linking and Extending an Open
+  Multilingual Wordnet*](https://aclanthology.org/P13-1133/) `[bond-foster2013]`. Resources:
+  [ARASAAC](https://arasaac.org/) `[arasaac]`, [Global Symbols](https://globalsymbols.com/)
   `[globalsymbols]`, and the existing ARASAAC wordnet **ARAWN**
   <https://github.com/omwn/arawn> — the base this project extends.
 - **Code:** [`images/`](images/) · explainers: [`arasaac_explainer.html`](images/arasaac_explainer.html), [`swatch_explainer.html`](images/swatch_explainer.html)
@@ -200,8 +202,9 @@ Czech labels with no matching synset — is a ranked list of candidate gaps.
 - **Feedback:** to Wikidata — add the ILI (P5063) where only a WordNet id
   exists, correct wrong-sense links, add confirmed Czech labels with a
   reference; to the Czech wordnet — the verified missing lemmas and synsets.
-- **Readings:** Vrandečić & Krötzsch (2014) *Wikidata* `[vrandecic-krotzsch2014]`;
-  Bond et al. (2016) `[bond-etal2016cili]`.
+- **Readings:** Vrandečić & Krötzsch (2014) [*Wikidata: A Free Collaborative
+  Knowledgebase*](https://doi.org/10.1145/2629489) `[vrandecic-krotzsch2014]`; Bond et al. (2016)
+  [*CILI*](https://aclanthology.org/2016.gwc-1.9/) `[bond-etal2016cili]`.
 - **Code:** [`wikidata/`](wikidata/) · explainer: [`wikidata_explainer.html`](wikidata/wikidata_explainer.html)
 
 ### 6. LLM-assisted quality estimation, grounded in Wikidata

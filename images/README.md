@@ -83,6 +83,6 @@ the Czech match needs checking.
 
 ## Readings
 
-Sevens (2018) *Words Divide, Pictographs Unite*; Bond & Foster (2013)
-*Linking and Extending an Open Multilingual Wordnet*. Keys in the top-level
+Sevens (2018) [*Words Divide, Pictographs Unite*](https://www.lotpublications.nl/words-divide-pictographs-unite-pictograph-communication-technologies-for-people-with-an-intellectual-disability); Bond &
+Foster (2013) [*Linking and Extending an Open Multilingual Wordnet*](https://aclanthology.org/P13-1133/). Keys in the top-level
 `README.md`.
